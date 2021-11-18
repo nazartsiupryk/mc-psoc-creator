@@ -1,0 +1,106 @@
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/CortexM0/ARM_GCC_541/Debug/main.o : C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/A.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/A_aliases.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/B.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/B_aliases.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Button_dec.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Button_dec_aliases.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Button_direction.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Button_direction_aliases.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Button_inc.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Button_inc_aliases.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Clock.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Clock_1.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Clock_2.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Control_Reg.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/CyDMA.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/CyFlash.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/CyLFClk.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/CyLib.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/LCD_Char.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/LCD_Char_LCDPort.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/LCD_Char_LCDPort_aliases.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/PWM.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/QuadDec.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/QuadDec_Cnt8.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/SGN_1.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/SGN_1_aliases.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/SGN_2.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/SGN_2_aliases.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/SGN_3.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/SGN_3_aliases.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/SGN_4.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/SGN_4_aliases.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Timer_Counter.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/button_dec_isr.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/button_direction_isr.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/button_inc_isr.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cmsis_armcc.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cmsis_compiler.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cmsis_gcc.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/core_cm0.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/core_cm0_psoc4.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cyPm.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cy_em_eeprom.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cydevice_trm.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cydisabledsheets.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cyfitter.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cyfitter_cfg.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cypins.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cytypes.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/project.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/timer_isr.h C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/main.c 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/A.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/A_aliases.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/B.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/B_aliases.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Button_dec.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Button_dec_aliases.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Button_direction.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Button_direction_aliases.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Button_inc.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Button_inc_aliases.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Clock.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Clock_1.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Clock_2.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Control_Reg.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/CyDMA.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/CyFlash.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/CyLFClk.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/CyLib.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/LCD_Char.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/LCD_Char_LCDPort.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/LCD_Char_LCDPort_aliases.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/PWM.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/QuadDec.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/QuadDec_Cnt8.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/SGN_1.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/SGN_1_aliases.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/SGN_2.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/SGN_2_aliases.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/SGN_3.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/SGN_3_aliases.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/SGN_4.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/SGN_4_aliases.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/Timer_Counter.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/button_dec_isr.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/button_direction_isr.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/button_inc_isr.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cmsis_armcc.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cmsis_compiler.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cmsis_gcc.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/core_cm0.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/core_cm0_psoc4.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cyPm.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cy_em_eeprom.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cydevice_trm.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cydisabledsheets.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cyfitter.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cyfitter_cfg.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cypins.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/cytypes.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/project.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/Generated_Source/PSoC4/timer_isr.h : 
+
+C:/Users/Admin/Documents/PSoC\ Creator/Workspace01/Lab5.cydsn/main.c : 
+

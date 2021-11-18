@@ -1,0 +1,2756 @@
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	__aeabi_idiv
+  20              		.section	.text.timer_isr_interrupt,"ax",%progbits
+  21              		.align	2
+  22              		.global	timer_isr_interrupt
+  23              		.code	16
+  24              		.thumb_func
+  25              		.type	timer_isr_interrupt, %function
+  26              	timer_isr_interrupt:
+  27              	.LFB34:
+  28              		.file 1 "main.c"
+   1:main.c        **** /* ========================================
+   2:main.c        ****  *
+   3:main.c        ****  * Copyright YOUR COMPANY, THE YEAR
+   4:main.c        ****  * All Rights Reserved
+   5:main.c        ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:main.c        ****  *
+   7:main.c        ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:main.c        ****  * WHICH IS THE PROPERTY OF your company.
+   9:main.c        ****  *
+  10:main.c        ****  * ========================================
+  11:main.c        **** */
+  12:main.c        **** #include "project.h"
+  13:main.c        **** 
+  14:main.c        **** #define PHASE_NUMBER 4
+  15:main.c        **** #define PHASE_DELAY 10
+  16:main.c        **** #define PHASE_1 0b1000
+  17:main.c        **** #define PHASE_2 0b0100
+  18:main.c        **** #define PHASE_3 0b0010
+  19:main.c        **** #define PHASE_4 0b0001
+  20:main.c        **** #define STOP 0b0000
+  21:main.c        **** 
+  22:main.c        **** #define DIR_STOP 0
+  23:main.c        **** #define DIR_FORWARD 1
+  24:main.c        **** #define DIR_BACKWARD 2
+  25:main.c        **** 
+  26:main.c        **** #define NAME_STOP     "STOP    "
+  27:main.c        **** #define NAME_FORWARD  "FORWARD "
+  28:main.c        **** #define NAME_BACKWARD "BACK    "
+  29:main.c        **** #define NAME_PWM "PWM="
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 2
+
+
+  30:main.c        **** #define NAME_SPEED "SPEED="
+  31:main.c        **** #define NUMBER_CLEAR "    "
+  32:main.c        **** 
+  33:main.c        **** #define DISPLAY_IDX_DIRECTION 0
+  34:main.c        **** #define DISPLAY_IDX_PWM 8
+  35:main.c        **** #define DISPLAY_IDX_PWM_VALUE 12
+  36:main.c        **** #define DISPLAY_IDX_SPEED 0
+  37:main.c        **** #define DISPLAY_IDX_SPEED_VALUE 6
+  38:main.c        **** 
+  39:main.c        **** uint8_t motorPhases[PHASE_NUMBER] = {PHASE_1, PHASE_2, PHASE_3, PHASE_4};
+  40:main.c        **** 
+  41:main.c        **** uint16_t counter = 0;
+  42:main.c        **** uint8_t direction = 0;
+  43:main.c        **** uint8_t phaseIdx = 0;
+  44:main.c        **** 
+  45:main.c        **** uint8_t pwm = 100;
+  46:main.c        **** uint16_t speed = 100;
+  47:main.c        **** 
+  48:main.c        **** inline void setupDisplay();
+  49:main.c        **** 
+  50:main.c        **** inline void displayDirection();
+  51:main.c        **** 
+  52:main.c        **** inline void displayPWM();
+  53:main.c        **** 
+  54:main.c        **** inline void displaySpeed();
+  55:main.c        **** 
+  56:main.c        **** CY_ISR(timer_isr_interrupt)
+  57:main.c        **** {
+  29              		.loc 1 57 0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 10B5     		push	{r4, lr}
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 4, -8
+  36              		.cfi_offset 14, -4
+  58:main.c        ****     if (speed > 0)
+  37              		.loc 1 58 0
+  38 0002 284B     		ldr	r3, .L10
+  39 0004 1988     		ldrh	r1, [r3]
+  40 0006 0029     		cmp	r1, #0
+  41 0008 44D0     		beq	.L2
+  59:main.c        ****     {
+  60:main.c        ****         if (counter >= (1000 / (speed * 5)))
+  42              		.loc 1 60 0
+  43 000a 274B     		ldr	r3, .L10+4
+  44 000c 1C88     		ldrh	r4, [r3]
+  45 000e 8B00     		lsls	r3, r1, #2
+  46 0010 5918     		adds	r1, r3, r1
+  47 0012 FA20     		movs	r0, #250
+  48 0014 8000     		lsls	r0, r0, #2
+  49 0016 FFF7FEFF 		bl	__aeabi_idiv
+  50              	.LVL0:
+  51 001a 8442     		cmp	r4, r0
+  52 001c 02DB     		blt	.L3
+  61:main.c        ****         {
+  62:main.c        ****             counter = 0;
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 3
+
+
+  53              		.loc 1 62 0
+  54 001e 0022     		movs	r2, #0
+  55 0020 214B     		ldr	r3, .L10+4
+  56 0022 1A80     		strh	r2, [r3]
+  57              	.L3:
+  63:main.c        ****         }
+  64:main.c        ****         
+  65:main.c        ****         if (counter == 0)
+  58              		.loc 1 65 0
+  59 0024 204B     		ldr	r3, .L10+4
+  60 0026 1B88     		ldrh	r3, [r3]
+  61 0028 002B     		cmp	r3, #0
+  62 002a 2ED1     		bne	.L4
+  66:main.c        ****         {
+  67:main.c        ****             if (direction == DIR_FORWARD)
+  63              		.loc 1 67 0
+  64 002c 1E4B     		ldr	r3, .L10+4
+  65 002e 9B78     		ldrb	r3, [r3, #2]
+  66 0030 012B     		cmp	r3, #1
+  67 0032 11D1     		bne	.L5
+  68:main.c        ****             {
+  69:main.c        ****                 if (phaseIdx < 0 || phaseIdx >= PHASE_NUMBER)
+  68              		.loc 1 69 0
+  69 0034 1C4B     		ldr	r3, .L10+4
+  70 0036 DB78     		ldrb	r3, [r3, #3]
+  71 0038 032B     		cmp	r3, #3
+  72 003a 02D9     		bls	.L6
+  70:main.c        ****                 {
+  71:main.c        ****                     phaseIdx = 0;
+  73              		.loc 1 71 0
+  74 003c 0022     		movs	r2, #0
+  75 003e 1A4B     		ldr	r3, .L10+4
+  76 0040 DA70     		strb	r2, [r3, #3]
+  77              	.L6:
+  72:main.c        ****                 }
+  73:main.c        ****                 Control_Reg_Write(motorPhases[phaseIdx]);
+  78              		.loc 1 73 0
+  79 0042 194C     		ldr	r4, .L10+4
+  80 0044 E378     		ldrb	r3, [r4, #3]
+  81 0046 174A     		ldr	r2, .L10
+  82 0048 D318     		adds	r3, r2, r3
+  83 004a 1879     		ldrb	r0, [r3, #4]
+  84 004c FFF7FEFF 		bl	Control_Reg_Write
+  85              	.LVL1:
+  74:main.c        ****                 phaseIdx++;
+  86              		.loc 1 74 0
+  87 0050 E378     		ldrb	r3, [r4, #3]
+  88 0052 0133     		adds	r3, r3, #1
+  89 0054 E370     		strb	r3, [r4, #3]
+  90 0056 18E0     		b	.L4
+  91              	.L5:
+  75:main.c        ****             }
+  76:main.c        ****             else if (direction == DIR_BACKWARD)
+  92              		.loc 1 76 0
+  93 0058 022B     		cmp	r3, #2
+  94 005a 11D1     		bne	.L7
+  77:main.c        ****             {
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 4
+
+
+  78:main.c        ****                 if (phaseIdx < 0 || phaseIdx >= PHASE_NUMBER)
+  95              		.loc 1 78 0
+  96 005c 124B     		ldr	r3, .L10+4
+  97 005e DB78     		ldrb	r3, [r3, #3]
+  98 0060 032B     		cmp	r3, #3
+  99 0062 02D9     		bls	.L8
+  79:main.c        ****                 {
+  80:main.c        ****                     phaseIdx = PHASE_NUMBER - 1;
+ 100              		.loc 1 80 0
+ 101 0064 0322     		movs	r2, #3
+ 102 0066 104B     		ldr	r3, .L10+4
+ 103 0068 DA70     		strb	r2, [r3, #3]
+ 104              	.L8:
+  81:main.c        ****                 }
+  82:main.c        ****                 Control_Reg_Write(motorPhases[phaseIdx]);
+ 105              		.loc 1 82 0
+ 106 006a 0F4C     		ldr	r4, .L10+4
+ 107 006c E378     		ldrb	r3, [r4, #3]
+ 108 006e 0D4A     		ldr	r2, .L10
+ 109 0070 D318     		adds	r3, r2, r3
+ 110 0072 1879     		ldrb	r0, [r3, #4]
+ 111 0074 FFF7FEFF 		bl	Control_Reg_Write
+ 112              	.LVL2:
+  83:main.c        ****                 phaseIdx--;
+ 113              		.loc 1 83 0
+ 114 0078 E378     		ldrb	r3, [r4, #3]
+ 115 007a 013B     		subs	r3, r3, #1
+ 116 007c E370     		strb	r3, [r4, #3]
+ 117 007e 04E0     		b	.L4
+ 118              	.L7:
+  84:main.c        ****             }
+  85:main.c        ****             else if (direction == DIR_STOP)
+ 119              		.loc 1 85 0
+ 120 0080 002B     		cmp	r3, #0
+ 121 0082 02D1     		bne	.L4
+  86:main.c        ****             {
+  87:main.c        ****                 Control_Reg_Write(STOP);
+ 122              		.loc 1 87 0
+ 123 0084 0020     		movs	r0, #0
+ 124 0086 FFF7FEFF 		bl	Control_Reg_Write
+ 125              	.LVL3:
+ 126              	.L4:
+  88:main.c        ****             }
+  89:main.c        ****         }
+  90:main.c        ****         
+  91:main.c        ****         counter++;
+ 127              		.loc 1 91 0
+ 128 008a 074A     		ldr	r2, .L10+4
+ 129 008c 1388     		ldrh	r3, [r2]
+ 130 008e 0133     		adds	r3, r3, #1
+ 131 0090 1380     		strh	r3, [r2]
+ 132 0092 02E0     		b	.L9
+ 133              	.L2:
+  92:main.c        ****     }
+  93:main.c        ****     else
+  94:main.c        ****     {
+  95:main.c        ****         Control_Reg_Write(STOP);
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 5
+
+
+ 134              		.loc 1 95 0
+ 135 0094 0020     		movs	r0, #0
+ 136 0096 FFF7FEFF 		bl	Control_Reg_Write
+ 137              	.LVL4:
+ 138              	.L9:
+  96:main.c        ****     }
+  97:main.c        ****     
+  98:main.c        ****     Timer_Counter_ClearInterrupt(Timer_Counter_INTR_MASK_TC);
+ 139              		.loc 1 98 0
+ 140 009a 0120     		movs	r0, #1
+ 141 009c FFF7FEFF 		bl	Timer_Counter_ClearInterrupt
+ 142              	.LVL5:
+  99:main.c        **** }
+ 143              		.loc 1 99 0
+ 144              		@ sp needed
+ 145 00a0 10BD     		pop	{r4, pc}
+ 146              	.L11:
+ 147 00a2 C046     		.align	2
+ 148              	.L10:
+ 149 00a4 00000000 		.word	.LANCHOR0
+ 150 00a8 00000000 		.word	.LANCHOR1
+ 151              		.cfi_endproc
+ 152              	.LFE34:
+ 153              		.size	timer_isr_interrupt, .-timer_isr_interrupt
+ 154              		.section	.text.button_inc_isr_interrupt,"ax",%progbits
+ 155              		.align	2
+ 156              		.global	button_inc_isr_interrupt
+ 157              		.code	16
+ 158              		.thumb_func
+ 159              		.type	button_inc_isr_interrupt, %function
+ 160              	button_inc_isr_interrupt:
+ 161              	.LFB35:
+ 100:main.c        **** 
+ 101:main.c        **** CY_ISR(button_inc_isr_interrupt)
+ 102:main.c        **** {
+ 162              		.loc 1 102 0
+ 163              		.cfi_startproc
+ 164              		@ args = 0, pretend = 0, frame = 0
+ 165              		@ frame_needed = 0, uses_anonymous_args = 0
+ 166 0000 10B5     		push	{r4, lr}
+ 167              		.cfi_def_cfa_offset 8
+ 168              		.cfi_offset 4, -8
+ 169              		.cfi_offset 14, -4
+ 103:main.c        ****     speed += 10;
+ 170              		.loc 1 103 0
+ 171 0002 0E4A     		ldr	r2, .L14
+ 172 0004 1388     		ldrh	r3, [r2]
+ 173 0006 0A33     		adds	r3, r3, #10
+ 174 0008 9BB2     		uxth	r3, r3
+ 175 000a 1380     		strh	r3, [r2]
+ 104:main.c        ****     if (speed < 0 || speed > 100)
+ 176              		.loc 1 104 0
+ 177 000c 642B     		cmp	r3, #100
+ 178 000e 02D9     		bls	.L13
+ 105:main.c        ****     {
+ 106:main.c        ****         speed = 100;
+ 179              		.loc 1 106 0
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 6
+
+
+ 180 0010 6422     		movs	r2, #100
+ 181 0012 0A4B     		ldr	r3, .L14
+ 182 0014 1A80     		strh	r2, [r3]
+ 183              	.L13:
+ 184              	.LBB24:
+ 185              	.LBB25:
+ 107:main.c        ****     }
+ 108:main.c        ****     displaySpeed();
+ 109:main.c        ****     
+ 110:main.c        ****     Button_inc_ClearInterrupt();
+ 111:main.c        **** }
+ 112:main.c        **** 
+ 113:main.c        **** CY_ISR(button_dec_isr_interrupt)
+ 114:main.c        **** {
+ 115:main.c        ****     speed -= 10;
+ 116:main.c        ****     if (speed < 0 || speed > 100)
+ 117:main.c        ****     {
+ 118:main.c        ****         speed = 0;
+ 119:main.c        ****     }
+ 120:main.c        ****     displaySpeed();
+ 121:main.c        ****     
+ 122:main.c        ****     Button_dec_ClearInterrupt();
+ 123:main.c        **** }
+ 124:main.c        **** 
+ 125:main.c        **** CY_ISR(button_direction_isr_interrupt)
+ 126:main.c        **** {
+ 127:main.c        ****     direction++;
+ 128:main.c        ****     if (direction > 2)
+ 129:main.c        ****     {
+ 130:main.c        ****         direction = 0;
+ 131:main.c        ****     }
+ 132:main.c        ****     displayDirection();
+ 133:main.c        ****     
+ 134:main.c        ****     Button_direction_ClearInterrupt();
+ 135:main.c        **** }
+ 136:main.c        **** 
+ 137:main.c        **** int main(void)
+ 138:main.c        **** {
+ 139:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
+ 140:main.c        ****     
+ 141:main.c        ****     Timer_Counter_Start();
+ 142:main.c        ****     PWM_Start();
+ 143:main.c        ****     timer_isr_StartEx(timer_isr_interrupt);
+ 144:main.c        ****     button_inc_isr_StartEx(button_inc_isr_interrupt);
+ 145:main.c        ****     button_dec_isr_StartEx(button_dec_isr_interrupt);
+ 146:main.c        ****     button_direction_isr_StartEx(button_direction_isr_interrupt);
+ 147:main.c        ****     
+ 148:main.c        ****     QuadDec_Start();
+ 149:main.c        ****     QuadDec_SetCounter(pwm);
+ 150:main.c        ****     
+ 151:main.c        ****     setupDisplay();
+ 152:main.c        ****     
+ 153:main.c        ****     for(;;)
+ 154:main.c        ****     {
+ 155:main.c        ****         /* Step motor rotation is executed in timer_isr_interrupt */
+ 156:main.c        ****         
+ 157:main.c        ****         if (QuadDec_GetCounter() > 10)
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 7
+
+
+ 158:main.c        ****         {
+ 159:main.c        ****             QuadDec_SetCounter(10);
+ 160:main.c        ****         }
+ 161:main.c        ****         if (QuadDec_GetCounter() < 2)
+ 162:main.c        ****         {
+ 163:main.c        ****             QuadDec_SetCounter(2);
+ 164:main.c        ****         }
+ 165:main.c        ****         pwm = QuadDec_GetCounter() * 10;
+ 166:main.c        ****         PWM_WriteCompare(pwm * PWM_PERIOD_REG / 100);
+ 167:main.c        ****         displayPWM();
+ 168:main.c        ****         
+ 169:main.c        ****         CyDelay(50);
+ 170:main.c        ****     }
+ 171:main.c        **** }
+ 172:main.c        **** 
+ 173:main.c        **** inline void setupDisplay()
+ 174:main.c        **** {
+ 175:main.c        ****     LCD_Char_Start();
+ 176:main.c        ****     LCD_Char_ClearDisplay();
+ 177:main.c        ****     
+ 178:main.c        ****     LCD_Char_Position(0, DISPLAY_IDX_PWM);
+ 179:main.c        ****     LCD_Char_PrintString(NAME_PWM);
+ 180:main.c        ****     LCD_Char_Position(1, DISPLAY_IDX_SPEED);
+ 181:main.c        ****     LCD_Char_PrintString(NAME_SPEED);
+ 182:main.c        ****     
+ 183:main.c        ****     displayDirection();
+ 184:main.c        ****     displayPWM();
+ 185:main.c        ****     displaySpeed();
+ 186:main.c        **** }
+ 187:main.c        **** 
+ 188:main.c        **** inline void displayDirection()
+ 189:main.c        **** {
+ 190:main.c        ****     LCD_Char_Position(0, DISPLAY_IDX_DIRECTION);
+ 191:main.c        ****     if (direction == DIR_FORWARD)
+ 192:main.c        ****     {
+ 193:main.c        ****         LCD_Char_PrintString(NAME_FORWARD);
+ 194:main.c        ****     }
+ 195:main.c        ****     else if (direction == DIR_BACKWARD)
+ 196:main.c        ****     {
+ 197:main.c        ****         LCD_Char_PrintString(NAME_BACKWARD);
+ 198:main.c        ****     }
+ 199:main.c        ****     else if (direction == DIR_STOP)
+ 200:main.c        ****     {
+ 201:main.c        ****         LCD_Char_PrintString(NAME_STOP);
+ 202:main.c        ****     }
+ 203:main.c        **** }
+ 204:main.c        **** 
+ 205:main.c        **** inline void displayPWM()
+ 206:main.c        **** {
+ 207:main.c        ****     LCD_Char_Position(0, DISPLAY_IDX_PWM_VALUE);
+ 208:main.c        ****     LCD_Char_PrintString(NUMBER_CLEAR);
+ 209:main.c        ****     LCD_Char_Position(0, DISPLAY_IDX_PWM_VALUE);
+ 210:main.c        ****     LCD_Char_PrintDecUint16(pwm);
+ 211:main.c        ****     LCD_Char_PutChar('%');
+ 212:main.c        **** }
+ 213:main.c        **** 
+ 214:main.c        **** inline void displaySpeed()
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 8
+
+
+ 215:main.c        **** {
+ 216:main.c        ****     LCD_Char_Position(1, DISPLAY_IDX_SPEED_VALUE);
+ 186              		.loc 1 216 0
+ 187 0016 0621     		movs	r1, #6
+ 188 0018 0120     		movs	r0, #1
+ 189 001a FFF7FEFF 		bl	LCD_Char_Position
+ 190              	.LVL6:
+ 217:main.c        ****     LCD_Char_PrintString(NUMBER_CLEAR);
+ 191              		.loc 1 217 0
+ 192 001e 0848     		ldr	r0, .L14+4
+ 193 0020 FFF7FEFF 		bl	LCD_Char_PrintString
+ 194              	.LVL7:
+ 218:main.c        ****     LCD_Char_Position(1, DISPLAY_IDX_SPEED_VALUE);
+ 195              		.loc 1 218 0
+ 196 0024 0621     		movs	r1, #6
+ 197 0026 0120     		movs	r0, #1
+ 198 0028 FFF7FEFF 		bl	LCD_Char_Position
+ 199              	.LVL8:
+ 219:main.c        ****     LCD_Char_PrintDecUint16(speed);
+ 200              		.loc 1 219 0
+ 201 002c 034B     		ldr	r3, .L14
+ 202 002e 1888     		ldrh	r0, [r3]
+ 203 0030 FFF7FEFF 		bl	LCD_Char_PrintU32Number
+ 204              	.LVL9:
+ 205              	.LBE25:
+ 206              	.LBE24:
+ 110:main.c        **** }
+ 207              		.loc 1 110 0
+ 208 0034 FFF7FEFF 		bl	Button_inc_ClearInterrupt
+ 209              	.LVL10:
+ 111:main.c        **** 
+ 210              		.loc 1 111 0
+ 211              		@ sp needed
+ 212 0038 10BD     		pop	{r4, pc}
+ 213              	.L15:
+ 214 003a C046     		.align	2
+ 215              	.L14:
+ 216 003c 00000000 		.word	.LANCHOR0
+ 217 0040 00000000 		.word	.LC3
+ 218              		.cfi_endproc
+ 219              	.LFE35:
+ 220              		.size	button_inc_isr_interrupt, .-button_inc_isr_interrupt
+ 221              		.section	.text.button_dec_isr_interrupt,"ax",%progbits
+ 222              		.align	2
+ 223              		.global	button_dec_isr_interrupt
+ 224              		.code	16
+ 225              		.thumb_func
+ 226              		.type	button_dec_isr_interrupt, %function
+ 227              	button_dec_isr_interrupt:
+ 228              	.LFB36:
+ 114:main.c        ****     speed -= 10;
+ 229              		.loc 1 114 0
+ 230              		.cfi_startproc
+ 231              		@ args = 0, pretend = 0, frame = 0
+ 232              		@ frame_needed = 0, uses_anonymous_args = 0
+ 233 0000 10B5     		push	{r4, lr}
+ 234              		.cfi_def_cfa_offset 8
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 9
+
+
+ 235              		.cfi_offset 4, -8
+ 236              		.cfi_offset 14, -4
+ 115:main.c        ****     if (speed < 0 || speed > 100)
+ 237              		.loc 1 115 0
+ 238 0002 0E4A     		ldr	r2, .L18
+ 239 0004 1388     		ldrh	r3, [r2]
+ 240 0006 0A3B     		subs	r3, r3, #10
+ 241 0008 9BB2     		uxth	r3, r3
+ 242 000a 1380     		strh	r3, [r2]
+ 116:main.c        ****     {
+ 243              		.loc 1 116 0
+ 244 000c 642B     		cmp	r3, #100
+ 245 000e 02D9     		bls	.L17
+ 118:main.c        ****     }
+ 246              		.loc 1 118 0
+ 247 0010 0022     		movs	r2, #0
+ 248 0012 0A4B     		ldr	r3, .L18
+ 249 0014 1A80     		strh	r2, [r3]
+ 250              	.L17:
+ 251              	.LBB26:
+ 252              	.LBB27:
+ 216:main.c        ****     LCD_Char_PrintString(NUMBER_CLEAR);
+ 253              		.loc 1 216 0
+ 254 0016 0621     		movs	r1, #6
+ 255 0018 0120     		movs	r0, #1
+ 256 001a FFF7FEFF 		bl	LCD_Char_Position
+ 257              	.LVL11:
+ 217:main.c        ****     LCD_Char_Position(1, DISPLAY_IDX_SPEED_VALUE);
+ 258              		.loc 1 217 0
+ 259 001e 0848     		ldr	r0, .L18+4
+ 260 0020 FFF7FEFF 		bl	LCD_Char_PrintString
+ 261              	.LVL12:
+ 218:main.c        ****     LCD_Char_PrintDecUint16(speed);
+ 262              		.loc 1 218 0
+ 263 0024 0621     		movs	r1, #6
+ 264 0026 0120     		movs	r0, #1
+ 265 0028 FFF7FEFF 		bl	LCD_Char_Position
+ 266              	.LVL13:
+ 267              		.loc 1 219 0
+ 268 002c 034B     		ldr	r3, .L18
+ 269 002e 1888     		ldrh	r0, [r3]
+ 270 0030 FFF7FEFF 		bl	LCD_Char_PrintU32Number
+ 271              	.LVL14:
+ 272              	.LBE27:
+ 273              	.LBE26:
+ 122:main.c        **** }
+ 274              		.loc 1 122 0
+ 275 0034 FFF7FEFF 		bl	Button_dec_ClearInterrupt
+ 276              	.LVL15:
+ 123:main.c        **** 
+ 277              		.loc 1 123 0
+ 278              		@ sp needed
+ 279 0038 10BD     		pop	{r4, pc}
+ 280              	.L19:
+ 281 003a C046     		.align	2
+ 282              	.L18:
+ 283 003c 00000000 		.word	.LANCHOR0
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 10
+
+
+ 284 0040 00000000 		.word	.LC3
+ 285              		.cfi_endproc
+ 286              	.LFE36:
+ 287              		.size	button_dec_isr_interrupt, .-button_dec_isr_interrupt
+ 288              		.section	.text.button_direction_isr_interrupt,"ax",%progbits
+ 289              		.align	2
+ 290              		.global	button_direction_isr_interrupt
+ 291              		.code	16
+ 292              		.thumb_func
+ 293              		.type	button_direction_isr_interrupt, %function
+ 294              	button_direction_isr_interrupt:
+ 295              	.LFB37:
+ 126:main.c        ****     direction++;
+ 296              		.loc 1 126 0
+ 297              		.cfi_startproc
+ 298              		@ args = 0, pretend = 0, frame = 0
+ 299              		@ frame_needed = 0, uses_anonymous_args = 0
+ 300 0000 10B5     		push	{r4, lr}
+ 301              		.cfi_def_cfa_offset 8
+ 302              		.cfi_offset 4, -8
+ 303              		.cfi_offset 14, -4
+ 127:main.c        ****     if (direction > 2)
+ 304              		.loc 1 127 0
+ 305 0002 124A     		ldr	r2, .L25
+ 306 0004 9378     		ldrb	r3, [r2, #2]
+ 307 0006 0133     		adds	r3, r3, #1
+ 308 0008 DBB2     		uxtb	r3, r3
+ 309 000a 9370     		strb	r3, [r2, #2]
+ 128:main.c        ****     {
+ 310              		.loc 1 128 0
+ 311 000c 022B     		cmp	r3, #2
+ 312 000e 02D9     		bls	.L21
+ 130:main.c        ****     }
+ 313              		.loc 1 130 0
+ 314 0010 0022     		movs	r2, #0
+ 315 0012 0E4B     		ldr	r3, .L25
+ 316 0014 9A70     		strb	r2, [r3, #2]
+ 317              	.L21:
+ 318              	.LBB28:
+ 319              	.LBB29:
+ 190:main.c        ****     if (direction == DIR_FORWARD)
+ 320              		.loc 1 190 0
+ 321 0016 0021     		movs	r1, #0
+ 322 0018 0020     		movs	r0, #0
+ 323 001a FFF7FEFF 		bl	LCD_Char_Position
+ 324              	.LVL16:
+ 191:main.c        ****     {
+ 325              		.loc 1 191 0
+ 326 001e 0B4B     		ldr	r3, .L25
+ 327 0020 9B78     		ldrb	r3, [r3, #2]
+ 328 0022 012B     		cmp	r3, #1
+ 329 0024 03D1     		bne	.L22
+ 193:main.c        ****     }
+ 330              		.loc 1 193 0
+ 331 0026 0A48     		ldr	r0, .L25+4
+ 332 0028 FFF7FEFF 		bl	LCD_Char_PrintString
+ 333              	.LVL17:
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 11
+
+
+ 334 002c 0AE0     		b	.L23
+ 335              	.L22:
+ 195:main.c        ****     {
+ 336              		.loc 1 195 0
+ 337 002e 022B     		cmp	r3, #2
+ 338 0030 03D1     		bne	.L24
+ 197:main.c        ****     }
+ 339              		.loc 1 197 0
+ 340 0032 0848     		ldr	r0, .L25+8
+ 341 0034 FFF7FEFF 		bl	LCD_Char_PrintString
+ 342              	.LVL18:
+ 343 0038 04E0     		b	.L23
+ 344              	.L24:
+ 199:main.c        ****     {
+ 345              		.loc 1 199 0
+ 346 003a 002B     		cmp	r3, #0
+ 347 003c 02D1     		bne	.L23
+ 201:main.c        ****     }
+ 348              		.loc 1 201 0
+ 349 003e 0648     		ldr	r0, .L25+12
+ 350 0040 FFF7FEFF 		bl	LCD_Char_PrintString
+ 351              	.LVL19:
+ 352              	.L23:
+ 353              	.LBE29:
+ 354              	.LBE28:
+ 134:main.c        **** }
+ 355              		.loc 1 134 0
+ 356 0044 FFF7FEFF 		bl	Button_direction_ClearInterrupt
+ 357              	.LVL20:
+ 135:main.c        **** 
+ 358              		.loc 1 135 0
+ 359              		@ sp needed
+ 360 0048 10BD     		pop	{r4, pc}
+ 361              	.L26:
+ 362 004a C046     		.align	2
+ 363              	.L25:
+ 364 004c 00000000 		.word	.LANCHOR1
+ 365 0050 08000000 		.word	.LC8
+ 366 0054 14000000 		.word	.LC10
+ 367 0058 20000000 		.word	.LC12
+ 368              		.cfi_endproc
+ 369              	.LFE37:
+ 370              		.size	button_direction_isr_interrupt, .-button_direction_isr_interrupt
+ 371              		.global	__aeabi_uidiv
+ 372              		.section	.text.main,"ax",%progbits
+ 373              		.align	2
+ 374              		.global	main
+ 375              		.code	16
+ 376              		.thumb_func
+ 377              		.type	main, %function
+ 378              	main:
+ 379              	.LFB38:
+ 138:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
+ 380              		.loc 1 138 0
+ 381              		.cfi_startproc
+ 382              		@ Volatile: function does not return.
+ 383              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 12
+
+
+ 384              		@ frame_needed = 0, uses_anonymous_args = 0
+ 385 0000 70B5     		push	{r4, r5, r6, lr}
+ 386              		.cfi_def_cfa_offset 16
+ 387              		.cfi_offset 4, -16
+ 388              		.cfi_offset 5, -12
+ 389              		.cfi_offset 6, -8
+ 390              		.cfi_offset 14, -4
+ 139:main.c        ****     
+ 391              		.loc 1 139 0
+ 392              		.syntax divided
+ 393              	@ 139 "main.c" 1
+ 394 0002 62B6     		CPSIE   i
+ 395              	@ 0 "" 2
+ 141:main.c        ****     PWM_Start();
+ 396              		.loc 1 141 0
+ 397              		.thumb
+ 398              		.syntax unified
+ 399 0004 FFF7FEFF 		bl	Timer_Counter_Start
+ 400              	.LVL21:
+ 142:main.c        ****     timer_isr_StartEx(timer_isr_interrupt);
+ 401              		.loc 1 142 0
+ 402 0008 FFF7FEFF 		bl	PWM_Start
+ 403              	.LVL22:
+ 143:main.c        ****     button_inc_isr_StartEx(button_inc_isr_interrupt);
+ 404              		.loc 1 143 0
+ 405 000c 4848     		ldr	r0, .L34
+ 406 000e FFF7FEFF 		bl	timer_isr_StartEx
+ 407              	.LVL23:
+ 144:main.c        ****     button_dec_isr_StartEx(button_dec_isr_interrupt);
+ 408              		.loc 1 144 0
+ 409 0012 4848     		ldr	r0, .L34+4
+ 410 0014 FFF7FEFF 		bl	button_inc_isr_StartEx
+ 411              	.LVL24:
+ 145:main.c        ****     button_direction_isr_StartEx(button_direction_isr_interrupt);
+ 412              		.loc 1 145 0
+ 413 0018 4748     		ldr	r0, .L34+8
+ 414 001a FFF7FEFF 		bl	button_dec_isr_StartEx
+ 415              	.LVL25:
+ 146:main.c        ****     
+ 416              		.loc 1 146 0
+ 417 001e 4748     		ldr	r0, .L34+12
+ 418 0020 FFF7FEFF 		bl	button_direction_isr_StartEx
+ 419              	.LVL26:
+ 148:main.c        ****     QuadDec_SetCounter(pwm);
+ 420              		.loc 1 148 0
+ 421 0024 FFF7FEFF 		bl	QuadDec_Start
+ 422              	.LVL27:
+ 149:main.c        ****     
+ 423              		.loc 1 149 0
+ 424 0028 454B     		ldr	r3, .L34+16
+ 425 002a 0820     		movs	r0, #8
+ 426 002c 1856     		ldrsb	r0, [r3, r0]
+ 427 002e FFF7FEFF 		bl	QuadDec_SetCounter
+ 428              	.LVL28:
+ 429              	.LBB30:
+ 430              	.LBB31:
+ 175:main.c        ****     LCD_Char_ClearDisplay();
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 13
+
+
+ 431              		.loc 1 175 0
+ 432 0032 FFF7FEFF 		bl	LCD_Char_Start
+ 433              	.LVL29:
+ 176:main.c        ****     
+ 434              		.loc 1 176 0
+ 435 0036 0120     		movs	r0, #1
+ 436 0038 FFF7FEFF 		bl	LCD_Char_WriteControl
+ 437              	.LVL30:
+ 178:main.c        ****     LCD_Char_PrintString(NAME_PWM);
+ 438              		.loc 1 178 0
+ 439 003c 0821     		movs	r1, #8
+ 440 003e 0020     		movs	r0, #0
+ 441 0040 FFF7FEFF 		bl	LCD_Char_Position
+ 442              	.LVL31:
+ 179:main.c        ****     LCD_Char_Position(1, DISPLAY_IDX_SPEED);
+ 443              		.loc 1 179 0
+ 444 0044 3F48     		ldr	r0, .L34+20
+ 445 0046 FFF7FEFF 		bl	LCD_Char_PrintString
+ 446              	.LVL32:
+ 180:main.c        ****     LCD_Char_PrintString(NAME_SPEED);
+ 447              		.loc 1 180 0
+ 448 004a 0021     		movs	r1, #0
+ 449 004c 0120     		movs	r0, #1
+ 450 004e FFF7FEFF 		bl	LCD_Char_Position
+ 451              	.LVL33:
+ 181:main.c        ****     
+ 452              		.loc 1 181 0
+ 453 0052 3D48     		ldr	r0, .L34+24
+ 454 0054 FFF7FEFF 		bl	LCD_Char_PrintString
+ 455              	.LVL34:
+ 456              	.LBB32:
+ 457              	.LBB33:
+ 190:main.c        ****     if (direction == DIR_FORWARD)
+ 458              		.loc 1 190 0
+ 459 0058 0021     		movs	r1, #0
+ 460 005a 0020     		movs	r0, #0
+ 461 005c FFF7FEFF 		bl	LCD_Char_Position
+ 462              	.LVL35:
+ 191:main.c        ****     {
+ 463              		.loc 1 191 0
+ 464 0060 3A4B     		ldr	r3, .L34+28
+ 465 0062 9B78     		ldrb	r3, [r3, #2]
+ 466 0064 012B     		cmp	r3, #1
+ 467 0066 03D1     		bne	.L28
+ 193:main.c        ****     }
+ 468              		.loc 1 193 0
+ 469 0068 3948     		ldr	r0, .L34+32
+ 470 006a FFF7FEFF 		bl	LCD_Char_PrintString
+ 471              	.LVL36:
+ 472 006e 0AE0     		b	.L29
+ 473              	.L28:
+ 195:main.c        ****     {
+ 474              		.loc 1 195 0
+ 475 0070 022B     		cmp	r3, #2
+ 476 0072 03D1     		bne	.L30
+ 197:main.c        ****     }
+ 477              		.loc 1 197 0
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 14
+
+
+ 478 0074 3748     		ldr	r0, .L34+36
+ 479 0076 FFF7FEFF 		bl	LCD_Char_PrintString
+ 480              	.LVL37:
+ 481 007a 04E0     		b	.L29
+ 482              	.L30:
+ 199:main.c        ****     {
+ 483              		.loc 1 199 0
+ 484 007c 002B     		cmp	r3, #0
+ 485 007e 02D1     		bne	.L29
+ 201:main.c        ****     }
+ 486              		.loc 1 201 0
+ 487 0080 3548     		ldr	r0, .L34+40
+ 488 0082 FFF7FEFF 		bl	LCD_Char_PrintString
+ 489              	.LVL38:
+ 490              	.L29:
+ 491              	.LBE33:
+ 492              	.LBE32:
+ 493              	.LBB34:
+ 494              	.LBB35:
+ 207:main.c        ****     LCD_Char_PrintString(NUMBER_CLEAR);
+ 495              		.loc 1 207 0
+ 496 0086 0C21     		movs	r1, #12
+ 497 0088 0020     		movs	r0, #0
+ 498 008a FFF7FEFF 		bl	LCD_Char_Position
+ 499              	.LVL39:
+ 208:main.c        ****     LCD_Char_Position(0, DISPLAY_IDX_PWM_VALUE);
+ 500              		.loc 1 208 0
+ 501 008e 334D     		ldr	r5, .L34+44
+ 502 0090 2800     		movs	r0, r5
+ 503 0092 FFF7FEFF 		bl	LCD_Char_PrintString
+ 504              	.LVL40:
+ 209:main.c        ****     LCD_Char_PrintDecUint16(pwm);
+ 505              		.loc 1 209 0
+ 506 0096 0C21     		movs	r1, #12
+ 507 0098 0020     		movs	r0, #0
+ 508 009a FFF7FEFF 		bl	LCD_Char_Position
+ 509              	.LVL41:
+ 210:main.c        ****     LCD_Char_PutChar('%');
+ 510              		.loc 1 210 0
+ 511 009e 284C     		ldr	r4, .L34+16
+ 512 00a0 207A     		ldrb	r0, [r4, #8]
+ 513 00a2 FFF7FEFF 		bl	LCD_Char_PrintU32Number
+ 514              	.LVL42:
+ 211:main.c        **** }
+ 515              		.loc 1 211 0
+ 516 00a6 2520     		movs	r0, #37
+ 517 00a8 FFF7FEFF 		bl	LCD_Char_PutChar
+ 518              	.LVL43:
+ 519              	.LBE35:
+ 520              	.LBE34:
+ 521              	.LBB36:
+ 522              	.LBB37:
+ 216:main.c        ****     LCD_Char_PrintString(NUMBER_CLEAR);
+ 523              		.loc 1 216 0
+ 524 00ac 0621     		movs	r1, #6
+ 525 00ae 0120     		movs	r0, #1
+ 526 00b0 FFF7FEFF 		bl	LCD_Char_Position
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 15
+
+
+ 527              	.LVL44:
+ 217:main.c        ****     LCD_Char_Position(1, DISPLAY_IDX_SPEED_VALUE);
+ 528              		.loc 1 217 0
+ 529 00b4 2800     		movs	r0, r5
+ 530 00b6 FFF7FEFF 		bl	LCD_Char_PrintString
+ 531              	.LVL45:
+ 218:main.c        ****     LCD_Char_PrintDecUint16(speed);
+ 532              		.loc 1 218 0
+ 533 00ba 0621     		movs	r1, #6
+ 534 00bc 0120     		movs	r0, #1
+ 535 00be FFF7FEFF 		bl	LCD_Char_Position
+ 536              	.LVL46:
+ 537              		.loc 1 219 0
+ 538 00c2 2088     		ldrh	r0, [r4]
+ 539 00c4 FFF7FEFF 		bl	LCD_Char_PrintU32Number
+ 540              	.LVL47:
+ 541              	.L33:
+ 542              	.LBE37:
+ 543              	.LBE36:
+ 544              	.LBE31:
+ 545              	.LBE30:
+ 157:main.c        ****         {
+ 546              		.loc 1 157 0
+ 547 00c8 FFF7FEFF 		bl	QuadDec_GetCounter
+ 548              	.LVL48:
+ 549 00cc 0A28     		cmp	r0, #10
+ 550 00ce 02DD     		ble	.L31
+ 159:main.c        ****         }
+ 551              		.loc 1 159 0
+ 552 00d0 0A20     		movs	r0, #10
+ 553 00d2 FFF7FEFF 		bl	QuadDec_SetCounter
+ 554              	.LVL49:
+ 555              	.L31:
+ 161:main.c        ****         {
+ 556              		.loc 1 161 0
+ 557 00d6 FFF7FEFF 		bl	QuadDec_GetCounter
+ 558              	.LVL50:
+ 559 00da 0128     		cmp	r0, #1
+ 560 00dc 02DC     		bgt	.L32
+ 163:main.c        ****         }
+ 561              		.loc 1 163 0
+ 562 00de 0220     		movs	r0, #2
+ 563 00e0 FFF7FEFF 		bl	QuadDec_SetCounter
+ 564              	.LVL51:
+ 565              	.L32:
+ 165:main.c        ****         PWM_WriteCompare(pwm * PWM_PERIOD_REG / 100);
+ 566              		.loc 1 165 0
+ 567 00e4 FFF7FEFF 		bl	QuadDec_GetCounter
+ 568              	.LVL52:
+ 569 00e8 8300     		lsls	r3, r0, #2
+ 570 00ea C018     		adds	r0, r0, r3
+ 571 00ec 4300     		lsls	r3, r0, #1
+ 572 00ee DBB2     		uxtb	r3, r3
+ 573 00f0 134C     		ldr	r4, .L34+16
+ 574 00f2 2372     		strb	r3, [r4, #8]
+ 166:main.c        ****         displayPWM();
+ 575              		.loc 1 166 0
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 16
+
+
+ 576 00f4 1A4A     		ldr	r2, .L34+48
+ 577 00f6 1068     		ldr	r0, [r2]
+ 578 00f8 5843     		muls	r0, r3
+ 579 00fa 6421     		movs	r1, #100
+ 580 00fc FFF7FEFF 		bl	__aeabi_uidiv
+ 581              	.LVL53:
+ 582 0100 FFF7FEFF 		bl	PWM_WriteCompare
+ 583              	.LVL54:
+ 584              	.LBB38:
+ 585              	.LBB39:
+ 207:main.c        ****     LCD_Char_PrintString(NUMBER_CLEAR);
+ 586              		.loc 1 207 0
+ 587 0104 0C21     		movs	r1, #12
+ 588 0106 0020     		movs	r0, #0
+ 589 0108 FFF7FEFF 		bl	LCD_Char_Position
+ 590              	.LVL55:
+ 208:main.c        ****     LCD_Char_Position(0, DISPLAY_IDX_PWM_VALUE);
+ 591              		.loc 1 208 0
+ 592 010c 1348     		ldr	r0, .L34+44
+ 593 010e FFF7FEFF 		bl	LCD_Char_PrintString
+ 594              	.LVL56:
+ 209:main.c        ****     LCD_Char_PrintDecUint16(pwm);
+ 595              		.loc 1 209 0
+ 596 0112 0C21     		movs	r1, #12
+ 597 0114 0020     		movs	r0, #0
+ 598 0116 FFF7FEFF 		bl	LCD_Char_Position
+ 599              	.LVL57:
+ 210:main.c        ****     LCD_Char_PutChar('%');
+ 600              		.loc 1 210 0
+ 601 011a 207A     		ldrb	r0, [r4, #8]
+ 602 011c FFF7FEFF 		bl	LCD_Char_PrintU32Number
+ 603              	.LVL58:
+ 211:main.c        **** }
+ 604              		.loc 1 211 0
+ 605 0120 2520     		movs	r0, #37
+ 606 0122 FFF7FEFF 		bl	LCD_Char_PutChar
+ 607              	.LVL59:
+ 608              	.LBE39:
+ 609              	.LBE38:
+ 169:main.c        ****     }
+ 610              		.loc 1 169 0
+ 611 0126 3220     		movs	r0, #50
+ 612 0128 FFF7FEFF 		bl	CyDelay
+ 613              	.LVL60:
+ 170:main.c        **** }
+ 614              		.loc 1 170 0
+ 615 012c CCE7     		b	.L33
+ 616              	.L35:
+ 617 012e C046     		.align	2
+ 618              	.L34:
+ 619 0130 00000000 		.word	timer_isr_interrupt
+ 620 0134 00000000 		.word	button_inc_isr_interrupt
+ 621 0138 00000000 		.word	button_dec_isr_interrupt
+ 622 013c 00000000 		.word	button_direction_isr_interrupt
+ 623 0140 00000000 		.word	.LANCHOR0
+ 624 0144 2C000000 		.word	.LC19
+ 625 0148 34000000 		.word	.LC21
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 17
+
+
+ 626 014c 00000000 		.word	.LANCHOR1
+ 627 0150 08000000 		.word	.LC8
+ 628 0154 14000000 		.word	.LC10
+ 629 0158 20000000 		.word	.LC12
+ 630 015c 00000000 		.word	.LC3
+ 631 0160 14012040 		.word	1075839252
+ 632              		.cfi_endproc
+ 633              	.LFE38:
+ 634              		.size	main, .-main
+ 635              		.global	speed
+ 636              		.global	pwm
+ 637              		.global	phaseIdx
+ 638              		.global	direction
+ 639              		.global	counter
+ 640              		.global	motorPhases
+ 641              		.data
+ 642              		.align	2
+ 643              		.set	.LANCHOR0,. + 0
+ 644              		.type	speed, %object
+ 645              		.size	speed, 2
+ 646              	speed:
+ 647 0000 6400     		.short	100
+ 648 0002 0000     		.space	2
+ 649              		.type	motorPhases, %object
+ 650              		.size	motorPhases, 4
+ 651              	motorPhases:
+ 652 0004 08       		.byte	8
+ 653 0005 04       		.byte	4
+ 654 0006 02       		.byte	2
+ 655 0007 01       		.byte	1
+ 656              		.type	pwm, %object
+ 657              		.size	pwm, 1
+ 658              	pwm:
+ 659 0008 64       		.byte	100
+ 660              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 661              		.align	2
+ 662              	.LC3:
+ 663 0000 20202020 		.ascii	"    \000"
+ 663      00
+ 664 0005 000000   		.space	3
+ 665              	.LC8:
+ 666 0008 464F5257 		.ascii	"FORWARD \000"
+ 666      41524420 
+ 666      00
+ 667 0011 000000   		.space	3
+ 668              	.LC10:
+ 669 0014 4241434B 		.ascii	"BACK    \000"
+ 669      20202020 
+ 669      00
+ 670 001d 000000   		.space	3
+ 671              	.LC12:
+ 672 0020 53544F50 		.ascii	"STOP    \000"
+ 672      20202020 
+ 672      00
+ 673 0029 000000   		.space	3
+ 674              	.LC19:
+ 675 002c 50574D3D 		.ascii	"PWM=\000"
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 18
+
+
+ 675      00
+ 676 0031 000000   		.space	3
+ 677              	.LC21:
+ 678 0034 53504545 		.ascii	"SPEED=\000"
+ 678      443D00
+ 679              		.bss
+ 680              		.align	1
+ 681              		.set	.LANCHOR1,. + 0
+ 682              		.type	counter, %object
+ 683              		.size	counter, 2
+ 684              	counter:
+ 685 0000 0000     		.space	2
+ 686              		.type	direction, %object
+ 687              		.size	direction, 1
+ 688              	direction:
+ 689 0002 00       		.space	1
+ 690              		.type	phaseIdx, %object
+ 691              		.size	phaseIdx, 1
+ 692              	phaseIdx:
+ 693 0003 00       		.space	1
+ 694              		.text
+ 695              	.Letext0:
+ 696              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 697              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 698              		.file 4 "Generated_Source\\PSoC4/cytypes.h"
+ 699              		.file 5 "Generated_Source\\PSoC4/Control_Reg.h"
+ 700              		.file 6 "Generated_Source\\PSoC4/Timer_Counter.h"
+ 701              		.file 7 "Generated_Source\\PSoC4/LCD_Char.h"
+ 702              		.file 8 "Generated_Source\\PSoC4/Button_inc.h"
+ 703              		.file 9 "Generated_Source\\PSoC4/Button_dec.h"
+ 704              		.file 10 "Generated_Source\\PSoC4/Button_direction.h"
+ 705              		.file 11 "Generated_Source\\PSoC4/PWM.h"
+ 706              		.file 12 "Generated_Source\\PSoC4/timer_isr.h"
+ 707              		.file 13 "Generated_Source\\PSoC4/button_inc_isr.h"
+ 708              		.file 14 "Generated_Source\\PSoC4/button_dec_isr.h"
+ 709              		.file 15 "Generated_Source\\PSoC4/button_direction_isr.h"
+ 710              		.file 16 "Generated_Source\\PSoC4/QuadDec.h"
+ 711              		.file 17 "Generated_Source\\PSoC4/CyLib.h"
+ 712              		.section	.debug_info,"",%progbits
+ 713              	.Ldebug_info0:
+ 714 0000 89070000 		.4byte	0x789
+ 715 0004 0400     		.2byte	0x4
+ 716 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 717 000a 04       		.byte	0x4
+ 718 000b 01       		.uleb128 0x1
+ 719 000c 58020000 		.4byte	.LASF56
+ 720 0010 0C       		.byte	0xc
+ 721 0011 1A030000 		.4byte	.LASF57
+ 722 0015 5C000000 		.4byte	.LASF58
+ 723 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 724 001d 00000000 		.4byte	0
+ 725 0021 00000000 		.4byte	.Ldebug_line0
+ 726 0025 02       		.uleb128 0x2
+ 727 0026 01       		.byte	0x1
+ 728 0027 06       		.byte	0x6
+ 729 0028 75010000 		.4byte	.LASF0
+ 730 002c 03       		.uleb128 0x3
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 19
+
+
+ 731 002d 06000000 		.4byte	.LASF3
+ 732 0031 02       		.byte	0x2
+ 733 0032 1D       		.byte	0x1d
+ 734 0033 37000000 		.4byte	0x37
+ 735 0037 02       		.uleb128 0x2
+ 736 0038 01       		.byte	0x1
+ 737 0039 08       		.byte	0x8
+ 738 003a 81010000 		.4byte	.LASF1
+ 739 003e 02       		.uleb128 0x2
+ 740 003f 02       		.byte	0x2
+ 741 0040 05       		.byte	0x5
+ 742 0041 D0010000 		.4byte	.LASF2
+ 743 0045 03       		.uleb128 0x3
+ 744 0046 A6010000 		.4byte	.LASF4
+ 745 004a 02       		.byte	0x2
+ 746 004b 2B       		.byte	0x2b
+ 747 004c 50000000 		.4byte	0x50
+ 748 0050 02       		.uleb128 0x2
+ 749 0051 02       		.byte	0x2
+ 750 0052 07       		.byte	0x7
+ 751 0053 62010000 		.4byte	.LASF5
+ 752 0057 02       		.uleb128 0x2
+ 753 0058 04       		.byte	0x4
+ 754 0059 05       		.byte	0x5
+ 755 005a AD030000 		.4byte	.LASF6
+ 756 005e 02       		.uleb128 0x2
+ 757 005f 04       		.byte	0x4
+ 758 0060 07       		.byte	0x7
+ 759 0061 3F010000 		.4byte	.LASF7
+ 760 0065 02       		.uleb128 0x2
+ 761 0066 08       		.byte	0x8
+ 762 0067 05       		.byte	0x5
+ 763 0068 F8020000 		.4byte	.LASF8
+ 764 006c 02       		.uleb128 0x2
+ 765 006d 08       		.byte	0x8
+ 766 006e 07       		.byte	0x7
+ 767 006f 2C020000 		.4byte	.LASF9
+ 768 0073 04       		.uleb128 0x4
+ 769 0074 04       		.byte	0x4
+ 770 0075 05       		.byte	0x5
+ 771 0076 696E7400 		.ascii	"int\000"
+ 772 007a 02       		.uleb128 0x2
+ 773 007b 04       		.byte	0x4
+ 774 007c 07       		.byte	0x7
+ 775 007d 99000000 		.4byte	.LASF10
+ 776 0081 03       		.uleb128 0x3
+ 777 0082 43020000 		.4byte	.LASF11
+ 778 0086 03       		.byte	0x3
+ 779 0087 18       		.byte	0x18
+ 780 0088 2C000000 		.4byte	0x2c
+ 781 008c 03       		.uleb128 0x3
+ 782 008d 51030000 		.4byte	.LASF12
+ 783 0091 03       		.byte	0x3
+ 784 0092 24       		.byte	0x24
+ 785 0093 45000000 		.4byte	0x45
+ 786 0097 05       		.uleb128 0x5
+ 787 0098 B8010000 		.4byte	.LASF13
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 20
+
+
+ 788 009c 04       		.byte	0x4
+ 789 009d F801     		.2byte	0x1f8
+ 790 009f 50000000 		.4byte	0x50
+ 791 00a3 05       		.uleb128 0x5
+ 792 00a4 06020000 		.4byte	.LASF14
+ 793 00a8 04       		.byte	0x4
+ 794 00a9 F901     		.2byte	0x1f9
+ 795 00ab 5E000000 		.4byte	0x5e
+ 796 00af 02       		.uleb128 0x2
+ 797 00b0 04       		.byte	0x4
+ 798 00b1 04       		.byte	0x4
+ 799 00b2 F8000000 		.4byte	.LASF15
+ 800 00b6 02       		.uleb128 0x2
+ 801 00b7 08       		.byte	0x8
+ 802 00b8 04       		.byte	0x4
+ 803 00b9 B1010000 		.4byte	.LASF16
+ 804 00bd 02       		.uleb128 0x2
+ 805 00be 01       		.byte	0x1
+ 806 00bf 08       		.byte	0x8
+ 807 00c0 21030000 		.4byte	.LASF17
+ 808 00c4 05       		.uleb128 0x5
+ 809 00c5 00000000 		.4byte	.LASF18
+ 810 00c9 04       		.byte	0x4
+ 811 00ca A302     		.2byte	0x2a3
+ 812 00cc D0000000 		.4byte	0xd0
+ 813 00d0 06       		.uleb128 0x6
+ 814 00d1 A3000000 		.4byte	0xa3
+ 815 00d5 02       		.uleb128 0x2
+ 816 00d6 08       		.byte	0x8
+ 817 00d7 04       		.byte	0x4
+ 818 00d8 E8030000 		.4byte	.LASF19
+ 819 00dc 02       		.uleb128 0x2
+ 820 00dd 04       		.byte	0x4
+ 821 00de 07       		.byte	0x7
+ 822 00df EF020000 		.4byte	.LASF20
+ 823 00e3 07       		.uleb128 0x7
+ 824 00e4 44000000 		.4byte	.LASF21
+ 825 00e8 01       		.byte	0x1
+ 826 00e9 D6       		.byte	0xd6
+ 827 00ea 03       		.byte	0x3
+ 828 00eb 07       		.uleb128 0x7
+ 829 00ec 51000000 		.4byte	.LASF22
+ 830 00f0 01       		.byte	0x1
+ 831 00f1 CD       		.byte	0xcd
+ 832 00f2 03       		.byte	0x3
+ 833 00f3 07       		.uleb128 0x7
+ 834 00f4 51010000 		.4byte	.LASF23
+ 835 00f8 01       		.byte	0x1
+ 836 00f9 BC       		.byte	0xbc
+ 837 00fa 03       		.byte	0x3
+ 838 00fb 07       		.uleb128 0x7
+ 839 00fc 4B020000 		.4byte	.LASF24
+ 840 0100 01       		.byte	0x1
+ 841 0101 AD       		.byte	0xad
+ 842 0102 03       		.byte	0x3
+ 843 0103 08       		.uleb128 0x8
+ 844 0104 D8000000 		.4byte	.LASF25
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 21
+
+
+ 845 0108 01       		.byte	0x1
+ 846 0109 38       		.byte	0x38
+ 847 010a 00000000 		.4byte	.LFB34
+ 848 010e AC000000 		.4byte	.LFE34-.LFB34
+ 849 0112 01       		.uleb128 0x1
+ 850 0113 9C       		.byte	0x9c
+ 851 0114 60010000 		.4byte	0x160
+ 852 0118 09       		.uleb128 0x9
+ 853 0119 50000000 		.4byte	.LVL1
+ 854 011d 96060000 		.4byte	0x696
+ 855 0121 09       		.uleb128 0x9
+ 856 0122 78000000 		.4byte	.LVL2
+ 857 0126 96060000 		.4byte	0x696
+ 858 012a 0A       		.uleb128 0xa
+ 859 012b 8A000000 		.4byte	.LVL3
+ 860 012f 96060000 		.4byte	0x696
+ 861 0133 3D010000 		.4byte	0x13d
+ 862 0137 0B       		.uleb128 0xb
+ 863 0138 01       		.uleb128 0x1
+ 864 0139 50       		.byte	0x50
+ 865 013a 01       		.uleb128 0x1
+ 866 013b 30       		.byte	0x30
+ 867 013c 00       		.byte	0
+ 868 013d 0A       		.uleb128 0xa
+ 869 013e 9A000000 		.4byte	.LVL4
+ 870 0142 96060000 		.4byte	0x696
+ 871 0146 50010000 		.4byte	0x150
+ 872 014a 0B       		.uleb128 0xb
+ 873 014b 01       		.uleb128 0x1
+ 874 014c 50       		.byte	0x50
+ 875 014d 01       		.uleb128 0x1
+ 876 014e 30       		.byte	0x30
+ 877 014f 00       		.byte	0
+ 878 0150 0C       		.uleb128 0xc
+ 879 0151 A0000000 		.4byte	.LVL5
+ 880 0155 A1060000 		.4byte	0x6a1
+ 881 0159 0B       		.uleb128 0xb
+ 882 015a 01       		.uleb128 0x1
+ 883 015b 50       		.byte	0x50
+ 884 015c 01       		.uleb128 0x1
+ 885 015d 31       		.byte	0x31
+ 886 015e 00       		.byte	0
+ 887 015f 00       		.byte	0
+ 888 0160 0D       		.uleb128 0xd
+ 889 0161 F4030000 		.4byte	.LASF26
+ 890 0165 01       		.byte	0x1
+ 891 0166 65       		.byte	0x65
+ 892 0167 00000000 		.4byte	.LFB35
+ 893 016b 44000000 		.4byte	.LFE35-.LFB35
+ 894 016f 01       		.uleb128 0x1
+ 895 0170 9C       		.byte	0x9c
+ 896 0171 E3010000 		.4byte	0x1e3
+ 897 0175 0E       		.uleb128 0xe
+ 898 0176 E3000000 		.4byte	0xe3
+ 899 017a 16000000 		.4byte	.LBB24
+ 900 017e 1E000000 		.4byte	.LBE24-.LBB24
+ 901 0182 01       		.byte	0x1
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 22
+
+
+ 902 0183 6C       		.byte	0x6c
+ 903 0184 D9010000 		.4byte	0x1d9
+ 904 0188 0A       		.uleb128 0xa
+ 905 0189 1E000000 		.4byte	.LVL6
+ 906 018d AD060000 		.4byte	0x6ad
+ 907 0191 A0010000 		.4byte	0x1a0
+ 908 0195 0B       		.uleb128 0xb
+ 909 0196 01       		.uleb128 0x1
+ 910 0197 50       		.byte	0x50
+ 911 0198 01       		.uleb128 0x1
+ 912 0199 31       		.byte	0x31
+ 913 019a 0B       		.uleb128 0xb
+ 914 019b 01       		.uleb128 0x1
+ 915 019c 51       		.byte	0x51
+ 916 019d 01       		.uleb128 0x1
+ 917 019e 36       		.byte	0x36
+ 918 019f 00       		.byte	0
+ 919 01a0 0A       		.uleb128 0xa
+ 920 01a1 24000000 		.4byte	.LVL7
+ 921 01a5 B8060000 		.4byte	0x6b8
+ 922 01a9 B7010000 		.4byte	0x1b7
+ 923 01ad 0B       		.uleb128 0xb
+ 924 01ae 01       		.uleb128 0x1
+ 925 01af 50       		.byte	0x50
+ 926 01b0 05       		.uleb128 0x5
+ 927 01b1 03       		.byte	0x3
+ 928 01b2 00000000 		.4byte	.LC3
+ 929 01b6 00       		.byte	0
+ 930 01b7 0A       		.uleb128 0xa
+ 931 01b8 2C000000 		.4byte	.LVL8
+ 932 01bc AD060000 		.4byte	0x6ad
+ 933 01c0 CF010000 		.4byte	0x1cf
+ 934 01c4 0B       		.uleb128 0xb
+ 935 01c5 01       		.uleb128 0x1
+ 936 01c6 50       		.byte	0x50
+ 937 01c7 01       		.uleb128 0x1
+ 938 01c8 31       		.byte	0x31
+ 939 01c9 0B       		.uleb128 0xb
+ 940 01ca 01       		.uleb128 0x1
+ 941 01cb 51       		.byte	0x51
+ 942 01cc 01       		.uleb128 0x1
+ 943 01cd 36       		.byte	0x36
+ 944 01ce 00       		.byte	0
+ 945 01cf 09       		.uleb128 0x9
+ 946 01d0 34000000 		.4byte	.LVL9
+ 947 01d4 C3060000 		.4byte	0x6c3
+ 948 01d8 00       		.byte	0
+ 949 01d9 09       		.uleb128 0x9
+ 950 01da 38000000 		.4byte	.LVL10
+ 951 01de CE060000 		.4byte	0x6ce
+ 952 01e2 00       		.byte	0
+ 953 01e3 0D       		.uleb128 0xd
+ 954 01e4 ED010000 		.4byte	.LASF27
+ 955 01e8 01       		.byte	0x1
+ 956 01e9 71       		.byte	0x71
+ 957 01ea 00000000 		.4byte	.LFB36
+ 958 01ee 44000000 		.4byte	.LFE36-.LFB36
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 23
+
+
+ 959 01f2 01       		.uleb128 0x1
+ 960 01f3 9C       		.byte	0x9c
+ 961 01f4 66020000 		.4byte	0x266
+ 962 01f8 0E       		.uleb128 0xe
+ 963 01f9 E3000000 		.4byte	0xe3
+ 964 01fd 16000000 		.4byte	.LBB26
+ 965 0201 1E000000 		.4byte	.LBE26-.LBB26
+ 966 0205 01       		.byte	0x1
+ 967 0206 78       		.byte	0x78
+ 968 0207 5C020000 		.4byte	0x25c
+ 969 020b 0A       		.uleb128 0xa
+ 970 020c 1E000000 		.4byte	.LVL11
+ 971 0210 AD060000 		.4byte	0x6ad
+ 972 0214 23020000 		.4byte	0x223
+ 973 0218 0B       		.uleb128 0xb
+ 974 0219 01       		.uleb128 0x1
+ 975 021a 50       		.byte	0x50
+ 976 021b 01       		.uleb128 0x1
+ 977 021c 31       		.byte	0x31
+ 978 021d 0B       		.uleb128 0xb
+ 979 021e 01       		.uleb128 0x1
+ 980 021f 51       		.byte	0x51
+ 981 0220 01       		.uleb128 0x1
+ 982 0221 36       		.byte	0x36
+ 983 0222 00       		.byte	0
+ 984 0223 0A       		.uleb128 0xa
+ 985 0224 24000000 		.4byte	.LVL12
+ 986 0228 B8060000 		.4byte	0x6b8
+ 987 022c 3A020000 		.4byte	0x23a
+ 988 0230 0B       		.uleb128 0xb
+ 989 0231 01       		.uleb128 0x1
+ 990 0232 50       		.byte	0x50
+ 991 0233 05       		.uleb128 0x5
+ 992 0234 03       		.byte	0x3
+ 993 0235 00000000 		.4byte	.LC3
+ 994 0239 00       		.byte	0
+ 995 023a 0A       		.uleb128 0xa
+ 996 023b 2C000000 		.4byte	.LVL13
+ 997 023f AD060000 		.4byte	0x6ad
+ 998 0243 52020000 		.4byte	0x252
+ 999 0247 0B       		.uleb128 0xb
+ 1000 0248 01       		.uleb128 0x1
+ 1001 0249 50       		.byte	0x50
+ 1002 024a 01       		.uleb128 0x1
+ 1003 024b 31       		.byte	0x31
+ 1004 024c 0B       		.uleb128 0xb
+ 1005 024d 01       		.uleb128 0x1
+ 1006 024e 51       		.byte	0x51
+ 1007 024f 01       		.uleb128 0x1
+ 1008 0250 36       		.byte	0x36
+ 1009 0251 00       		.byte	0
+ 1010 0252 09       		.uleb128 0x9
+ 1011 0253 34000000 		.4byte	.LVL14
+ 1012 0257 C3060000 		.4byte	0x6c3
+ 1013 025b 00       		.byte	0
+ 1014 025c 09       		.uleb128 0x9
+ 1015 025d 38000000 		.4byte	.LVL15
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 24
+
+
+ 1016 0261 D9060000 		.4byte	0x6d9
+ 1017 0265 00       		.byte	0
+ 1018 0266 0D       		.uleb128 0xd
+ 1019 0267 5A030000 		.4byte	.LASF28
+ 1020 026b 01       		.byte	0x1
+ 1021 026c 7D       		.byte	0x7d
+ 1022 026d 00000000 		.4byte	.LFB37
+ 1023 0271 5C000000 		.4byte	.LFE37-.LFB37
+ 1024 0275 01       		.uleb128 0x1
+ 1025 0276 9C       		.byte	0x9c
+ 1026 0277 F2020000 		.4byte	0x2f2
+ 1027 027b 0E       		.uleb128 0xe
+ 1028 027c F3000000 		.4byte	0xf3
+ 1029 0280 16000000 		.4byte	.LBB28
+ 1030 0284 2E000000 		.4byte	.LBE28-.LBB28
+ 1031 0288 01       		.byte	0x1
+ 1032 0289 84       		.byte	0x84
+ 1033 028a E8020000 		.4byte	0x2e8
+ 1034 028e 0A       		.uleb128 0xa
+ 1035 028f 1E000000 		.4byte	.LVL16
+ 1036 0293 AD060000 		.4byte	0x6ad
+ 1037 0297 A6020000 		.4byte	0x2a6
+ 1038 029b 0B       		.uleb128 0xb
+ 1039 029c 01       		.uleb128 0x1
+ 1040 029d 50       		.byte	0x50
+ 1041 029e 01       		.uleb128 0x1
+ 1042 029f 30       		.byte	0x30
+ 1043 02a0 0B       		.uleb128 0xb
+ 1044 02a1 01       		.uleb128 0x1
+ 1045 02a2 51       		.byte	0x51
+ 1046 02a3 01       		.uleb128 0x1
+ 1047 02a4 30       		.byte	0x30
+ 1048 02a5 00       		.byte	0
+ 1049 02a6 0A       		.uleb128 0xa
+ 1050 02a7 2C000000 		.4byte	.LVL17
+ 1051 02ab B8060000 		.4byte	0x6b8
+ 1052 02af BD020000 		.4byte	0x2bd
+ 1053 02b3 0B       		.uleb128 0xb
+ 1054 02b4 01       		.uleb128 0x1
+ 1055 02b5 50       		.byte	0x50
+ 1056 02b6 05       		.uleb128 0x5
+ 1057 02b7 03       		.byte	0x3
+ 1058 02b8 08000000 		.4byte	.LC8
+ 1059 02bc 00       		.byte	0
+ 1060 02bd 0A       		.uleb128 0xa
+ 1061 02be 38000000 		.4byte	.LVL18
+ 1062 02c2 B8060000 		.4byte	0x6b8
+ 1063 02c6 D4020000 		.4byte	0x2d4
+ 1064 02ca 0B       		.uleb128 0xb
+ 1065 02cb 01       		.uleb128 0x1
+ 1066 02cc 50       		.byte	0x50
+ 1067 02cd 05       		.uleb128 0x5
+ 1068 02ce 03       		.byte	0x3
+ 1069 02cf 14000000 		.4byte	.LC10
+ 1070 02d3 00       		.byte	0
+ 1071 02d4 0C       		.uleb128 0xc
+ 1072 02d5 44000000 		.4byte	.LVL19
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 25
+
+
+ 1073 02d9 B8060000 		.4byte	0x6b8
+ 1074 02dd 0B       		.uleb128 0xb
+ 1075 02de 01       		.uleb128 0x1
+ 1076 02df 50       		.byte	0x50
+ 1077 02e0 05       		.uleb128 0x5
+ 1078 02e1 03       		.byte	0x3
+ 1079 02e2 20000000 		.4byte	.LC12
+ 1080 02e6 00       		.byte	0
+ 1081 02e7 00       		.byte	0
+ 1082 02e8 09       		.uleb128 0x9
+ 1083 02e9 48000000 		.4byte	.LVL20
+ 1084 02ed E4060000 		.4byte	0x6e4
+ 1085 02f1 00       		.byte	0
+ 1086 02f2 0F       		.uleb128 0xf
+ 1087 02f3 0D020000 		.4byte	.LASF59
+ 1088 02f7 01       		.byte	0x1
+ 1089 02f8 89       		.byte	0x89
+ 1090 02f9 73000000 		.4byte	0x73
+ 1091 02fd 00000000 		.4byte	.LFB38
+ 1092 0301 64010000 		.4byte	.LFE38-.LFB38
+ 1093 0305 01       		.uleb128 0x1
+ 1094 0306 9C       		.byte	0x9c
+ 1095 0307 20060000 		.4byte	0x620
+ 1096 030b 0E       		.uleb128 0xe
+ 1097 030c FB000000 		.4byte	0xfb
+ 1098 0310 32000000 		.4byte	.LBB30
+ 1099 0314 96000000 		.4byte	.LBE30-.LBB30
+ 1100 0318 01       		.byte	0x1
+ 1101 0319 97       		.byte	0x97
+ 1102 031a D4040000 		.4byte	0x4d4
+ 1103 031e 0E       		.uleb128 0xe
+ 1104 031f F3000000 		.4byte	0xf3
+ 1105 0323 58000000 		.4byte	.LBB32
+ 1106 0327 2E000000 		.4byte	.LBE32-.LBB32
+ 1107 032b 01       		.byte	0x1
+ 1108 032c B7       		.byte	0xb7
+ 1109 032d 8B030000 		.4byte	0x38b
+ 1110 0331 0A       		.uleb128 0xa
+ 1111 0332 60000000 		.4byte	.LVL35
+ 1112 0336 AD060000 		.4byte	0x6ad
+ 1113 033a 49030000 		.4byte	0x349
+ 1114 033e 0B       		.uleb128 0xb
+ 1115 033f 01       		.uleb128 0x1
+ 1116 0340 50       		.byte	0x50
+ 1117 0341 01       		.uleb128 0x1
+ 1118 0342 30       		.byte	0x30
+ 1119 0343 0B       		.uleb128 0xb
+ 1120 0344 01       		.uleb128 0x1
+ 1121 0345 51       		.byte	0x51
+ 1122 0346 01       		.uleb128 0x1
+ 1123 0347 30       		.byte	0x30
+ 1124 0348 00       		.byte	0
+ 1125 0349 0A       		.uleb128 0xa
+ 1126 034a 6E000000 		.4byte	.LVL36
+ 1127 034e B8060000 		.4byte	0x6b8
+ 1128 0352 60030000 		.4byte	0x360
+ 1129 0356 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 26
+
+
+ 1130 0357 01       		.uleb128 0x1
+ 1131 0358 50       		.byte	0x50
+ 1132 0359 05       		.uleb128 0x5
+ 1133 035a 03       		.byte	0x3
+ 1134 035b 08000000 		.4byte	.LC8
+ 1135 035f 00       		.byte	0
+ 1136 0360 0A       		.uleb128 0xa
+ 1137 0361 7A000000 		.4byte	.LVL37
+ 1138 0365 B8060000 		.4byte	0x6b8
+ 1139 0369 77030000 		.4byte	0x377
+ 1140 036d 0B       		.uleb128 0xb
+ 1141 036e 01       		.uleb128 0x1
+ 1142 036f 50       		.byte	0x50
+ 1143 0370 05       		.uleb128 0x5
+ 1144 0371 03       		.byte	0x3
+ 1145 0372 14000000 		.4byte	.LC10
+ 1146 0376 00       		.byte	0
+ 1147 0377 0C       		.uleb128 0xc
+ 1148 0378 86000000 		.4byte	.LVL38
+ 1149 037c B8060000 		.4byte	0x6b8
+ 1150 0380 0B       		.uleb128 0xb
+ 1151 0381 01       		.uleb128 0x1
+ 1152 0382 50       		.byte	0x50
+ 1153 0383 05       		.uleb128 0x5
+ 1154 0384 03       		.byte	0x3
+ 1155 0385 20000000 		.4byte	.LC12
+ 1156 0389 00       		.byte	0
+ 1157 038a 00       		.byte	0
+ 1158 038b 0E       		.uleb128 0xe
+ 1159 038c EB000000 		.4byte	0xeb
+ 1160 0390 86000000 		.4byte	.LBB34
+ 1161 0394 26000000 		.4byte	.LBE34-.LBB34
+ 1162 0398 01       		.byte	0x1
+ 1163 0399 B8       		.byte	0xb8
+ 1164 039a FC030000 		.4byte	0x3fc
+ 1165 039e 0A       		.uleb128 0xa
+ 1166 039f 8E000000 		.4byte	.LVL39
+ 1167 03a3 AD060000 		.4byte	0x6ad
+ 1168 03a7 B6030000 		.4byte	0x3b6
+ 1169 03ab 0B       		.uleb128 0xb
+ 1170 03ac 01       		.uleb128 0x1
+ 1171 03ad 50       		.byte	0x50
+ 1172 03ae 01       		.uleb128 0x1
+ 1173 03af 30       		.byte	0x30
+ 1174 03b0 0B       		.uleb128 0xb
+ 1175 03b1 01       		.uleb128 0x1
+ 1176 03b2 51       		.byte	0x51
+ 1177 03b3 01       		.uleb128 0x1
+ 1178 03b4 3C       		.byte	0x3c
+ 1179 03b5 00       		.byte	0
+ 1180 03b6 0A       		.uleb128 0xa
+ 1181 03b7 96000000 		.4byte	.LVL40
+ 1182 03bb B8060000 		.4byte	0x6b8
+ 1183 03bf CA030000 		.4byte	0x3ca
+ 1184 03c3 0B       		.uleb128 0xb
+ 1185 03c4 01       		.uleb128 0x1
+ 1186 03c5 50       		.byte	0x50
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 27
+
+
+ 1187 03c6 02       		.uleb128 0x2
+ 1188 03c7 75       		.byte	0x75
+ 1189 03c8 00       		.sleb128 0
+ 1190 03c9 00       		.byte	0
+ 1191 03ca 0A       		.uleb128 0xa
+ 1192 03cb 9E000000 		.4byte	.LVL41
+ 1193 03cf AD060000 		.4byte	0x6ad
+ 1194 03d3 E2030000 		.4byte	0x3e2
+ 1195 03d7 0B       		.uleb128 0xb
+ 1196 03d8 01       		.uleb128 0x1
+ 1197 03d9 50       		.byte	0x50
+ 1198 03da 01       		.uleb128 0x1
+ 1199 03db 30       		.byte	0x30
+ 1200 03dc 0B       		.uleb128 0xb
+ 1201 03dd 01       		.uleb128 0x1
+ 1202 03de 51       		.byte	0x51
+ 1203 03df 01       		.uleb128 0x1
+ 1204 03e0 3C       		.byte	0x3c
+ 1205 03e1 00       		.byte	0
+ 1206 03e2 09       		.uleb128 0x9
+ 1207 03e3 A6000000 		.4byte	.LVL42
+ 1208 03e7 C3060000 		.4byte	0x6c3
+ 1209 03eb 0C       		.uleb128 0xc
+ 1210 03ec AC000000 		.4byte	.LVL43
+ 1211 03f0 EF060000 		.4byte	0x6ef
+ 1212 03f4 0B       		.uleb128 0xb
+ 1213 03f5 01       		.uleb128 0x1
+ 1214 03f6 50       		.byte	0x50
+ 1215 03f7 02       		.uleb128 0x2
+ 1216 03f8 08       		.byte	0x8
+ 1217 03f9 25       		.byte	0x25
+ 1218 03fa 00       		.byte	0
+ 1219 03fb 00       		.byte	0
+ 1220 03fc 0E       		.uleb128 0xe
+ 1221 03fd E3000000 		.4byte	0xe3
+ 1222 0401 AC000000 		.4byte	.LBB36
+ 1223 0405 1C000000 		.4byte	.LBE36-.LBB36
+ 1224 0409 01       		.byte	0x1
+ 1225 040a B9       		.byte	0xb9
+ 1226 040b 5D040000 		.4byte	0x45d
+ 1227 040f 0A       		.uleb128 0xa
+ 1228 0410 B4000000 		.4byte	.LVL44
+ 1229 0414 AD060000 		.4byte	0x6ad
+ 1230 0418 27040000 		.4byte	0x427
+ 1231 041c 0B       		.uleb128 0xb
+ 1232 041d 01       		.uleb128 0x1
+ 1233 041e 50       		.byte	0x50
+ 1234 041f 01       		.uleb128 0x1
+ 1235 0420 31       		.byte	0x31
+ 1236 0421 0B       		.uleb128 0xb
+ 1237 0422 01       		.uleb128 0x1
+ 1238 0423 51       		.byte	0x51
+ 1239 0424 01       		.uleb128 0x1
+ 1240 0425 36       		.byte	0x36
+ 1241 0426 00       		.byte	0
+ 1242 0427 0A       		.uleb128 0xa
+ 1243 0428 BA000000 		.4byte	.LVL45
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 28
+
+
+ 1244 042c B8060000 		.4byte	0x6b8
+ 1245 0430 3B040000 		.4byte	0x43b
+ 1246 0434 0B       		.uleb128 0xb
+ 1247 0435 01       		.uleb128 0x1
+ 1248 0436 50       		.byte	0x50
+ 1249 0437 02       		.uleb128 0x2
+ 1250 0438 75       		.byte	0x75
+ 1251 0439 00       		.sleb128 0
+ 1252 043a 00       		.byte	0
+ 1253 043b 0A       		.uleb128 0xa
+ 1254 043c C2000000 		.4byte	.LVL46
+ 1255 0440 AD060000 		.4byte	0x6ad
+ 1256 0444 53040000 		.4byte	0x453
+ 1257 0448 0B       		.uleb128 0xb
+ 1258 0449 01       		.uleb128 0x1
+ 1259 044a 50       		.byte	0x50
+ 1260 044b 01       		.uleb128 0x1
+ 1261 044c 31       		.byte	0x31
+ 1262 044d 0B       		.uleb128 0xb
+ 1263 044e 01       		.uleb128 0x1
+ 1264 044f 51       		.byte	0x51
+ 1265 0450 01       		.uleb128 0x1
+ 1266 0451 36       		.byte	0x36
+ 1267 0452 00       		.byte	0
+ 1268 0453 09       		.uleb128 0x9
+ 1269 0454 C8000000 		.4byte	.LVL47
+ 1270 0458 C3060000 		.4byte	0x6c3
+ 1271 045c 00       		.byte	0
+ 1272 045d 09       		.uleb128 0x9
+ 1273 045e 36000000 		.4byte	.LVL29
+ 1274 0462 FA060000 		.4byte	0x6fa
+ 1275 0466 0A       		.uleb128 0xa
+ 1276 0467 3C000000 		.4byte	.LVL30
+ 1277 046b 05070000 		.4byte	0x705
+ 1278 046f 79040000 		.4byte	0x479
+ 1279 0473 0B       		.uleb128 0xb
+ 1280 0474 01       		.uleb128 0x1
+ 1281 0475 50       		.byte	0x50
+ 1282 0476 01       		.uleb128 0x1
+ 1283 0477 31       		.byte	0x31
+ 1284 0478 00       		.byte	0
+ 1285 0479 0A       		.uleb128 0xa
+ 1286 047a 44000000 		.4byte	.LVL31
+ 1287 047e AD060000 		.4byte	0x6ad
+ 1288 0482 91040000 		.4byte	0x491
+ 1289 0486 0B       		.uleb128 0xb
+ 1290 0487 01       		.uleb128 0x1
+ 1291 0488 50       		.byte	0x50
+ 1292 0489 01       		.uleb128 0x1
+ 1293 048a 30       		.byte	0x30
+ 1294 048b 0B       		.uleb128 0xb
+ 1295 048c 01       		.uleb128 0x1
+ 1296 048d 51       		.byte	0x51
+ 1297 048e 01       		.uleb128 0x1
+ 1298 048f 38       		.byte	0x38
+ 1299 0490 00       		.byte	0
+ 1300 0491 0A       		.uleb128 0xa
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 29
+
+
+ 1301 0492 4A000000 		.4byte	.LVL32
+ 1302 0496 B8060000 		.4byte	0x6b8
+ 1303 049a A8040000 		.4byte	0x4a8
+ 1304 049e 0B       		.uleb128 0xb
+ 1305 049f 01       		.uleb128 0x1
+ 1306 04a0 50       		.byte	0x50
+ 1307 04a1 05       		.uleb128 0x5
+ 1308 04a2 03       		.byte	0x3
+ 1309 04a3 2C000000 		.4byte	.LC19
+ 1310 04a7 00       		.byte	0
+ 1311 04a8 0A       		.uleb128 0xa
+ 1312 04a9 52000000 		.4byte	.LVL33
+ 1313 04ad AD060000 		.4byte	0x6ad
+ 1314 04b1 C0040000 		.4byte	0x4c0
+ 1315 04b5 0B       		.uleb128 0xb
+ 1316 04b6 01       		.uleb128 0x1
+ 1317 04b7 50       		.byte	0x50
+ 1318 04b8 01       		.uleb128 0x1
+ 1319 04b9 31       		.byte	0x31
+ 1320 04ba 0B       		.uleb128 0xb
+ 1321 04bb 01       		.uleb128 0x1
+ 1322 04bc 51       		.byte	0x51
+ 1323 04bd 01       		.uleb128 0x1
+ 1324 04be 30       		.byte	0x30
+ 1325 04bf 00       		.byte	0
+ 1326 04c0 0C       		.uleb128 0xc
+ 1327 04c1 58000000 		.4byte	.LVL34
+ 1328 04c5 B8060000 		.4byte	0x6b8
+ 1329 04c9 0B       		.uleb128 0xb
+ 1330 04ca 01       		.uleb128 0x1
+ 1331 04cb 50       		.byte	0x50
+ 1332 04cc 05       		.uleb128 0x5
+ 1333 04cd 03       		.byte	0x3
+ 1334 04ce 34000000 		.4byte	.LC21
+ 1335 04d2 00       		.byte	0
+ 1336 04d3 00       		.byte	0
+ 1337 04d4 0E       		.uleb128 0xe
+ 1338 04d5 EB000000 		.4byte	0xeb
+ 1339 04d9 04010000 		.4byte	.LBB38
+ 1340 04dd 22000000 		.4byte	.LBE38-.LBB38
+ 1341 04e1 01       		.byte	0x1
+ 1342 04e2 A7       		.byte	0xa7
+ 1343 04e3 45050000 		.4byte	0x545
+ 1344 04e7 0A       		.uleb128 0xa
+ 1345 04e8 0C010000 		.4byte	.LVL55
+ 1346 04ec AD060000 		.4byte	0x6ad
+ 1347 04f0 FF040000 		.4byte	0x4ff
+ 1348 04f4 0B       		.uleb128 0xb
+ 1349 04f5 01       		.uleb128 0x1
+ 1350 04f6 50       		.byte	0x50
+ 1351 04f7 01       		.uleb128 0x1
+ 1352 04f8 30       		.byte	0x30
+ 1353 04f9 0B       		.uleb128 0xb
+ 1354 04fa 01       		.uleb128 0x1
+ 1355 04fb 51       		.byte	0x51
+ 1356 04fc 01       		.uleb128 0x1
+ 1357 04fd 3C       		.byte	0x3c
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 30
+
+
+ 1358 04fe 00       		.byte	0
+ 1359 04ff 0A       		.uleb128 0xa
+ 1360 0500 12010000 		.4byte	.LVL56
+ 1361 0504 B8060000 		.4byte	0x6b8
+ 1362 0508 13050000 		.4byte	0x513
+ 1363 050c 0B       		.uleb128 0xb
+ 1364 050d 01       		.uleb128 0x1
+ 1365 050e 50       		.byte	0x50
+ 1366 050f 02       		.uleb128 0x2
+ 1367 0510 75       		.byte	0x75
+ 1368 0511 00       		.sleb128 0
+ 1369 0512 00       		.byte	0
+ 1370 0513 0A       		.uleb128 0xa
+ 1371 0514 1A010000 		.4byte	.LVL57
+ 1372 0518 AD060000 		.4byte	0x6ad
+ 1373 051c 2B050000 		.4byte	0x52b
+ 1374 0520 0B       		.uleb128 0xb
+ 1375 0521 01       		.uleb128 0x1
+ 1376 0522 50       		.byte	0x50
+ 1377 0523 01       		.uleb128 0x1
+ 1378 0524 30       		.byte	0x30
+ 1379 0525 0B       		.uleb128 0xb
+ 1380 0526 01       		.uleb128 0x1
+ 1381 0527 51       		.byte	0x51
+ 1382 0528 01       		.uleb128 0x1
+ 1383 0529 3C       		.byte	0x3c
+ 1384 052a 00       		.byte	0
+ 1385 052b 09       		.uleb128 0x9
+ 1386 052c 20010000 		.4byte	.LVL58
+ 1387 0530 C3060000 		.4byte	0x6c3
+ 1388 0534 0C       		.uleb128 0xc
+ 1389 0535 26010000 		.4byte	.LVL59
+ 1390 0539 EF060000 		.4byte	0x6ef
+ 1391 053d 0B       		.uleb128 0xb
+ 1392 053e 01       		.uleb128 0x1
+ 1393 053f 50       		.byte	0x50
+ 1394 0540 02       		.uleb128 0x2
+ 1395 0541 08       		.byte	0x8
+ 1396 0542 25       		.byte	0x25
+ 1397 0543 00       		.byte	0
+ 1398 0544 00       		.byte	0
+ 1399 0545 09       		.uleb128 0x9
+ 1400 0546 08000000 		.4byte	.LVL21
+ 1401 054a 10070000 		.4byte	0x710
+ 1402 054e 09       		.uleb128 0x9
+ 1403 054f 0C000000 		.4byte	.LVL22
+ 1404 0553 1C070000 		.4byte	0x71c
+ 1405 0557 0A       		.uleb128 0xa
+ 1406 0558 12000000 		.4byte	.LVL23
+ 1407 055c 28070000 		.4byte	0x728
+ 1408 0560 6E050000 		.4byte	0x56e
+ 1409 0564 0B       		.uleb128 0xb
+ 1410 0565 01       		.uleb128 0x1
+ 1411 0566 50       		.byte	0x50
+ 1412 0567 05       		.uleb128 0x5
+ 1413 0568 03       		.byte	0x3
+ 1414 0569 00000000 		.4byte	timer_isr_interrupt
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 31
+
+
+ 1415 056d 00       		.byte	0
+ 1416 056e 0A       		.uleb128 0xa
+ 1417 056f 18000000 		.4byte	.LVL24
+ 1418 0573 33070000 		.4byte	0x733
+ 1419 0577 85050000 		.4byte	0x585
+ 1420 057b 0B       		.uleb128 0xb
+ 1421 057c 01       		.uleb128 0x1
+ 1422 057d 50       		.byte	0x50
+ 1423 057e 05       		.uleb128 0x5
+ 1424 057f 03       		.byte	0x3
+ 1425 0580 00000000 		.4byte	button_inc_isr_interrupt
+ 1426 0584 00       		.byte	0
+ 1427 0585 0A       		.uleb128 0xa
+ 1428 0586 1E000000 		.4byte	.LVL25
+ 1429 058a 3E070000 		.4byte	0x73e
+ 1430 058e 9C050000 		.4byte	0x59c
+ 1431 0592 0B       		.uleb128 0xb
+ 1432 0593 01       		.uleb128 0x1
+ 1433 0594 50       		.byte	0x50
+ 1434 0595 05       		.uleb128 0x5
+ 1435 0596 03       		.byte	0x3
+ 1436 0597 00000000 		.4byte	button_dec_isr_interrupt
+ 1437 059b 00       		.byte	0
+ 1438 059c 0A       		.uleb128 0xa
+ 1439 059d 24000000 		.4byte	.LVL26
+ 1440 05a1 49070000 		.4byte	0x749
+ 1441 05a5 B3050000 		.4byte	0x5b3
+ 1442 05a9 0B       		.uleb128 0xb
+ 1443 05aa 01       		.uleb128 0x1
+ 1444 05ab 50       		.byte	0x50
+ 1445 05ac 05       		.uleb128 0x5
+ 1446 05ad 03       		.byte	0x3
+ 1447 05ae 00000000 		.4byte	button_direction_isr_interrupt
+ 1448 05b2 00       		.byte	0
+ 1449 05b3 09       		.uleb128 0x9
+ 1450 05b4 28000000 		.4byte	.LVL27
+ 1451 05b8 54070000 		.4byte	0x754
+ 1452 05bc 09       		.uleb128 0x9
+ 1453 05bd 32000000 		.4byte	.LVL28
+ 1454 05c1 5F070000 		.4byte	0x75f
+ 1455 05c5 09       		.uleb128 0x9
+ 1456 05c6 CC000000 		.4byte	.LVL48
+ 1457 05ca 6A070000 		.4byte	0x76a
+ 1458 05ce 0A       		.uleb128 0xa
+ 1459 05cf D6000000 		.4byte	.LVL49
+ 1460 05d3 5F070000 		.4byte	0x75f
+ 1461 05d7 E1050000 		.4byte	0x5e1
+ 1462 05db 0B       		.uleb128 0xb
+ 1463 05dc 01       		.uleb128 0x1
+ 1464 05dd 50       		.byte	0x50
+ 1465 05de 01       		.uleb128 0x1
+ 1466 05df 3A       		.byte	0x3a
+ 1467 05e0 00       		.byte	0
+ 1468 05e1 09       		.uleb128 0x9
+ 1469 05e2 DA000000 		.4byte	.LVL50
+ 1470 05e6 6A070000 		.4byte	0x76a
+ 1471 05ea 0A       		.uleb128 0xa
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 32
+
+
+ 1472 05eb E4000000 		.4byte	.LVL51
+ 1473 05ef 5F070000 		.4byte	0x75f
+ 1474 05f3 FD050000 		.4byte	0x5fd
+ 1475 05f7 0B       		.uleb128 0xb
+ 1476 05f8 01       		.uleb128 0x1
+ 1477 05f9 50       		.byte	0x50
+ 1478 05fa 01       		.uleb128 0x1
+ 1479 05fb 32       		.byte	0x32
+ 1480 05fc 00       		.byte	0
+ 1481 05fd 09       		.uleb128 0x9
+ 1482 05fe E8000000 		.4byte	.LVL52
+ 1483 0602 6A070000 		.4byte	0x76a
+ 1484 0606 09       		.uleb128 0x9
+ 1485 0607 04010000 		.4byte	.LVL54
+ 1486 060b 75070000 		.4byte	0x775
+ 1487 060f 0C       		.uleb128 0xc
+ 1488 0610 2C010000 		.4byte	.LVL60
+ 1489 0614 81070000 		.4byte	0x781
+ 1490 0618 0B       		.uleb128 0xb
+ 1491 0619 01       		.uleb128 0x1
+ 1492 061a 50       		.byte	0x50
+ 1493 061b 02       		.uleb128 0x2
+ 1494 061c 08       		.byte	0x8
+ 1495 061d 32       		.byte	0x32
+ 1496 061e 00       		.byte	0
+ 1497 061f 00       		.byte	0
+ 1498 0620 10       		.uleb128 0x10
+ 1499 0621 81000000 		.4byte	0x81
+ 1500 0625 30060000 		.4byte	0x630
+ 1501 0629 11       		.uleb128 0x11
+ 1502 062a DC000000 		.4byte	0xdc
+ 1503 062e 03       		.byte	0x3
+ 1504 062f 00       		.byte	0
+ 1505 0630 12       		.uleb128 0x12
+ 1506 0631 EC000000 		.4byte	.LASF29
+ 1507 0635 01       		.byte	0x1
+ 1508 0636 27       		.byte	0x27
+ 1509 0637 20060000 		.4byte	0x620
+ 1510 063b 05       		.uleb128 0x5
+ 1511 063c 03       		.byte	0x3
+ 1512 063d 00000000 		.4byte	motorPhases
+ 1513 0641 12       		.uleb128 0x12
+ 1514 0642 FE000000 		.4byte	.LASF30
+ 1515 0646 01       		.byte	0x1
+ 1516 0647 29       		.byte	0x29
+ 1517 0648 8C000000 		.4byte	0x8c
+ 1518 064c 05       		.uleb128 0x5
+ 1519 064d 03       		.byte	0x3
+ 1520 064e 00000000 		.4byte	counter
+ 1521 0652 12       		.uleb128 0x12
+ 1522 0653 B4000000 		.4byte	.LASF31
+ 1523 0657 01       		.byte	0x1
+ 1524 0658 2A       		.byte	0x2a
+ 1525 0659 81000000 		.4byte	0x81
+ 1526 065d 05       		.uleb128 0x5
+ 1527 065e 03       		.byte	0x3
+ 1528 065f 00000000 		.4byte	direction
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 33
+
+
+ 1529 0663 12       		.uleb128 0x12
+ 1530 0664 E6020000 		.4byte	.LASF32
+ 1531 0668 01       		.byte	0x1
+ 1532 0669 2B       		.byte	0x2b
+ 1533 066a 81000000 		.4byte	0x81
+ 1534 066e 05       		.uleb128 0x5
+ 1535 066f 03       		.byte	0x3
+ 1536 0670 00000000 		.4byte	phaseIdx
+ 1537 0674 13       		.uleb128 0x13
+ 1538 0675 70776D00 		.ascii	"pwm\000"
+ 1539 0679 01       		.byte	0x1
+ 1540 067a 2D       		.byte	0x2d
+ 1541 067b 81000000 		.4byte	0x81
+ 1542 067f 05       		.uleb128 0x5
+ 1543 0680 03       		.byte	0x3
+ 1544 0681 00000000 		.4byte	pwm
+ 1545 0685 12       		.uleb128 0x12
+ 1546 0686 10000000 		.4byte	.LASF33
+ 1547 068a 01       		.byte	0x1
+ 1548 068b 2E       		.byte	0x2e
+ 1549 068c 8C000000 		.4byte	0x8c
+ 1550 0690 05       		.uleb128 0x5
+ 1551 0691 03       		.byte	0x3
+ 1552 0692 00000000 		.4byte	speed
+ 1553 0696 14       		.uleb128 0x14
+ 1554 0697 0D040000 		.4byte	.LASF34
+ 1555 069b 0D040000 		.4byte	.LASF34
+ 1556 069f 05       		.byte	0x5
+ 1557 06a0 2F       		.byte	0x2f
+ 1558 06a1 15       		.uleb128 0x15
+ 1559 06a2 27040000 		.4byte	.LASF35
+ 1560 06a6 27040000 		.4byte	.LASF35
+ 1561 06aa 06       		.byte	0x6
+ 1562 06ab 4701     		.2byte	0x147
+ 1563 06ad 14       		.uleb128 0x14
+ 1564 06ae 06010000 		.4byte	.LASF36
+ 1565 06b2 06010000 		.4byte	.LASF36
+ 1566 06b6 07       		.byte	0x7
+ 1567 06b7 3D       		.byte	0x3d
+ 1568 06b8 14       		.uleb128 0x14
+ 1569 06b9 3C030000 		.4byte	.LASF37
+ 1570 06bd 3C030000 		.4byte	.LASF37
+ 1571 06c1 07       		.byte	0x7
+ 1572 06c2 3C       		.byte	0x3c
+ 1573 06c3 14       		.uleb128 0x14
+ 1574 06c4 27010000 		.4byte	.LASF38
+ 1575 06c8 27010000 		.4byte	.LASF38
+ 1576 06cc 07       		.byte	0x7
+ 1577 06cd 61       		.byte	0x61
+ 1578 06ce 14       		.uleb128 0x14
+ 1579 06cf BE000000 		.4byte	.LASF39
+ 1580 06d3 BE000000 		.4byte	.LASF39
+ 1581 06d7 08       		.byte	0x8
+ 1582 06d8 39       		.byte	0x39
+ 1583 06d9 14       		.uleb128 0x14
+ 1584 06da 12020000 		.4byte	.LASF40
+ 1585 06de 12020000 		.4byte	.LASF40
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 34
+
+
+ 1586 06e2 09       		.byte	0x9
+ 1587 06e3 39       		.byte	0x39
+ 1588 06e4 14       		.uleb128 0x14
+ 1589 06e5 C8030000 		.4byte	.LASF41
+ 1590 06e9 C8030000 		.4byte	.LASF41
+ 1591 06ed 0A       		.byte	0xa
+ 1592 06ee 39       		.byte	0x39
+ 1593 06ef 14       		.uleb128 0x14
+ 1594 06f0 33000000 		.4byte	.LASF42
+ 1595 06f4 33000000 		.4byte	.LASF42
+ 1596 06f8 07       		.byte	0x7
+ 1597 06f9 3E       		.byte	0x3e
+ 1598 06fa 14       		.uleb128 0x14
+ 1599 06fb 18010000 		.4byte	.LASF43
+ 1600 06ff 18010000 		.4byte	.LASF43
+ 1601 0703 07       		.byte	0x7
+ 1602 0704 38       		.byte	0x38
+ 1603 0705 14       		.uleb128 0x14
+ 1604 0706 26030000 		.4byte	.LASF44
+ 1605 070a 26030000 		.4byte	.LASF44
+ 1606 070e 07       		.byte	0x7
+ 1607 070f 3A       		.byte	0x3a
+ 1608 0710 15       		.uleb128 0x15
+ 1609 0711 06030000 		.4byte	.LASF45
+ 1610 0715 06030000 		.4byte	.LASF45
+ 1611 0719 06       		.byte	0x6
+ 1612 071a 3201     		.2byte	0x132
+ 1613 071c 15       		.uleb128 0x15
+ 1614 071d 79030000 		.4byte	.LASF46
+ 1615 0721 79030000 		.4byte	.LASF46
+ 1616 0725 0B       		.byte	0xb
+ 1617 0726 3201     		.2byte	0x132
+ 1618 0728 14       		.uleb128 0x14
+ 1619 0729 B6030000 		.4byte	.LASF47
+ 1620 072d B6030000 		.4byte	.LASF47
+ 1621 0731 0C       		.byte	0xc
+ 1622 0732 18       		.byte	0x18
+ 1623 0733 14       		.uleb128 0x14
+ 1624 0734 8F010000 		.4byte	.LASF48
+ 1625 0738 8F010000 		.4byte	.LASF48
+ 1626 073c 0D       		.byte	0xd
+ 1627 073d 18       		.byte	0x18
+ 1628 073e 14       		.uleb128 0x14
+ 1629 073f 96030000 		.4byte	.LASF49
+ 1630 0743 96030000 		.4byte	.LASF49
+ 1631 0747 0E       		.byte	0xe
+ 1632 0748 18       		.byte	0x18
+ 1633 0749 14       		.uleb128 0x14
+ 1634 074a 16000000 		.4byte	.LASF50
+ 1635 074e 16000000 		.4byte	.LASF50
+ 1636 0752 0F       		.byte	0xf
+ 1637 0753 18       		.byte	0x18
+ 1638 0754 14       		.uleb128 0x14
+ 1639 0755 A6000000 		.4byte	.LASF51
+ 1640 0759 A6000000 		.4byte	.LASF51
+ 1641 075d 10       		.byte	0x10
+ 1642 075e 48       		.byte	0x48
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 35
+
+
+ 1643 075f 14       		.uleb128 0x14
+ 1644 0760 83030000 		.4byte	.LASF52
+ 1645 0764 83030000 		.4byte	.LASF52
+ 1646 0768 10       		.byte	0x10
+ 1647 0769 4F       		.byte	0x4f
+ 1648 076a 14       		.uleb128 0x14
+ 1649 076b DA010000 		.4byte	.LASF53
+ 1650 076f DA010000 		.4byte	.LASF53
+ 1651 0773 10       		.byte	0x10
+ 1652 0774 4E       		.byte	0x4e
+ 1653 0775 15       		.uleb128 0x15
+ 1654 0776 BF010000 		.4byte	.LASF54
+ 1655 077a BF010000 		.4byte	.LASF54
+ 1656 077e 0B       		.byte	0xb
+ 1657 077f 5501     		.2byte	0x155
+ 1658 0781 14       		.uleb128 0x14
+ 1659 0782 1F040000 		.4byte	.LASF55
+ 1660 0786 1F040000 		.4byte	.LASF55
+ 1661 078a 11       		.byte	0x11
+ 1662 078b EC       		.byte	0xec
+ 1663 078c 00       		.byte	0
+ 1664              		.section	.debug_abbrev,"",%progbits
+ 1665              	.Ldebug_abbrev0:
+ 1666 0000 01       		.uleb128 0x1
+ 1667 0001 11       		.uleb128 0x11
+ 1668 0002 01       		.byte	0x1
+ 1669 0003 25       		.uleb128 0x25
+ 1670 0004 0E       		.uleb128 0xe
+ 1671 0005 13       		.uleb128 0x13
+ 1672 0006 0B       		.uleb128 0xb
+ 1673 0007 03       		.uleb128 0x3
+ 1674 0008 0E       		.uleb128 0xe
+ 1675 0009 1B       		.uleb128 0x1b
+ 1676 000a 0E       		.uleb128 0xe
+ 1677 000b 55       		.uleb128 0x55
+ 1678 000c 17       		.uleb128 0x17
+ 1679 000d 11       		.uleb128 0x11
+ 1680 000e 01       		.uleb128 0x1
+ 1681 000f 10       		.uleb128 0x10
+ 1682 0010 17       		.uleb128 0x17
+ 1683 0011 00       		.byte	0
+ 1684 0012 00       		.byte	0
+ 1685 0013 02       		.uleb128 0x2
+ 1686 0014 24       		.uleb128 0x24
+ 1687 0015 00       		.byte	0
+ 1688 0016 0B       		.uleb128 0xb
+ 1689 0017 0B       		.uleb128 0xb
+ 1690 0018 3E       		.uleb128 0x3e
+ 1691 0019 0B       		.uleb128 0xb
+ 1692 001a 03       		.uleb128 0x3
+ 1693 001b 0E       		.uleb128 0xe
+ 1694 001c 00       		.byte	0
+ 1695 001d 00       		.byte	0
+ 1696 001e 03       		.uleb128 0x3
+ 1697 001f 16       		.uleb128 0x16
+ 1698 0020 00       		.byte	0
+ 1699 0021 03       		.uleb128 0x3
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 36
+
+
+ 1700 0022 0E       		.uleb128 0xe
+ 1701 0023 3A       		.uleb128 0x3a
+ 1702 0024 0B       		.uleb128 0xb
+ 1703 0025 3B       		.uleb128 0x3b
+ 1704 0026 0B       		.uleb128 0xb
+ 1705 0027 49       		.uleb128 0x49
+ 1706 0028 13       		.uleb128 0x13
+ 1707 0029 00       		.byte	0
+ 1708 002a 00       		.byte	0
+ 1709 002b 04       		.uleb128 0x4
+ 1710 002c 24       		.uleb128 0x24
+ 1711 002d 00       		.byte	0
+ 1712 002e 0B       		.uleb128 0xb
+ 1713 002f 0B       		.uleb128 0xb
+ 1714 0030 3E       		.uleb128 0x3e
+ 1715 0031 0B       		.uleb128 0xb
+ 1716 0032 03       		.uleb128 0x3
+ 1717 0033 08       		.uleb128 0x8
+ 1718 0034 00       		.byte	0
+ 1719 0035 00       		.byte	0
+ 1720 0036 05       		.uleb128 0x5
+ 1721 0037 16       		.uleb128 0x16
+ 1722 0038 00       		.byte	0
+ 1723 0039 03       		.uleb128 0x3
+ 1724 003a 0E       		.uleb128 0xe
+ 1725 003b 3A       		.uleb128 0x3a
+ 1726 003c 0B       		.uleb128 0xb
+ 1727 003d 3B       		.uleb128 0x3b
+ 1728 003e 05       		.uleb128 0x5
+ 1729 003f 49       		.uleb128 0x49
+ 1730 0040 13       		.uleb128 0x13
+ 1731 0041 00       		.byte	0
+ 1732 0042 00       		.byte	0
+ 1733 0043 06       		.uleb128 0x6
+ 1734 0044 35       		.uleb128 0x35
+ 1735 0045 00       		.byte	0
+ 1736 0046 49       		.uleb128 0x49
+ 1737 0047 13       		.uleb128 0x13
+ 1738 0048 00       		.byte	0
+ 1739 0049 00       		.byte	0
+ 1740 004a 07       		.uleb128 0x7
+ 1741 004b 2E       		.uleb128 0x2e
+ 1742 004c 00       		.byte	0
+ 1743 004d 3F       		.uleb128 0x3f
+ 1744 004e 19       		.uleb128 0x19
+ 1745 004f 03       		.uleb128 0x3
+ 1746 0050 0E       		.uleb128 0xe
+ 1747 0051 3A       		.uleb128 0x3a
+ 1748 0052 0B       		.uleb128 0xb
+ 1749 0053 3B       		.uleb128 0x3b
+ 1750 0054 0B       		.uleb128 0xb
+ 1751 0055 20       		.uleb128 0x20
+ 1752 0056 0B       		.uleb128 0xb
+ 1753 0057 00       		.byte	0
+ 1754 0058 00       		.byte	0
+ 1755 0059 08       		.uleb128 0x8
+ 1756 005a 2E       		.uleb128 0x2e
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 37
+
+
+ 1757 005b 01       		.byte	0x1
+ 1758 005c 3F       		.uleb128 0x3f
+ 1759 005d 19       		.uleb128 0x19
+ 1760 005e 03       		.uleb128 0x3
+ 1761 005f 0E       		.uleb128 0xe
+ 1762 0060 3A       		.uleb128 0x3a
+ 1763 0061 0B       		.uleb128 0xb
+ 1764 0062 3B       		.uleb128 0x3b
+ 1765 0063 0B       		.uleb128 0xb
+ 1766 0064 27       		.uleb128 0x27
+ 1767 0065 19       		.uleb128 0x19
+ 1768 0066 11       		.uleb128 0x11
+ 1769 0067 01       		.uleb128 0x1
+ 1770 0068 12       		.uleb128 0x12
+ 1771 0069 06       		.uleb128 0x6
+ 1772 006a 40       		.uleb128 0x40
+ 1773 006b 18       		.uleb128 0x18
+ 1774 006c 9642     		.uleb128 0x2116
+ 1775 006e 19       		.uleb128 0x19
+ 1776 006f 01       		.uleb128 0x1
+ 1777 0070 13       		.uleb128 0x13
+ 1778 0071 00       		.byte	0
+ 1779 0072 00       		.byte	0
+ 1780 0073 09       		.uleb128 0x9
+ 1781 0074 898201   		.uleb128 0x4109
+ 1782 0077 00       		.byte	0
+ 1783 0078 11       		.uleb128 0x11
+ 1784 0079 01       		.uleb128 0x1
+ 1785 007a 31       		.uleb128 0x31
+ 1786 007b 13       		.uleb128 0x13
+ 1787 007c 00       		.byte	0
+ 1788 007d 00       		.byte	0
+ 1789 007e 0A       		.uleb128 0xa
+ 1790 007f 898201   		.uleb128 0x4109
+ 1791 0082 01       		.byte	0x1
+ 1792 0083 11       		.uleb128 0x11
+ 1793 0084 01       		.uleb128 0x1
+ 1794 0085 31       		.uleb128 0x31
+ 1795 0086 13       		.uleb128 0x13
+ 1796 0087 01       		.uleb128 0x1
+ 1797 0088 13       		.uleb128 0x13
+ 1798 0089 00       		.byte	0
+ 1799 008a 00       		.byte	0
+ 1800 008b 0B       		.uleb128 0xb
+ 1801 008c 8A8201   		.uleb128 0x410a
+ 1802 008f 00       		.byte	0
+ 1803 0090 02       		.uleb128 0x2
+ 1804 0091 18       		.uleb128 0x18
+ 1805 0092 9142     		.uleb128 0x2111
+ 1806 0094 18       		.uleb128 0x18
+ 1807 0095 00       		.byte	0
+ 1808 0096 00       		.byte	0
+ 1809 0097 0C       		.uleb128 0xc
+ 1810 0098 898201   		.uleb128 0x4109
+ 1811 009b 01       		.byte	0x1
+ 1812 009c 11       		.uleb128 0x11
+ 1813 009d 01       		.uleb128 0x1
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 38
+
+
+ 1814 009e 31       		.uleb128 0x31
+ 1815 009f 13       		.uleb128 0x13
+ 1816 00a0 00       		.byte	0
+ 1817 00a1 00       		.byte	0
+ 1818 00a2 0D       		.uleb128 0xd
+ 1819 00a3 2E       		.uleb128 0x2e
+ 1820 00a4 01       		.byte	0x1
+ 1821 00a5 3F       		.uleb128 0x3f
+ 1822 00a6 19       		.uleb128 0x19
+ 1823 00a7 03       		.uleb128 0x3
+ 1824 00a8 0E       		.uleb128 0xe
+ 1825 00a9 3A       		.uleb128 0x3a
+ 1826 00aa 0B       		.uleb128 0xb
+ 1827 00ab 3B       		.uleb128 0x3b
+ 1828 00ac 0B       		.uleb128 0xb
+ 1829 00ad 27       		.uleb128 0x27
+ 1830 00ae 19       		.uleb128 0x19
+ 1831 00af 11       		.uleb128 0x11
+ 1832 00b0 01       		.uleb128 0x1
+ 1833 00b1 12       		.uleb128 0x12
+ 1834 00b2 06       		.uleb128 0x6
+ 1835 00b3 40       		.uleb128 0x40
+ 1836 00b4 18       		.uleb128 0x18
+ 1837 00b5 9742     		.uleb128 0x2117
+ 1838 00b7 19       		.uleb128 0x19
+ 1839 00b8 01       		.uleb128 0x1
+ 1840 00b9 13       		.uleb128 0x13
+ 1841 00ba 00       		.byte	0
+ 1842 00bb 00       		.byte	0
+ 1843 00bc 0E       		.uleb128 0xe
+ 1844 00bd 1D       		.uleb128 0x1d
+ 1845 00be 01       		.byte	0x1
+ 1846 00bf 31       		.uleb128 0x31
+ 1847 00c0 13       		.uleb128 0x13
+ 1848 00c1 11       		.uleb128 0x11
+ 1849 00c2 01       		.uleb128 0x1
+ 1850 00c3 12       		.uleb128 0x12
+ 1851 00c4 06       		.uleb128 0x6
+ 1852 00c5 58       		.uleb128 0x58
+ 1853 00c6 0B       		.uleb128 0xb
+ 1854 00c7 59       		.uleb128 0x59
+ 1855 00c8 0B       		.uleb128 0xb
+ 1856 00c9 01       		.uleb128 0x1
+ 1857 00ca 13       		.uleb128 0x13
+ 1858 00cb 00       		.byte	0
+ 1859 00cc 00       		.byte	0
+ 1860 00cd 0F       		.uleb128 0xf
+ 1861 00ce 2E       		.uleb128 0x2e
+ 1862 00cf 01       		.byte	0x1
+ 1863 00d0 3F       		.uleb128 0x3f
+ 1864 00d1 19       		.uleb128 0x19
+ 1865 00d2 03       		.uleb128 0x3
+ 1866 00d3 0E       		.uleb128 0xe
+ 1867 00d4 3A       		.uleb128 0x3a
+ 1868 00d5 0B       		.uleb128 0xb
+ 1869 00d6 3B       		.uleb128 0x3b
+ 1870 00d7 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 39
+
+
+ 1871 00d8 27       		.uleb128 0x27
+ 1872 00d9 19       		.uleb128 0x19
+ 1873 00da 49       		.uleb128 0x49
+ 1874 00db 13       		.uleb128 0x13
+ 1875 00dc 8701     		.uleb128 0x87
+ 1876 00de 19       		.uleb128 0x19
+ 1877 00df 11       		.uleb128 0x11
+ 1878 00e0 01       		.uleb128 0x1
+ 1879 00e1 12       		.uleb128 0x12
+ 1880 00e2 06       		.uleb128 0x6
+ 1881 00e3 40       		.uleb128 0x40
+ 1882 00e4 18       		.uleb128 0x18
+ 1883 00e5 9642     		.uleb128 0x2116
+ 1884 00e7 19       		.uleb128 0x19
+ 1885 00e8 01       		.uleb128 0x1
+ 1886 00e9 13       		.uleb128 0x13
+ 1887 00ea 00       		.byte	0
+ 1888 00eb 00       		.byte	0
+ 1889 00ec 10       		.uleb128 0x10
+ 1890 00ed 01       		.uleb128 0x1
+ 1891 00ee 01       		.byte	0x1
+ 1892 00ef 49       		.uleb128 0x49
+ 1893 00f0 13       		.uleb128 0x13
+ 1894 00f1 01       		.uleb128 0x1
+ 1895 00f2 13       		.uleb128 0x13
+ 1896 00f3 00       		.byte	0
+ 1897 00f4 00       		.byte	0
+ 1898 00f5 11       		.uleb128 0x11
+ 1899 00f6 21       		.uleb128 0x21
+ 1900 00f7 00       		.byte	0
+ 1901 00f8 49       		.uleb128 0x49
+ 1902 00f9 13       		.uleb128 0x13
+ 1903 00fa 2F       		.uleb128 0x2f
+ 1904 00fb 0B       		.uleb128 0xb
+ 1905 00fc 00       		.byte	0
+ 1906 00fd 00       		.byte	0
+ 1907 00fe 12       		.uleb128 0x12
+ 1908 00ff 34       		.uleb128 0x34
+ 1909 0100 00       		.byte	0
+ 1910 0101 03       		.uleb128 0x3
+ 1911 0102 0E       		.uleb128 0xe
+ 1912 0103 3A       		.uleb128 0x3a
+ 1913 0104 0B       		.uleb128 0xb
+ 1914 0105 3B       		.uleb128 0x3b
+ 1915 0106 0B       		.uleb128 0xb
+ 1916 0107 49       		.uleb128 0x49
+ 1917 0108 13       		.uleb128 0x13
+ 1918 0109 3F       		.uleb128 0x3f
+ 1919 010a 19       		.uleb128 0x19
+ 1920 010b 02       		.uleb128 0x2
+ 1921 010c 18       		.uleb128 0x18
+ 1922 010d 00       		.byte	0
+ 1923 010e 00       		.byte	0
+ 1924 010f 13       		.uleb128 0x13
+ 1925 0110 34       		.uleb128 0x34
+ 1926 0111 00       		.byte	0
+ 1927 0112 03       		.uleb128 0x3
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 40
+
+
+ 1928 0113 08       		.uleb128 0x8
+ 1929 0114 3A       		.uleb128 0x3a
+ 1930 0115 0B       		.uleb128 0xb
+ 1931 0116 3B       		.uleb128 0x3b
+ 1932 0117 0B       		.uleb128 0xb
+ 1933 0118 49       		.uleb128 0x49
+ 1934 0119 13       		.uleb128 0x13
+ 1935 011a 3F       		.uleb128 0x3f
+ 1936 011b 19       		.uleb128 0x19
+ 1937 011c 02       		.uleb128 0x2
+ 1938 011d 18       		.uleb128 0x18
+ 1939 011e 00       		.byte	0
+ 1940 011f 00       		.byte	0
+ 1941 0120 14       		.uleb128 0x14
+ 1942 0121 2E       		.uleb128 0x2e
+ 1943 0122 00       		.byte	0
+ 1944 0123 3F       		.uleb128 0x3f
+ 1945 0124 19       		.uleb128 0x19
+ 1946 0125 3C       		.uleb128 0x3c
+ 1947 0126 19       		.uleb128 0x19
+ 1948 0127 6E       		.uleb128 0x6e
+ 1949 0128 0E       		.uleb128 0xe
+ 1950 0129 03       		.uleb128 0x3
+ 1951 012a 0E       		.uleb128 0xe
+ 1952 012b 3A       		.uleb128 0x3a
+ 1953 012c 0B       		.uleb128 0xb
+ 1954 012d 3B       		.uleb128 0x3b
+ 1955 012e 0B       		.uleb128 0xb
+ 1956 012f 00       		.byte	0
+ 1957 0130 00       		.byte	0
+ 1958 0131 15       		.uleb128 0x15
+ 1959 0132 2E       		.uleb128 0x2e
+ 1960 0133 00       		.byte	0
+ 1961 0134 3F       		.uleb128 0x3f
+ 1962 0135 19       		.uleb128 0x19
+ 1963 0136 3C       		.uleb128 0x3c
+ 1964 0137 19       		.uleb128 0x19
+ 1965 0138 6E       		.uleb128 0x6e
+ 1966 0139 0E       		.uleb128 0xe
+ 1967 013a 03       		.uleb128 0x3
+ 1968 013b 0E       		.uleb128 0xe
+ 1969 013c 3A       		.uleb128 0x3a
+ 1970 013d 0B       		.uleb128 0xb
+ 1971 013e 3B       		.uleb128 0x3b
+ 1972 013f 05       		.uleb128 0x5
+ 1973 0140 00       		.byte	0
+ 1974 0141 00       		.byte	0
+ 1975 0142 00       		.byte	0
+ 1976              		.section	.debug_aranges,"",%progbits
+ 1977 0000 3C000000 		.4byte	0x3c
+ 1978 0004 0200     		.2byte	0x2
+ 1979 0006 00000000 		.4byte	.Ldebug_info0
+ 1980 000a 04       		.byte	0x4
+ 1981 000b 00       		.byte	0
+ 1982 000c 0000     		.2byte	0
+ 1983 000e 0000     		.2byte	0
+ 1984 0010 00000000 		.4byte	.LFB34
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 41
+
+
+ 1985 0014 AC000000 		.4byte	.LFE34-.LFB34
+ 1986 0018 00000000 		.4byte	.LFB35
+ 1987 001c 44000000 		.4byte	.LFE35-.LFB35
+ 1988 0020 00000000 		.4byte	.LFB36
+ 1989 0024 44000000 		.4byte	.LFE36-.LFB36
+ 1990 0028 00000000 		.4byte	.LFB37
+ 1991 002c 5C000000 		.4byte	.LFE37-.LFB37
+ 1992 0030 00000000 		.4byte	.LFB38
+ 1993 0034 64010000 		.4byte	.LFE38-.LFB38
+ 1994 0038 00000000 		.4byte	0
+ 1995 003c 00000000 		.4byte	0
+ 1996              		.section	.debug_ranges,"",%progbits
+ 1997              	.Ldebug_ranges0:
+ 1998 0000 00000000 		.4byte	.LFB34
+ 1999 0004 AC000000 		.4byte	.LFE34
+ 2000 0008 00000000 		.4byte	.LFB35
+ 2001 000c 44000000 		.4byte	.LFE35
+ 2002 0010 00000000 		.4byte	.LFB36
+ 2003 0014 44000000 		.4byte	.LFE36
+ 2004 0018 00000000 		.4byte	.LFB37
+ 2005 001c 5C000000 		.4byte	.LFE37
+ 2006 0020 00000000 		.4byte	.LFB38
+ 2007 0024 64010000 		.4byte	.LFE38
+ 2008 0028 00000000 		.4byte	0
+ 2009 002c 00000000 		.4byte	0
+ 2010              		.section	.debug_line,"",%progbits
+ 2011              	.Ldebug_line0:
+ 2012 0000 E6020000 		.section	.debug_str,"MS",%progbits,1
+ 2012      02001802 
+ 2012      00000201 
+ 2012      FB0E0D00 
+ 2012      01010101 
+ 2013              	.LASF18:
+ 2014 0000 72656733 		.ascii	"reg32\000"
+ 2014      3200
+ 2015              	.LASF3:
+ 2016 0006 5F5F7569 		.ascii	"__uint8_t\000"
+ 2016      6E74385F 
+ 2016      7400
+ 2017              	.LASF33:
+ 2018 0010 73706565 		.ascii	"speed\000"
+ 2018      6400
+ 2019              	.LASF50:
+ 2020 0016 62757474 		.ascii	"button_direction_isr_StartEx\000"
+ 2020      6F6E5F64 
+ 2020      69726563 
+ 2020      74696F6E 
+ 2020      5F697372 
+ 2021              	.LASF42:
+ 2022 0033 4C43445F 		.ascii	"LCD_Char_PutChar\000"
+ 2022      43686172 
+ 2022      5F507574 
+ 2022      43686172 
+ 2022      00
+ 2023              	.LASF21:
+ 2024 0044 64697370 		.ascii	"displaySpeed\000"
+ 2024      6C617953 
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 42
+
+
+ 2024      70656564 
+ 2024      00
+ 2025              	.LASF22:
+ 2026 0051 64697370 		.ascii	"displayPWM\000"
+ 2026      6C617950 
+ 2026      574D00
+ 2027              	.LASF58:
+ 2028 005c 433A5C55 		.ascii	"C:\\Users\\Admin\\Documents\\PSoC Creator\\Workspac"
+ 2028      73657273 
+ 2028      5C41646D 
+ 2028      696E5C44 
+ 2028      6F63756D 
+ 2029 008a 6530315C 		.ascii	"e01\\Lab5.cydsn\000"
+ 2029      4C616235 
+ 2029      2E637964 
+ 2029      736E00
+ 2030              	.LASF10:
+ 2031 0099 756E7369 		.ascii	"unsigned int\000"
+ 2031      676E6564 
+ 2031      20696E74 
+ 2031      00
+ 2032              	.LASF51:
+ 2033 00a6 51756164 		.ascii	"QuadDec_Start\000"
+ 2033      4465635F 
+ 2033      53746172 
+ 2033      7400
+ 2034              	.LASF31:
+ 2035 00b4 64697265 		.ascii	"direction\000"
+ 2035      6374696F 
+ 2035      6E00
+ 2036              	.LASF39:
+ 2037 00be 42757474 		.ascii	"Button_inc_ClearInterrupt\000"
+ 2037      6F6E5F69 
+ 2037      6E635F43 
+ 2037      6C656172 
+ 2037      496E7465 
+ 2038              	.LASF25:
+ 2039 00d8 74696D65 		.ascii	"timer_isr_interrupt\000"
+ 2039      725F6973 
+ 2039      725F696E 
+ 2039      74657272 
+ 2039      75707400 
+ 2040              	.LASF29:
+ 2041 00ec 6D6F746F 		.ascii	"motorPhases\000"
+ 2041      72506861 
+ 2041      73657300 
+ 2042              	.LASF15:
+ 2043 00f8 666C6F61 		.ascii	"float\000"
+ 2043      7400
+ 2044              	.LASF30:
+ 2045 00fe 636F756E 		.ascii	"counter\000"
+ 2045      74657200 
+ 2046              	.LASF36:
+ 2047 0106 4C43445F 		.ascii	"LCD_Char_Position\000"
+ 2047      43686172 
+ 2047      5F506F73 
+ 2047      6974696F 
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 43
+
+
+ 2047      6E00
+ 2048              	.LASF43:
+ 2049 0118 4C43445F 		.ascii	"LCD_Char_Start\000"
+ 2049      43686172 
+ 2049      5F537461 
+ 2049      727400
+ 2050              	.LASF38:
+ 2051 0127 4C43445F 		.ascii	"LCD_Char_PrintU32Number\000"
+ 2051      43686172 
+ 2051      5F507269 
+ 2051      6E745533 
+ 2051      324E756D 
+ 2052              	.LASF7:
+ 2053 013f 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2053      20756E73 
+ 2053      69676E65 
+ 2053      6420696E 
+ 2053      7400
+ 2054              	.LASF23:
+ 2055 0151 64697370 		.ascii	"displayDirection\000"
+ 2055      6C617944 
+ 2055      69726563 
+ 2055      74696F6E 
+ 2055      00
+ 2056              	.LASF5:
+ 2057 0162 73686F72 		.ascii	"short unsigned int\000"
+ 2057      7420756E 
+ 2057      7369676E 
+ 2057      65642069 
+ 2057      6E7400
+ 2058              	.LASF0:
+ 2059 0175 7369676E 		.ascii	"signed char\000"
+ 2059      65642063 
+ 2059      68617200 
+ 2060              	.LASF1:
+ 2061 0181 756E7369 		.ascii	"unsigned char\000"
+ 2061      676E6564 
+ 2061      20636861 
+ 2061      7200
+ 2062              	.LASF48:
+ 2063 018f 62757474 		.ascii	"button_inc_isr_StartEx\000"
+ 2063      6F6E5F69 
+ 2063      6E635F69 
+ 2063      73725F53 
+ 2063      74617274 
+ 2064              	.LASF4:
+ 2065 01a6 5F5F7569 		.ascii	"__uint16_t\000"
+ 2065      6E743136 
+ 2065      5F7400
+ 2066              	.LASF16:
+ 2067 01b1 646F7562 		.ascii	"double\000"
+ 2067      6C6500
+ 2068              	.LASF13:
+ 2069 01b8 75696E74 		.ascii	"uint16\000"
+ 2069      313600
+ 2070              	.LASF54:
+ 2071 01bf 50574D5F 		.ascii	"PWM_WriteCompare\000"
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 44
+
+
+ 2071      57726974 
+ 2071      65436F6D 
+ 2071      70617265 
+ 2071      00
+ 2072              	.LASF2:
+ 2073 01d0 73686F72 		.ascii	"short int\000"
+ 2073      7420696E 
+ 2073      7400
+ 2074              	.LASF53:
+ 2075 01da 51756164 		.ascii	"QuadDec_GetCounter\000"
+ 2075      4465635F 
+ 2075      47657443 
+ 2075      6F756E74 
+ 2075      657200
+ 2076              	.LASF27:
+ 2077 01ed 62757474 		.ascii	"button_dec_isr_interrupt\000"
+ 2077      6F6E5F64 
+ 2077      65635F69 
+ 2077      73725F69 
+ 2077      6E746572 
+ 2078              	.LASF14:
+ 2079 0206 75696E74 		.ascii	"uint32\000"
+ 2079      333200
+ 2080              	.LASF59:
+ 2081 020d 6D61696E 		.ascii	"main\000"
+ 2081      00
+ 2082              	.LASF40:
+ 2083 0212 42757474 		.ascii	"Button_dec_ClearInterrupt\000"
+ 2083      6F6E5F64 
+ 2083      65635F43 
+ 2083      6C656172 
+ 2083      496E7465 
+ 2084              	.LASF9:
+ 2085 022c 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2085      206C6F6E 
+ 2085      6720756E 
+ 2085      7369676E 
+ 2085      65642069 
+ 2086              	.LASF11:
+ 2087 0243 75696E74 		.ascii	"uint8_t\000"
+ 2087      385F7400 
+ 2088              	.LASF24:
+ 2089 024b 73657475 		.ascii	"setupDisplay\000"
+ 2089      70446973 
+ 2089      706C6179 
+ 2089      00
+ 2090              	.LASF56:
+ 2091 0258 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2091      43313120 
+ 2091      352E342E 
+ 2091      31203230 
+ 2091      31363036 
+ 2092 028b 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -O"
+ 2092      20726576 
+ 2092      6973696F 
+ 2092      6E203233 
+ 2092      37373135 
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 45
+
+
+ 2093 02be 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 2093      66756E63 
+ 2093      74696F6E 
+ 2093      2D736563 
+ 2093      74696F6E 
+ 2094              	.LASF32:
+ 2095 02e6 70686173 		.ascii	"phaseIdx\000"
+ 2095      65496478 
+ 2095      00
+ 2096              	.LASF20:
+ 2097 02ef 73697A65 		.ascii	"sizetype\000"
+ 2097      74797065 
+ 2097      00
+ 2098              	.LASF8:
+ 2099 02f8 6C6F6E67 		.ascii	"long long int\000"
+ 2099      206C6F6E 
+ 2099      6720696E 
+ 2099      7400
+ 2100              	.LASF45:
+ 2101 0306 54696D65 		.ascii	"Timer_Counter_Start\000"
+ 2101      725F436F 
+ 2101      756E7465 
+ 2101      725F5374 
+ 2101      61727400 
+ 2102              	.LASF57:
+ 2103 031a 6D61696E 		.ascii	"main.c\000"
+ 2103      2E6300
+ 2104              	.LASF17:
+ 2105 0321 63686172 		.ascii	"char\000"
+ 2105      00
+ 2106              	.LASF44:
+ 2107 0326 4C43445F 		.ascii	"LCD_Char_WriteControl\000"
+ 2107      43686172 
+ 2107      5F577269 
+ 2107      7465436F 
+ 2107      6E74726F 
+ 2108              	.LASF37:
+ 2109 033c 4C43445F 		.ascii	"LCD_Char_PrintString\000"
+ 2109      43686172 
+ 2109      5F507269 
+ 2109      6E745374 
+ 2109      72696E67 
+ 2110              	.LASF12:
+ 2111 0351 75696E74 		.ascii	"uint16_t\000"
+ 2111      31365F74 
+ 2111      00
+ 2112              	.LASF28:
+ 2113 035a 62757474 		.ascii	"button_direction_isr_interrupt\000"
+ 2113      6F6E5F64 
+ 2113      69726563 
+ 2113      74696F6E 
+ 2113      5F697372 
+ 2114              	.LASF46:
+ 2115 0379 50574D5F 		.ascii	"PWM_Start\000"
+ 2115      53746172 
+ 2115      7400
+ 2116              	.LASF52:
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccWYOGZX.s 			page 46
+
+
+ 2117 0383 51756164 		.ascii	"QuadDec_SetCounter\000"
+ 2117      4465635F 
+ 2117      53657443 
+ 2117      6F756E74 
+ 2117      657200
+ 2118              	.LASF49:
+ 2119 0396 62757474 		.ascii	"button_dec_isr_StartEx\000"
+ 2119      6F6E5F64 
+ 2119      65635F69 
+ 2119      73725F53 
+ 2119      74617274 
+ 2120              	.LASF6:
+ 2121 03ad 6C6F6E67 		.ascii	"long int\000"
+ 2121      20696E74 
+ 2121      00
+ 2122              	.LASF47:
+ 2123 03b6 74696D65 		.ascii	"timer_isr_StartEx\000"
+ 2123      725F6973 
+ 2123      725F5374 
+ 2123      61727445 
+ 2123      7800
+ 2124              	.LASF41:
+ 2125 03c8 42757474 		.ascii	"Button_direction_ClearInterrupt\000"
+ 2125      6F6E5F64 
+ 2125      69726563 
+ 2125      74696F6E 
+ 2125      5F436C65 
+ 2126              	.LASF19:
+ 2127 03e8 6C6F6E67 		.ascii	"long double\000"
+ 2127      20646F75 
+ 2127      626C6500 
+ 2128              	.LASF26:
+ 2129 03f4 62757474 		.ascii	"button_inc_isr_interrupt\000"
+ 2129      6F6E5F69 
+ 2129      6E635F69 
+ 2129      73725F69 
+ 2129      6E746572 
+ 2130              	.LASF34:
+ 2131 040d 436F6E74 		.ascii	"Control_Reg_Write\000"
+ 2131      726F6C5F 
+ 2131      5265675F 
+ 2131      57726974 
+ 2131      6500
+ 2132              	.LASF55:
+ 2133 041f 43794465 		.ascii	"CyDelay\000"
+ 2133      6C617900 
+ 2134              	.LASF35:
+ 2135 0427 54696D65 		.ascii	"Timer_Counter_ClearInterrupt\000"
+ 2135      725F436F 
+ 2135      756E7465 
+ 2135      725F436C 
+ 2135      65617249 
+ 2136              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

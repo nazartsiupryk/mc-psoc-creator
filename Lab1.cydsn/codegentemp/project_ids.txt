@@ -1,0 +1,6 @@
+D:\projects\microcontrollers-part2\Workspace01\Lab1.cydsn\Lab1.cyprj|c1036071-f477-456c-88d8-f34c50cea52d
+D:\Програми\PSoC Creator\4.4\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|c57b3f6d-e27f-4ebf-9b2e-bf46df8f867b
+C:\Users\nazarcomp\Documents\PSoC Creator\4.4\Downloads ( 4.4).cylib\Downloads ( 4.4).cyprj|1773c0a3-e308-4770-82ad-98f95ada33e3
+D:\Програми\PSoC Creator\4.4\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|a2099b05-5e12-4161-b17e-bc01082ea434
+D:\Програми\PSoC Creator\4.4\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|601a81c4-9231-453b-b084-b60fabcf92db
+D:\Програми\PSoC Creator\4.4\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|da327ef0-8fe9-48f4-86c5-a511d8aee610

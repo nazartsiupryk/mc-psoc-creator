@@ -1,0 +1,59 @@
+dont_use_io iocell 3 2
+dont_use_io iocell 3 3
+set_location "\QuadDec:bQuadDec:quad_A_filt\" macrocell 0 0 0 3
+set_location "\QuadDec:Cnt8:CounterUDB:status_3\" macrocell 0 0 0 1
+set_location "Net_71" macrocell 0 0 1 3
+set_location "\QuadDec:bQuadDec:Stsreg\" statusicell 0 0 4 
+set_location "\QuadDec:Net_1260\" macrocell 1 1 1 1
+set_location "\QuadDec:bQuadDec:quad_B_filt\" macrocell 0 0 1 2
+set_location "\QuadDec:Net_1203\" macrocell 1 1 0 1
+set_location "\QuadDec:Cnt8:CounterUDB:overflow_reg_i\" macrocell 1 0 1 1
+set_location "\QuadDec:Cnt8:CounterUDB:status_2\" macrocell 1 0 1 2
+set_location "\QuadDec:Cnt8:CounterUDB:reload\" macrocell 1 1 1 2
+set_location "\QuadDec:Net_1251_split\" macrocell 0 1 1 0
+set_location "\QuadDec:Cnt8:CounterUDB:prevCompare\" macrocell 1 0 1 0
+set_location "Net_74" macrocell 0 0 1 1
+set_location "\QuadDec:Cnt8:CounterUDB:status_0\" macrocell 1 0 0 0
+set_location "\QuadDec:Net_1251\" macrocell 0 1 0 1
+set_location "Net_65" macrocell 0 0 0 2
+set_location "\QuadDec:Cnt8:CounterUDB:sC8:counterdp:u0\" datapathcell 1 1 2 
+set_location "\QuadDec:bQuadDec:state_0\" macrocell 0 1 0 0
+set_location "\QuadDec:bQuadDec:state_1\" macrocell 1 1 1 0
+set_location "Net_68" macrocell 0 0 1 0
+set_location "\QuadDec:Net_1276\" macrocell 1 0 0 3
+set_location "\QuadDec:Cnt8:CounterUDB:sSTSReg:stsreg\" statusicell 1 0 4 
+set_location "\QuadDec:Net_611\" macrocell 1 0 0 2
+set_location "\QuadDec:bQuadDec:error\" macrocell 1 1 0 0
+set_location "\QuadDec:Cnt8:CounterUDB:underflow_reg_i\" macrocell 0 0 0 0
+set_location "\QuadDec:Cnt8:CounterUDB:count_stored_i\" macrocell 1 0 1 3
+set_location "\QuadDec:Net_530\" macrocell 1 0 0 1
+set_location "\QuadDec:Cnt8:CounterUDB:count_enable\" macrocell 1 1 0 2
+set_io "\LCD_Char:LCDPort(6)\" iocell 0 6
+set_io "\LCD_Char:LCDPort(5)\" iocell 0 5
+set_io "\LCD_Char:LCDPort(3)\" iocell 0 3
+set_io "\LCD_Char:LCDPort(4)\" iocell 0 4
+set_location "\Control_Reg:Sync:ctrl_reg\" controlcell 0 0 6 
+set_io "SGN_3(0)" iocell 2 6
+set_io "Button_direction(0)" iocell 1 0
+set_io "SGN_1(0)" iocell 2 4
+set_location "\PWM:cy_m0s8_tcpwm_1\" m0s8tcpwmcell -1 -1 0
+set_location "\QuadDec:Cnt8:CounterUDB:sCTRLReg:ctrlreg\" controlcell 1 1 6 
+set_io "Button_inc(0)" iocell 3 0
+set_location "timer_isr" interrupt -1 -1 20
+set_location "button_inc_isr" interrupt -1 -1 3
+set_location "button_dec_isr" interrupt -1 -1 2
+set_location "button_direction_isr" interrupt -1 -1 1
+set_location "ClockGenBlock" m0s8clockgenblockcell -1 -1 0
+set_location "ClockBlock" m0s8clockblockcell -1 -1 0
+set_io "Button_dec(0)" iocell 2 1
+set_io "SGN_4(0)" iocell 2 7
+set_location "Button_inc" logicalport -1 -1 3
+set_location "Button_dec" logicalport -1 -1 2
+set_location "Button_direction" logicalport -1 -1 1
+set_location "\Timer_Counter:cy_m0s8_tcpwm_1\" m0s8tcpwmcell -1 -1 1
+set_io "A(0)" iocell 2 2
+set_io "\LCD_Char:LCDPort(0)\" iocell 0 0
+set_io "SGN_2(0)" iocell 2 5
+set_io "B(0)" iocell 2 3
+set_io "\LCD_Char:LCDPort(2)\" iocell 0 2
+set_io "\LCD_Char:LCDPort(1)\" iocell 0 1

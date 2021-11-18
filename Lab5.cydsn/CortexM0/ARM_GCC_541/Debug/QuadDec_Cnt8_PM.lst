@@ -1,0 +1,1015 @@
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"QuadDec_Cnt8_PM.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.QuadDec_Cnt8_SaveConfig,"ax",%progbits
+  20              		.align	2
+  21              		.global	QuadDec_Cnt8_SaveConfig
+  22              		.code	16
+  23              		.thumb_func
+  24              		.type	QuadDec_Cnt8_SaveConfig, %function
+  25              	QuadDec_Cnt8_SaveConfig:
+  26              	.LFB1:
+  27              		.file 1 "Generated_Source\\PSoC4\\QuadDec_Cnt8_PM.c"
+   1:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** /*******************************************************************************
+   2:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * File Name: QuadDec_Cnt8_PM.c  
+   3:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Version 3.0
+   4:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+   5:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  Description:
+   6:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *    This file provides the power management source code to API for the
+   7:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *    Counter.  
+   8:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+   9:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *   Note:
+  10:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *     None
+  11:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+  12:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** ********************************************************************************
+  13:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Copyright 2008-2012, Cypress Semiconductor Corporation.  All rights reserved.
+  14:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  15:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  16:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * the software package with which this file was provided.
+  17:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *******************************************************************************/
+  18:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** 
+  19:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** #include "QuadDec_Cnt8.h"
+  20:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** 
+  21:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** static QuadDec_Cnt8_backupStruct QuadDec_Cnt8_backup;
+  22:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** 
+  23:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** 
+  24:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** /*******************************************************************************
+  25:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Function Name: QuadDec_Cnt8_SaveConfig
+  26:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** ********************************************************************************
+  27:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Summary:
+  28:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *     Save the current user configuration
+  29:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+  30:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Parameters:  
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 2
+
+
+  31:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  void
+  32:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+  33:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Return: 
+  34:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  void
+  35:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+  36:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Global variables:
+  37:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  QuadDec_Cnt8_backup:  Variables of this global structure are modified to 
+  38:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  store the values of non retention configuration registers when Sleep() API is 
+  39:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  called.
+  40:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+  41:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *******************************************************************************/
+  42:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** void QuadDec_Cnt8_SaveConfig(void) 
+  43:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** {
+  28              		.loc 1 43 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 10B5     		push	{r4, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 4, -8
+  35              		.cfi_offset 14, -4
+  44:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****     #if (!QuadDec_Cnt8_UsingFixedFunction)
+  45:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** 
+  46:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         QuadDec_Cnt8_backup.CounterUdb = QuadDec_Cnt8_ReadCounter();
+  36              		.loc 1 46 0
+  37 0002 FFF7FEFF 		bl	QuadDec_Cnt8_ReadCounter
+  38              	.LVL0:
+  39 0006 034C     		ldr	r4, .L2
+  40 0008 6070     		strb	r0, [r4, #1]
+  47:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** 
+  48:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         #if(!QuadDec_Cnt8_ControlRegRemoved)
+  49:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****             QuadDec_Cnt8_backup.CounterControlRegister = QuadDec_Cnt8_ReadControlRegister();
+  41              		.loc 1 49 0
+  42 000a FFF7FEFF 		bl	QuadDec_Cnt8_ReadControlRegister
+  43              	.LVL1:
+  44 000e A070     		strb	r0, [r4, #2]
+  50:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         #endif /* (!QuadDec_Cnt8_ControlRegRemoved) */
+  51:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** 
+  52:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****     #endif /* (!QuadDec_Cnt8_UsingFixedFunction) */
+  53:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** }
+  45              		.loc 1 53 0
+  46              		@ sp needed
+  47 0010 10BD     		pop	{r4, pc}
+  48              	.L3:
+  49 0012 C046     		.align	2
+  50              	.L2:
+  51 0014 00000000 		.word	.LANCHOR0
+  52              		.cfi_endproc
+  53              	.LFE1:
+  54              		.size	QuadDec_Cnt8_SaveConfig, .-QuadDec_Cnt8_SaveConfig
+  55              		.section	.text.QuadDec_Cnt8_RestoreConfig,"ax",%progbits
+  56              		.align	2
+  57              		.global	QuadDec_Cnt8_RestoreConfig
+  58              		.code	16
+  59              		.thumb_func
+  60              		.type	QuadDec_Cnt8_RestoreConfig, %function
+  61              	QuadDec_Cnt8_RestoreConfig:
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 3
+
+
+  62              	.LFB2:
+  54:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** 
+  55:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** 
+  56:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** /*******************************************************************************
+  57:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Function Name: QuadDec_Cnt8_RestoreConfig
+  58:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** ********************************************************************************
+  59:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+  60:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Summary:
+  61:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  Restores the current user configuration.
+  62:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+  63:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Parameters:  
+  64:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  void
+  65:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+  66:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Return: 
+  67:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  void
+  68:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+  69:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Global variables:
+  70:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  QuadDec_Cnt8_backup:  Variables of this global structure are used to 
+  71:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  restore the values of non retention registers on wakeup from sleep mode.
+  72:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+  73:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *******************************************************************************/
+  74:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** void QuadDec_Cnt8_RestoreConfig(void) 
+  75:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** {      
+  63              		.loc 1 75 0
+  64              		.cfi_startproc
+  65              		@ args = 0, pretend = 0, frame = 0
+  66              		@ frame_needed = 0, uses_anonymous_args = 0
+  67 0000 10B5     		push	{r4, lr}
+  68              		.cfi_def_cfa_offset 8
+  69              		.cfi_offset 4, -8
+  70              		.cfi_offset 14, -4
+  76:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****     #if (!QuadDec_Cnt8_UsingFixedFunction)
+  77:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** 
+  78:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****        QuadDec_Cnt8_WriteCounter(QuadDec_Cnt8_backup.CounterUdb);
+  71              		.loc 1 78 0
+  72 0002 044C     		ldr	r4, .L5
+  73 0004 6078     		ldrb	r0, [r4, #1]
+  74 0006 FFF7FEFF 		bl	QuadDec_Cnt8_WriteCounter
+  75              	.LVL2:
+  79:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** 
+  80:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         #if(!QuadDec_Cnt8_ControlRegRemoved)
+  81:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****             QuadDec_Cnt8_WriteControlRegister(QuadDec_Cnt8_backup.CounterControlRegister);
+  76              		.loc 1 81 0
+  77 000a A078     		ldrb	r0, [r4, #2]
+  78 000c FFF7FEFF 		bl	QuadDec_Cnt8_WriteControlRegister
+  79              	.LVL3:
+  82:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         #endif /* (!QuadDec_Cnt8_ControlRegRemoved) */
+  83:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** 
+  84:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****     #endif /* (!QuadDec_Cnt8_UsingFixedFunction) */
+  85:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** }
+  80              		.loc 1 85 0
+  81              		@ sp needed
+  82 0010 10BD     		pop	{r4, pc}
+  83              	.L6:
+  84 0012 C046     		.align	2
+  85              	.L5:
+  86 0014 00000000 		.word	.LANCHOR0
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 4
+
+
+  87              		.cfi_endproc
+  88              	.LFE2:
+  89              		.size	QuadDec_Cnt8_RestoreConfig, .-QuadDec_Cnt8_RestoreConfig
+  90              		.section	.text.QuadDec_Cnt8_Sleep,"ax",%progbits
+  91              		.align	2
+  92              		.global	QuadDec_Cnt8_Sleep
+  93              		.code	16
+  94              		.thumb_func
+  95              		.type	QuadDec_Cnt8_Sleep, %function
+  96              	QuadDec_Cnt8_Sleep:
+  97              	.LFB3:
+  86:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** 
+  87:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** 
+  88:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** /*******************************************************************************
+  89:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Function Name: QuadDec_Cnt8_Sleep
+  90:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** ********************************************************************************
+  91:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Summary:
+  92:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *     Stop and Save the user configuration
+  93:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+  94:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Parameters:  
+  95:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  void
+  96:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+  97:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Return: 
+  98:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  void
+  99:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+ 100:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Global variables:
+ 101:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  QuadDec_Cnt8_backup.enableState:  Is modified depending on the enable 
+ 102:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  state of the block before entering sleep mode.
+ 103:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+ 104:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *******************************************************************************/
+ 105:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** void QuadDec_Cnt8_Sleep(void) 
+ 106:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** {
+  98              		.loc 1 106 0
+  99              		.cfi_startproc
+ 100              		@ args = 0, pretend = 0, frame = 0
+ 101              		@ frame_needed = 0, uses_anonymous_args = 0
+ 102 0000 10B5     		push	{r4, lr}
+ 103              		.cfi_def_cfa_offset 8
+ 104              		.cfi_offset 4, -8
+ 105              		.cfi_offset 14, -4
+ 107:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****     #if(!QuadDec_Cnt8_ControlRegRemoved)
+ 108:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         /* Save Counter's enable state */
+ 109:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         if(QuadDec_Cnt8_CTRL_ENABLE == (QuadDec_Cnt8_CONTROL & QuadDec_Cnt8_CTRL_ENABLE))
+ 106              		.loc 1 109 0
+ 107 0002 084B     		ldr	r3, .L10
+ 108 0004 1B78     		ldrb	r3, [r3]
+ 109 0006 5BB2     		sxtb	r3, r3
+ 110 0008 002B     		cmp	r3, #0
+ 111 000a 03DA     		bge	.L8
+ 110:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         {
+ 111:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****             /* Counter is enabled */
+ 112:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****             QuadDec_Cnt8_backup.CounterEnableState = 1u;
+ 112              		.loc 1 112 0
+ 113 000c 0122     		movs	r2, #1
+ 114 000e 064B     		ldr	r3, .L10+4
+ 115 0010 1A70     		strb	r2, [r3]
+ 116 0012 02E0     		b	.L9
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 5
+
+
+ 117              	.L8:
+ 113:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         }
+ 114:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         else
+ 115:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         {
+ 116:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****             /* Counter is disabled */
+ 117:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****             QuadDec_Cnt8_backup.CounterEnableState = 0u;
+ 118              		.loc 1 117 0
+ 119 0014 0022     		movs	r2, #0
+ 120 0016 044B     		ldr	r3, .L10+4
+ 121 0018 1A70     		strb	r2, [r3]
+ 122              	.L9:
+ 118:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         }
+ 119:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****     #else
+ 120:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         QuadDec_Cnt8_backup.CounterEnableState = 1u;
+ 121:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         if(QuadDec_Cnt8_backup.CounterEnableState != 0u)
+ 122:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         {
+ 123:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****             QuadDec_Cnt8_backup.CounterEnableState = 0u;
+ 124:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         }
+ 125:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****     #endif /* (!QuadDec_Cnt8_ControlRegRemoved) */
+ 126:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****     
+ 127:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****     QuadDec_Cnt8_Stop();
+ 123              		.loc 1 127 0
+ 124 001a FFF7FEFF 		bl	QuadDec_Cnt8_Stop
+ 125              	.LVL4:
+ 128:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****     QuadDec_Cnt8_SaveConfig();
+ 126              		.loc 1 128 0
+ 127 001e FFF7FEFF 		bl	QuadDec_Cnt8_SaveConfig
+ 128              	.LVL5:
+ 129:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** }
+ 129              		.loc 1 129 0
+ 130              		@ sp needed
+ 131 0022 10BD     		pop	{r4, pc}
+ 132              	.L11:
+ 133              		.align	2
+ 134              	.L10:
+ 135 0024 71000F40 		.word	1074724977
+ 136 0028 00000000 		.word	.LANCHOR0
+ 137              		.cfi_endproc
+ 138              	.LFE3:
+ 139              		.size	QuadDec_Cnt8_Sleep, .-QuadDec_Cnt8_Sleep
+ 140              		.section	.text.QuadDec_Cnt8_Wakeup,"ax",%progbits
+ 141              		.align	2
+ 142              		.global	QuadDec_Cnt8_Wakeup
+ 143              		.code	16
+ 144              		.thumb_func
+ 145              		.type	QuadDec_Cnt8_Wakeup, %function
+ 146              	QuadDec_Cnt8_Wakeup:
+ 147              	.LFB4:
+ 130:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** 
+ 131:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** 
+ 132:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** /*******************************************************************************
+ 133:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Function Name: QuadDec_Cnt8_Wakeup
+ 134:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** ********************************************************************************
+ 135:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+ 136:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Summary:
+ 137:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  Restores and enables the user configuration
+ 138:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 6
+
+
+ 139:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Parameters:  
+ 140:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  void
+ 141:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+ 142:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Return: 
+ 143:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  void
+ 144:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+ 145:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** * Global variables:
+ 146:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  QuadDec_Cnt8_backup.enableState:  Is used to restore the enable state of 
+ 147:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *  block on wakeup from sleep mode.
+ 148:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *
+ 149:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** *******************************************************************************/
+ 150:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** void QuadDec_Cnt8_Wakeup(void) 
+ 151:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** {
+ 148              		.loc 1 151 0
+ 149              		.cfi_startproc
+ 150              		@ args = 0, pretend = 0, frame = 0
+ 151              		@ frame_needed = 0, uses_anonymous_args = 0
+ 152 0000 10B5     		push	{r4, lr}
+ 153              		.cfi_def_cfa_offset 8
+ 154              		.cfi_offset 4, -8
+ 155              		.cfi_offset 14, -4
+ 152:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****     QuadDec_Cnt8_RestoreConfig();
+ 156              		.loc 1 152 0
+ 157 0002 FFF7FEFF 		bl	QuadDec_Cnt8_RestoreConfig
+ 158              	.LVL6:
+ 153:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****     #if(!QuadDec_Cnt8_ControlRegRemoved)
+ 154:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         if(QuadDec_Cnt8_backup.CounterEnableState == 1u)
+ 159              		.loc 1 154 0
+ 160 0006 034B     		ldr	r3, .L14
+ 161 0008 1B78     		ldrb	r3, [r3]
+ 162 000a 012B     		cmp	r3, #1
+ 163 000c 01D1     		bne	.L12
+ 155:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         {
+ 156:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****             /* Enable Counter's operation */
+ 157:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****             QuadDec_Cnt8_Enable();
+ 164              		.loc 1 157 0
+ 165 000e FFF7FEFF 		bl	QuadDec_Cnt8_Enable
+ 166              	.LVL7:
+ 167              	.L12:
+ 158:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****         } /* Do nothing if Counter was disabled before */    
+ 159:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****     #endif /* (!QuadDec_Cnt8_ControlRegRemoved) */
+ 160:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c ****     
+ 161:Generated_Source\PSoC4/QuadDec_Cnt8_PM.c **** }
+ 168              		.loc 1 161 0
+ 169              		@ sp needed
+ 170 0012 10BD     		pop	{r4, pc}
+ 171              	.L15:
+ 172              		.align	2
+ 173              	.L14:
+ 174 0014 00000000 		.word	.LANCHOR0
+ 175              		.cfi_endproc
+ 176              	.LFE4:
+ 177              		.size	QuadDec_Cnt8_Wakeup, .-QuadDec_Cnt8_Wakeup
+ 178              		.bss
+ 179              		.align	2
+ 180              		.set	.LANCHOR0,. + 0
+ 181              		.type	QuadDec_Cnt8_backup, %object
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 7
+
+
+ 182              		.size	QuadDec_Cnt8_backup, 3
+ 183              	QuadDec_Cnt8_backup:
+ 184 0000 000000   		.space	3
+ 185              		.text
+ 186              	.Letext0:
+ 187              		.file 2 "Generated_Source\\PSoC4\\cytypes.h"
+ 188              		.file 3 "Generated_Source\\PSoC4\\QuadDec_Cnt8.h"
+ 189              		.section	.debug_info,"",%progbits
+ 190              	.Ldebug_info0:
+ 191 0000 D3010000 		.4byte	0x1d3
+ 192 0004 0400     		.2byte	0x4
+ 193 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 194 000a 04       		.byte	0x4
+ 195 000b 01       		.uleb128 0x1
+ 196 000c B0010000 		.4byte	.LASF30
+ 197 0010 0C       		.byte	0xc
+ 198 0011 77020000 		.4byte	.LASF31
+ 199 0015 3F000000 		.4byte	.LASF32
+ 200 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 201 001d 00000000 		.4byte	0
+ 202 0021 00000000 		.4byte	.Ldebug_line0
+ 203 0025 02       		.uleb128 0x2
+ 204 0026 01       		.byte	0x1
+ 205 0027 06       		.byte	0x6
+ 206 0028 DC020000 		.4byte	.LASF0
+ 207 002c 02       		.uleb128 0x2
+ 208 002d 01       		.byte	0x1
+ 209 002e 08       		.byte	0x8
+ 210 002f EB000000 		.4byte	.LASF1
+ 211 0033 02       		.uleb128 0x2
+ 212 0034 02       		.byte	0x2
+ 213 0035 05       		.byte	0x5
+ 214 0036 6D020000 		.4byte	.LASF2
+ 215 003a 02       		.uleb128 0x2
+ 216 003b 02       		.byte	0x2
+ 217 003c 07       		.byte	0x7
+ 218 003d 2C000000 		.4byte	.LASF3
+ 219 0041 02       		.uleb128 0x2
+ 220 0042 04       		.byte	0x4
+ 221 0043 05       		.byte	0x5
+ 222 0044 A0020000 		.4byte	.LASF4
+ 223 0048 02       		.uleb128 0x2
+ 224 0049 04       		.byte	0x4
+ 225 004a 07       		.byte	0x7
+ 226 004b 40010000 		.4byte	.LASF5
+ 227 004f 02       		.uleb128 0x2
+ 228 0050 08       		.byte	0x8
+ 229 0051 05       		.byte	0x5
+ 230 0052 5A020000 		.4byte	.LASF6
+ 231 0056 02       		.uleb128 0x2
+ 232 0057 08       		.byte	0x8
+ 233 0058 07       		.byte	0x7
+ 234 0059 5F010000 		.4byte	.LASF7
+ 235 005d 03       		.uleb128 0x3
+ 236 005e 04       		.byte	0x4
+ 237 005f 05       		.byte	0x5
+ 238 0060 696E7400 		.ascii	"int\000"
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 8
+
+
+ 239 0064 02       		.uleb128 0x2
+ 240 0065 04       		.byte	0x4
+ 241 0066 07       		.byte	0x7
+ 242 0067 52010000 		.4byte	.LASF8
+ 243 006b 04       		.uleb128 0x4
+ 244 006c 33010000 		.4byte	.LASF12
+ 245 0070 02       		.byte	0x2
+ 246 0071 F701     		.2byte	0x1f7
+ 247 0073 2C000000 		.4byte	0x2c
+ 248 0077 02       		.uleb128 0x2
+ 249 0078 04       		.byte	0x4
+ 250 0079 04       		.byte	0x4
+ 251 007a CC000000 		.4byte	.LASF9
+ 252 007e 02       		.uleb128 0x2
+ 253 007f 08       		.byte	0x8
+ 254 0080 04       		.byte	0x4
+ 255 0081 39010000 		.4byte	.LASF10
+ 256 0085 02       		.uleb128 0x2
+ 257 0086 01       		.byte	0x1
+ 258 0087 08       		.byte	0x8
+ 259 0088 68020000 		.4byte	.LASF11
+ 260 008c 04       		.uleb128 0x4
+ 261 008d F9000000 		.4byte	.LASF13
+ 262 0091 02       		.byte	0x2
+ 263 0092 A102     		.2byte	0x2a1
+ 264 0094 98000000 		.4byte	0x98
+ 265 0098 05       		.uleb128 0x5
+ 266 0099 6B000000 		.4byte	0x6b
+ 267 009d 02       		.uleb128 0x2
+ 268 009e 08       		.byte	0x8
+ 269 009f 04       		.byte	0x4
+ 270 00a0 BC020000 		.4byte	.LASF14
+ 271 00a4 02       		.uleb128 0x2
+ 272 00a5 04       		.byte	0x4
+ 273 00a6 07       		.byte	0x7
+ 274 00a7 3E020000 		.4byte	.LASF15
+ 275 00ab 06       		.uleb128 0x6
+ 276 00ac 03       		.byte	0x3
+ 277 00ad 03       		.byte	0x3
+ 278 00ae 40       		.byte	0x40
+ 279 00af D8000000 		.4byte	0xd8
+ 280 00b3 07       		.uleb128 0x7
+ 281 00b4 47020000 		.4byte	.LASF16
+ 282 00b8 03       		.byte	0x3
+ 283 00b9 42       		.byte	0x42
+ 284 00ba 6B000000 		.4byte	0x6b
+ 285 00be 00       		.byte	0
+ 286 00bf 07       		.uleb128 0x7
+ 287 00c0 7C000000 		.4byte	.LASF17
+ 288 00c4 03       		.byte	0x3
+ 289 00c5 43       		.byte	0x43
+ 290 00c6 6B000000 		.4byte	0x6b
+ 291 00ca 01       		.byte	0x1
+ 292 00cb 07       		.uleb128 0x7
+ 293 00cc 87000000 		.4byte	.LASF18
+ 294 00d0 03       		.byte	0x3
+ 295 00d1 46       		.byte	0x46
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 9
+
+
+ 296 00d2 6B000000 		.4byte	0x6b
+ 297 00d6 02       		.byte	0x2
+ 298 00d7 00       		.byte	0
+ 299 00d8 08       		.uleb128 0x8
+ 300 00d9 00000000 		.4byte	.LASF19
+ 301 00dd 03       		.byte	0x3
+ 302 00de 49       		.byte	0x49
+ 303 00df AB000000 		.4byte	0xab
+ 304 00e3 09       		.uleb128 0x9
+ 305 00e4 76010000 		.4byte	.LASF20
+ 306 00e8 01       		.byte	0x1
+ 307 00e9 2A       		.byte	0x2a
+ 308 00ea 00000000 		.4byte	.LFB1
+ 309 00ee 18000000 		.4byte	.LFE1-.LFB1
+ 310 00f2 01       		.uleb128 0x1
+ 311 00f3 9C       		.byte	0x9c
+ 312 00f4 0B010000 		.4byte	0x10b
+ 313 00f8 0A       		.uleb128 0xa
+ 314 00f9 06000000 		.4byte	.LVL0
+ 315 00fd 94010000 		.4byte	0x194
+ 316 0101 0A       		.uleb128 0xa
+ 317 0102 0E000000 		.4byte	.LVL1
+ 318 0106 9F010000 		.4byte	0x19f
+ 319 010a 00       		.byte	0
+ 320 010b 09       		.uleb128 0x9
+ 321 010c E8020000 		.4byte	.LASF21
+ 322 0110 01       		.byte	0x1
+ 323 0111 4A       		.byte	0x4a
+ 324 0112 00000000 		.4byte	.LFB2
+ 325 0116 18000000 		.4byte	.LFE2-.LFB2
+ 326 011a 01       		.uleb128 0x1
+ 327 011b 9C       		.byte	0x9c
+ 328 011c 33010000 		.4byte	0x133
+ 329 0120 0A       		.uleb128 0xa
+ 330 0121 0A000000 		.4byte	.LVL2
+ 331 0125 AA010000 		.4byte	0x1aa
+ 332 0129 0A       		.uleb128 0xa
+ 333 012a 10000000 		.4byte	.LVL3
+ 334 012e B5010000 		.4byte	0x1b5
+ 335 0132 00       		.byte	0
+ 336 0133 09       		.uleb128 0x9
+ 337 0134 A9020000 		.4byte	.LASF22
+ 338 0138 01       		.byte	0x1
+ 339 0139 69       		.byte	0x69
+ 340 013a 00000000 		.4byte	.LFB3
+ 341 013e 2C000000 		.4byte	.LFE3-.LFB3
+ 342 0142 01       		.uleb128 0x1
+ 343 0143 9C       		.byte	0x9c
+ 344 0144 5B010000 		.4byte	0x15b
+ 345 0148 0A       		.uleb128 0xa
+ 346 0149 1E000000 		.4byte	.LVL4
+ 347 014d C0010000 		.4byte	0x1c0
+ 348 0151 0A       		.uleb128 0xa
+ 349 0152 22000000 		.4byte	.LVL5
+ 350 0156 E3000000 		.4byte	0xe3
+ 351 015a 00       		.byte	0
+ 352 015b 09       		.uleb128 0x9
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 10
+
+
+ 353 015c 1F010000 		.4byte	.LASF23
+ 354 0160 01       		.byte	0x1
+ 355 0161 96       		.byte	0x96
+ 356 0162 00000000 		.4byte	.LFB4
+ 357 0166 18000000 		.4byte	.LFE4-.LFB4
+ 358 016a 01       		.uleb128 0x1
+ 359 016b 9C       		.byte	0x9c
+ 360 016c 83010000 		.4byte	0x183
+ 361 0170 0A       		.uleb128 0xa
+ 362 0171 06000000 		.4byte	.LVL6
+ 363 0175 0B010000 		.4byte	0x10b
+ 364 0179 0A       		.uleb128 0xa
+ 365 017a 12000000 		.4byte	.LVL7
+ 366 017e CB010000 		.4byte	0x1cb
+ 367 0182 00       		.byte	0
+ 368 0183 0B       		.uleb128 0xb
+ 369 0184 B8000000 		.4byte	.LASF33
+ 370 0188 01       		.byte	0x1
+ 371 0189 15       		.byte	0x15
+ 372 018a D8000000 		.4byte	0xd8
+ 373 018e 05       		.uleb128 0x5
+ 374 018f 03       		.byte	0x3
+ 375 0190 00000000 		.4byte	QuadDec_Cnt8_backup
+ 376 0194 0C       		.uleb128 0xc
+ 377 0195 D2000000 		.4byte	.LASF24
+ 378 0199 D2000000 		.4byte	.LASF24
+ 379 019d 03       		.byte	0x3
+ 380 019e 5D       		.byte	0x5d
+ 381 019f 0C       		.uleb128 0xc
+ 382 01a0 FE000000 		.4byte	.LASF25
+ 383 01a4 FE000000 		.4byte	.LASF25
+ 384 01a8 03       		.byte	0x3
+ 385 01a9 55       		.byte	0x55
+ 386 01aa 0C       		.uleb128 0xc
+ 387 01ab 9E000000 		.4byte	.LASF26
+ 388 01af 9E000000 		.4byte	.LASF26
+ 389 01b3 03       		.byte	0x3
+ 390 01b4 5A       		.byte	0x5a
+ 391 01b5 0C       		.uleb128 0xc
+ 392 01b6 8E010000 		.4byte	.LASF27
+ 393 01ba 8E010000 		.4byte	.LASF27
+ 394 01be 03       		.byte	0x3
+ 395 01bf 56       		.byte	0x56
+ 396 01c0 0C       		.uleb128 0xc
+ 397 01c1 1A000000 		.4byte	.LASF28
+ 398 01c5 1A000000 		.4byte	.LASF28
+ 399 01c9 03       		.byte	0x3
+ 400 01ca 50       		.byte	0x50
+ 401 01cb 0C       		.uleb128 0xc
+ 402 01cc C8020000 		.4byte	.LASF29
+ 403 01d0 C8020000 		.4byte	.LASF29
+ 404 01d4 03       		.byte	0x3
+ 405 01d5 71       		.byte	0x71
+ 406 01d6 00       		.byte	0
+ 407              		.section	.debug_abbrev,"",%progbits
+ 408              	.Ldebug_abbrev0:
+ 409 0000 01       		.uleb128 0x1
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 11
+
+
+ 410 0001 11       		.uleb128 0x11
+ 411 0002 01       		.byte	0x1
+ 412 0003 25       		.uleb128 0x25
+ 413 0004 0E       		.uleb128 0xe
+ 414 0005 13       		.uleb128 0x13
+ 415 0006 0B       		.uleb128 0xb
+ 416 0007 03       		.uleb128 0x3
+ 417 0008 0E       		.uleb128 0xe
+ 418 0009 1B       		.uleb128 0x1b
+ 419 000a 0E       		.uleb128 0xe
+ 420 000b 55       		.uleb128 0x55
+ 421 000c 17       		.uleb128 0x17
+ 422 000d 11       		.uleb128 0x11
+ 423 000e 01       		.uleb128 0x1
+ 424 000f 10       		.uleb128 0x10
+ 425 0010 17       		.uleb128 0x17
+ 426 0011 00       		.byte	0
+ 427 0012 00       		.byte	0
+ 428 0013 02       		.uleb128 0x2
+ 429 0014 24       		.uleb128 0x24
+ 430 0015 00       		.byte	0
+ 431 0016 0B       		.uleb128 0xb
+ 432 0017 0B       		.uleb128 0xb
+ 433 0018 3E       		.uleb128 0x3e
+ 434 0019 0B       		.uleb128 0xb
+ 435 001a 03       		.uleb128 0x3
+ 436 001b 0E       		.uleb128 0xe
+ 437 001c 00       		.byte	0
+ 438 001d 00       		.byte	0
+ 439 001e 03       		.uleb128 0x3
+ 440 001f 24       		.uleb128 0x24
+ 441 0020 00       		.byte	0
+ 442 0021 0B       		.uleb128 0xb
+ 443 0022 0B       		.uleb128 0xb
+ 444 0023 3E       		.uleb128 0x3e
+ 445 0024 0B       		.uleb128 0xb
+ 446 0025 03       		.uleb128 0x3
+ 447 0026 08       		.uleb128 0x8
+ 448 0027 00       		.byte	0
+ 449 0028 00       		.byte	0
+ 450 0029 04       		.uleb128 0x4
+ 451 002a 16       		.uleb128 0x16
+ 452 002b 00       		.byte	0
+ 453 002c 03       		.uleb128 0x3
+ 454 002d 0E       		.uleb128 0xe
+ 455 002e 3A       		.uleb128 0x3a
+ 456 002f 0B       		.uleb128 0xb
+ 457 0030 3B       		.uleb128 0x3b
+ 458 0031 05       		.uleb128 0x5
+ 459 0032 49       		.uleb128 0x49
+ 460 0033 13       		.uleb128 0x13
+ 461 0034 00       		.byte	0
+ 462 0035 00       		.byte	0
+ 463 0036 05       		.uleb128 0x5
+ 464 0037 35       		.uleb128 0x35
+ 465 0038 00       		.byte	0
+ 466 0039 49       		.uleb128 0x49
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 12
+
+
+ 467 003a 13       		.uleb128 0x13
+ 468 003b 00       		.byte	0
+ 469 003c 00       		.byte	0
+ 470 003d 06       		.uleb128 0x6
+ 471 003e 13       		.uleb128 0x13
+ 472 003f 01       		.byte	0x1
+ 473 0040 0B       		.uleb128 0xb
+ 474 0041 0B       		.uleb128 0xb
+ 475 0042 3A       		.uleb128 0x3a
+ 476 0043 0B       		.uleb128 0xb
+ 477 0044 3B       		.uleb128 0x3b
+ 478 0045 0B       		.uleb128 0xb
+ 479 0046 01       		.uleb128 0x1
+ 480 0047 13       		.uleb128 0x13
+ 481 0048 00       		.byte	0
+ 482 0049 00       		.byte	0
+ 483 004a 07       		.uleb128 0x7
+ 484 004b 0D       		.uleb128 0xd
+ 485 004c 00       		.byte	0
+ 486 004d 03       		.uleb128 0x3
+ 487 004e 0E       		.uleb128 0xe
+ 488 004f 3A       		.uleb128 0x3a
+ 489 0050 0B       		.uleb128 0xb
+ 490 0051 3B       		.uleb128 0x3b
+ 491 0052 0B       		.uleb128 0xb
+ 492 0053 49       		.uleb128 0x49
+ 493 0054 13       		.uleb128 0x13
+ 494 0055 38       		.uleb128 0x38
+ 495 0056 0B       		.uleb128 0xb
+ 496 0057 00       		.byte	0
+ 497 0058 00       		.byte	0
+ 498 0059 08       		.uleb128 0x8
+ 499 005a 16       		.uleb128 0x16
+ 500 005b 00       		.byte	0
+ 501 005c 03       		.uleb128 0x3
+ 502 005d 0E       		.uleb128 0xe
+ 503 005e 3A       		.uleb128 0x3a
+ 504 005f 0B       		.uleb128 0xb
+ 505 0060 3B       		.uleb128 0x3b
+ 506 0061 0B       		.uleb128 0xb
+ 507 0062 49       		.uleb128 0x49
+ 508 0063 13       		.uleb128 0x13
+ 509 0064 00       		.byte	0
+ 510 0065 00       		.byte	0
+ 511 0066 09       		.uleb128 0x9
+ 512 0067 2E       		.uleb128 0x2e
+ 513 0068 01       		.byte	0x1
+ 514 0069 3F       		.uleb128 0x3f
+ 515 006a 19       		.uleb128 0x19
+ 516 006b 03       		.uleb128 0x3
+ 517 006c 0E       		.uleb128 0xe
+ 518 006d 3A       		.uleb128 0x3a
+ 519 006e 0B       		.uleb128 0xb
+ 520 006f 3B       		.uleb128 0x3b
+ 521 0070 0B       		.uleb128 0xb
+ 522 0071 27       		.uleb128 0x27
+ 523 0072 19       		.uleb128 0x19
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 13
+
+
+ 524 0073 11       		.uleb128 0x11
+ 525 0074 01       		.uleb128 0x1
+ 526 0075 12       		.uleb128 0x12
+ 527 0076 06       		.uleb128 0x6
+ 528 0077 40       		.uleb128 0x40
+ 529 0078 18       		.uleb128 0x18
+ 530 0079 9742     		.uleb128 0x2117
+ 531 007b 19       		.uleb128 0x19
+ 532 007c 01       		.uleb128 0x1
+ 533 007d 13       		.uleb128 0x13
+ 534 007e 00       		.byte	0
+ 535 007f 00       		.byte	0
+ 536 0080 0A       		.uleb128 0xa
+ 537 0081 898201   		.uleb128 0x4109
+ 538 0084 00       		.byte	0
+ 539 0085 11       		.uleb128 0x11
+ 540 0086 01       		.uleb128 0x1
+ 541 0087 31       		.uleb128 0x31
+ 542 0088 13       		.uleb128 0x13
+ 543 0089 00       		.byte	0
+ 544 008a 00       		.byte	0
+ 545 008b 0B       		.uleb128 0xb
+ 546 008c 34       		.uleb128 0x34
+ 547 008d 00       		.byte	0
+ 548 008e 03       		.uleb128 0x3
+ 549 008f 0E       		.uleb128 0xe
+ 550 0090 3A       		.uleb128 0x3a
+ 551 0091 0B       		.uleb128 0xb
+ 552 0092 3B       		.uleb128 0x3b
+ 553 0093 0B       		.uleb128 0xb
+ 554 0094 49       		.uleb128 0x49
+ 555 0095 13       		.uleb128 0x13
+ 556 0096 02       		.uleb128 0x2
+ 557 0097 18       		.uleb128 0x18
+ 558 0098 00       		.byte	0
+ 559 0099 00       		.byte	0
+ 560 009a 0C       		.uleb128 0xc
+ 561 009b 2E       		.uleb128 0x2e
+ 562 009c 00       		.byte	0
+ 563 009d 3F       		.uleb128 0x3f
+ 564 009e 19       		.uleb128 0x19
+ 565 009f 3C       		.uleb128 0x3c
+ 566 00a0 19       		.uleb128 0x19
+ 567 00a1 6E       		.uleb128 0x6e
+ 568 00a2 0E       		.uleb128 0xe
+ 569 00a3 03       		.uleb128 0x3
+ 570 00a4 0E       		.uleb128 0xe
+ 571 00a5 3A       		.uleb128 0x3a
+ 572 00a6 0B       		.uleb128 0xb
+ 573 00a7 3B       		.uleb128 0x3b
+ 574 00a8 0B       		.uleb128 0xb
+ 575 00a9 00       		.byte	0
+ 576 00aa 00       		.byte	0
+ 577 00ab 00       		.byte	0
+ 578              		.section	.debug_aranges,"",%progbits
+ 579 0000 34000000 		.4byte	0x34
+ 580 0004 0200     		.2byte	0x2
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 14
+
+
+ 581 0006 00000000 		.4byte	.Ldebug_info0
+ 582 000a 04       		.byte	0x4
+ 583 000b 00       		.byte	0
+ 584 000c 0000     		.2byte	0
+ 585 000e 0000     		.2byte	0
+ 586 0010 00000000 		.4byte	.LFB1
+ 587 0014 18000000 		.4byte	.LFE1-.LFB1
+ 588 0018 00000000 		.4byte	.LFB2
+ 589 001c 18000000 		.4byte	.LFE2-.LFB2
+ 590 0020 00000000 		.4byte	.LFB3
+ 591 0024 2C000000 		.4byte	.LFE3-.LFB3
+ 592 0028 00000000 		.4byte	.LFB4
+ 593 002c 18000000 		.4byte	.LFE4-.LFB4
+ 594 0030 00000000 		.4byte	0
+ 595 0034 00000000 		.4byte	0
+ 596              		.section	.debug_ranges,"",%progbits
+ 597              	.Ldebug_ranges0:
+ 598 0000 00000000 		.4byte	.LFB1
+ 599 0004 18000000 		.4byte	.LFE1
+ 600 0008 00000000 		.4byte	.LFB2
+ 601 000c 18000000 		.4byte	.LFE2
+ 602 0010 00000000 		.4byte	.LFB3
+ 603 0014 2C000000 		.4byte	.LFE3
+ 604 0018 00000000 		.4byte	.LFB4
+ 605 001c 18000000 		.4byte	.LFE4
+ 606 0020 00000000 		.4byte	0
+ 607 0024 00000000 		.4byte	0
+ 608              		.section	.debug_line,"",%progbits
+ 609              	.Ldebug_line0:
+ 610 0000 B5000000 		.section	.debug_str,"MS",%progbits,1
+ 610      02005E00 
+ 610      00000201 
+ 610      FB0E0D00 
+ 610      01010101 
+ 611              	.LASF19:
+ 612 0000 51756164 		.ascii	"QuadDec_Cnt8_backupStruct\000"
+ 612      4465635F 
+ 612      436E7438 
+ 612      5F626163 
+ 612      6B757053 
+ 613              	.LASF28:
+ 614 001a 51756164 		.ascii	"QuadDec_Cnt8_Stop\000"
+ 614      4465635F 
+ 614      436E7438 
+ 614      5F53746F 
+ 614      7000
+ 615              	.LASF3:
+ 616 002c 73686F72 		.ascii	"short unsigned int\000"
+ 616      7420756E 
+ 616      7369676E 
+ 616      65642069 
+ 616      6E7400
+ 617              	.LASF32:
+ 618 003f 433A5C55 		.ascii	"C:\\Users\\Admin\\Documents\\PSoC Creator\\Workspac"
+ 618      73657273 
+ 618      5C41646D 
+ 618      696E5C44 
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 15
+
+
+ 618      6F63756D 
+ 619 006d 6530315C 		.ascii	"e01\\Lab5.cydsn\000"
+ 619      4C616235 
+ 619      2E637964 
+ 619      736E00
+ 620              	.LASF17:
+ 621 007c 436F756E 		.ascii	"CounterUdb\000"
+ 621      74657255 
+ 621      646200
+ 622              	.LASF18:
+ 623 0087 436F756E 		.ascii	"CounterControlRegister\000"
+ 623      74657243 
+ 623      6F6E7472 
+ 623      6F6C5265 
+ 623      67697374 
+ 624              	.LASF26:
+ 625 009e 51756164 		.ascii	"QuadDec_Cnt8_WriteCounter\000"
+ 625      4465635F 
+ 625      436E7438 
+ 625      5F577269 
+ 625      7465436F 
+ 626              	.LASF33:
+ 627 00b8 51756164 		.ascii	"QuadDec_Cnt8_backup\000"
+ 627      4465635F 
+ 627      436E7438 
+ 627      5F626163 
+ 627      6B757000 
+ 628              	.LASF9:
+ 629 00cc 666C6F61 		.ascii	"float\000"
+ 629      7400
+ 630              	.LASF24:
+ 631 00d2 51756164 		.ascii	"QuadDec_Cnt8_ReadCounter\000"
+ 631      4465635F 
+ 631      436E7438 
+ 631      5F526561 
+ 631      64436F75 
+ 632              	.LASF1:
+ 633 00eb 756E7369 		.ascii	"unsigned char\000"
+ 633      676E6564 
+ 633      20636861 
+ 633      7200
+ 634              	.LASF13:
+ 635 00f9 72656738 		.ascii	"reg8\000"
+ 635      00
+ 636              	.LASF25:
+ 637 00fe 51756164 		.ascii	"QuadDec_Cnt8_ReadControlRegister\000"
+ 637      4465635F 
+ 637      436E7438 
+ 637      5F526561 
+ 637      64436F6E 
+ 638              	.LASF23:
+ 639 011f 51756164 		.ascii	"QuadDec_Cnt8_Wakeup\000"
+ 639      4465635F 
+ 639      436E7438 
+ 639      5F57616B 
+ 639      65757000 
+ 640              	.LASF12:
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 16
+
+
+ 641 0133 75696E74 		.ascii	"uint8\000"
+ 641      3800
+ 642              	.LASF10:
+ 643 0139 646F7562 		.ascii	"double\000"
+ 643      6C6500
+ 644              	.LASF5:
+ 645 0140 6C6F6E67 		.ascii	"long unsigned int\000"
+ 645      20756E73 
+ 645      69676E65 
+ 645      6420696E 
+ 645      7400
+ 646              	.LASF8:
+ 647 0152 756E7369 		.ascii	"unsigned int\000"
+ 647      676E6564 
+ 647      20696E74 
+ 647      00
+ 648              	.LASF7:
+ 649 015f 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 649      206C6F6E 
+ 649      6720756E 
+ 649      7369676E 
+ 649      65642069 
+ 650              	.LASF20:
+ 651 0176 51756164 		.ascii	"QuadDec_Cnt8_SaveConfig\000"
+ 651      4465635F 
+ 651      436E7438 
+ 651      5F536176 
+ 651      65436F6E 
+ 652              	.LASF27:
+ 653 018e 51756164 		.ascii	"QuadDec_Cnt8_WriteControlRegister\000"
+ 653      4465635F 
+ 653      436E7438 
+ 653      5F577269 
+ 653      7465436F 
+ 654              	.LASF30:
+ 655 01b0 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 655      43313120 
+ 655      352E342E 
+ 655      31203230 
+ 655      31363036 
+ 656 01e3 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -O"
+ 656      20726576 
+ 656      6973696F 
+ 656      6E203233 
+ 656      37373135 
+ 657 0216 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 657      66756E63 
+ 657      74696F6E 
+ 657      2D736563 
+ 657      74696F6E 
+ 658              	.LASF15:
+ 659 023e 73697A65 		.ascii	"sizetype\000"
+ 659      74797065 
+ 659      00
+ 660              	.LASF16:
+ 661 0247 436F756E 		.ascii	"CounterEnableState\000"
+ 661      74657245 
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\ccPdnzHR.s 			page 17
+
+
+ 661      6E61626C 
+ 661      65537461 
+ 661      746500
+ 662              	.LASF6:
+ 663 025a 6C6F6E67 		.ascii	"long long int\000"
+ 663      206C6F6E 
+ 663      6720696E 
+ 663      7400
+ 664              	.LASF11:
+ 665 0268 63686172 		.ascii	"char\000"
+ 665      00
+ 666              	.LASF2:
+ 667 026d 73686F72 		.ascii	"short int\000"
+ 667      7420696E 
+ 667      7400
+ 668              	.LASF31:
+ 669 0277 47656E65 		.ascii	"Generated_Source\\PSoC4\\QuadDec_Cnt8_PM.c\000"
+ 669      72617465 
+ 669      645F536F 
+ 669      75726365 
+ 669      5C50536F 
+ 670              	.LASF4:
+ 671 02a0 6C6F6E67 		.ascii	"long int\000"
+ 671      20696E74 
+ 671      00
+ 672              	.LASF22:
+ 673 02a9 51756164 		.ascii	"QuadDec_Cnt8_Sleep\000"
+ 673      4465635F 
+ 673      436E7438 
+ 673      5F536C65 
+ 673      657000
+ 674              	.LASF14:
+ 675 02bc 6C6F6E67 		.ascii	"long double\000"
+ 675      20646F75 
+ 675      626C6500 
+ 676              	.LASF29:
+ 677 02c8 51756164 		.ascii	"QuadDec_Cnt8_Enable\000"
+ 677      4465635F 
+ 677      436E7438 
+ 677      5F456E61 
+ 677      626C6500 
+ 678              	.LASF0:
+ 679 02dc 7369676E 		.ascii	"signed char\000"
+ 679      65642063 
+ 679      68617200 
+ 680              	.LASF21:
+ 681 02e8 51756164 		.ascii	"QuadDec_Cnt8_RestoreConfig\000"
+ 681      4465635F 
+ 681      436E7438 
+ 681      5F526573 
+ 681      746F7265 
+ 682              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

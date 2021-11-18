@@ -1,0 +1,4147 @@
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m0
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 0
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.timer_isr_interrupt,"ax",%progbits
+  20              		.align	2
+  21              		.global	timer_isr_interrupt
+  22              		.code	16
+  23              		.thumb_func
+  24              		.type	timer_isr_interrupt, %function
+  25              	timer_isr_interrupt:
+  26              	.LFB34:
+  27              		.file 1 "main.c"
+   1:main.c        **** /* ========================================
+   2:main.c        ****  *
+   3:main.c        ****  * Copyright YOUR COMPANY, THE YEAR
+   4:main.c        ****  * All Rights Reserved
+   5:main.c        ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:main.c        ****  *
+   7:main.c        ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:main.c        ****  * WHICH IS THE PROPERTY OF your company.
+   9:main.c        ****  *
+  10:main.c        ****  * ========================================
+  11:main.c        **** */
+  12:main.c        **** #include "project.h"
+  13:main.c        **** 
+  14:main.c        **** #define RED 0b001
+  15:main.c        **** #define YELLOW 0b010
+  16:main.c        **** #define GREEN 0b100
+  17:main.c        **** #define NO_COLOR 0b000
+  18:main.c        **** 
+  19:main.c        **** #define INITIAL_DELAY 3000
+  20:main.c        **** 
+  21:main.c        **** #define LIGHTS_BAR "RED YELLOW GREEN"
+  22:main.c        **** #define SET_RED    "SET RED TIME:   "
+  23:main.c        **** #define SET_YELLOW "SET YELLOW TIME:"
+  24:main.c        **** #define SET_GREEN  "SET GREEN TIME: "
+  25:main.c        **** #define EMPTY_LINE "                "
+  26:main.c        **** #define TIME       "TIME=           "
+  27:main.c        **** 
+  28:main.c        **** #define POSITION_RED 0
+  29:main.c        **** #define POSITION_YELLOW 4
+  30:main.c        **** #define POSITION_GREEN 11
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 2
+
+
+  31:main.c        **** #define POSITITON_SET_TIME 5
+  32:main.c        **** 
+  33:main.c        **** uint8_t counter = 0;
+  34:main.c        **** CYBIT algorithm = 0;
+  35:main.c        **** 
+  36:main.c        **** uint8_t redTime;
+  37:main.c        **** uint8_t yellowTime;
+  38:main.c        **** uint8_t greenTime;
+  39:main.c        **** 
+  40:main.c        **** uint8_t displayMode = 0;
+  41:main.c        **** CYBIT modeHasChanged = 0;
+  42:main.c        **** 
+  43:main.c        **** struct DisplayCounter
+  44:main.c        **** {
+  45:main.c        ****     uint8_t position, counter;
+  46:main.c        **** };
+  47:main.c        **** struct DisplayCounter displayCounter = {0, 0};
+  48:main.c        **** 
+  49:main.c        **** inline void runAlgorithm1();
+  50:main.c        **** inline void runAlgorithm2();
+  51:main.c        **** inline void runAlgorithmGreenPart(const uint8_t* pShift);
+  52:main.c        **** inline void runAlgorithmRedPart(const uint8_t* pShift);
+  53:main.c        **** 
+  54:main.c        **** CY_ISR(timer_isr_interrupt)
+  55:main.c        **** {
+  28              		.loc 1 55 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  33              		.cfi_def_cfa_offset 24
+  34              		.cfi_offset 3, -24
+  35              		.cfi_offset 4, -20
+  36              		.cfi_offset 5, -16
+  37              		.cfi_offset 6, -12
+  38              		.cfi_offset 7, -8
+  39              		.cfi_offset 14, -4
+  56:main.c        ****     if (counter >= (greenTime + redTime + 2 * yellowTime)) 
+  40              		.loc 1 56 0
+  41 0002 BE4B     		ldr	r3, .L23
+  42 0004 1E78     		ldrb	r6, [r3]
+  43 0006 BE4B     		ldr	r3, .L23+4
+  44 0008 1B78     		ldrb	r3, [r3]
+  45 000a 1D00     		movs	r5, r3
+  46 000c BD4A     		ldr	r2, .L23+8
+  47 000e 1278     		ldrb	r2, [r2]
+  48 0010 1400     		movs	r4, r2
+  49 0012 9F18     		adds	r7, r3, r2
+  50 0014 BC49     		ldr	r1, .L23+12
+  51 0016 0978     		ldrb	r1, [r1]
+  52 0018 4800     		lsls	r0, r1, #1
+  53 001a 3818     		adds	r0, r7, r0
+  54 001c 8642     		cmp	r6, r0
+  55 001e 02DB     		blt	.L2
+  57:main.c        ****     {
+  58:main.c        ****         counter = 0;
+  56              		.loc 1 58 0
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 3
+
+
+  57 0020 0026     		movs	r6, #0
+  58 0022 B648     		ldr	r0, .L23
+  59 0024 0670     		strb	r6, [r0]
+  60              	.L2:
+  59:main.c        ****     } 
+  60:main.c        ****     
+  61:main.c        ****     if (algorithm)
+  61              		.loc 1 61 0
+  62 0026 B548     		ldr	r0, .L23
+  63 0028 4078     		ldrb	r0, [r0, #1]
+  64 002a 0028     		cmp	r0, #0
+  65 002c 00D1     		bne	.LCB35
+  66 002e A9E0     		b	.L3	@long jump
+  67              	.LCB35:
+  68              	.LBB22:
+  69              	.LBB23:
+  62:main.c        ****     {
+  63:main.c        ****         runAlgorithm2();
+  64:main.c        ****     }
+  65:main.c        ****     else
+  66:main.c        ****     {
+  67:main.c        ****         runAlgorithm1();
+  68:main.c        ****     }
+  69:main.c        ****     
+  70:main.c        ****     counter++;
+  71:main.c        ****     Timer_Counter_ClearInterrupt(Timer_Counter_INTR_MASK_TC);
+  72:main.c        **** }
+  73:main.c        **** 
+  74:main.c        **** CY_ISR(button_isr_interrupt)
+  75:main.c        **** {
+  76:main.c        ****     algorithm = algorithm ? 0 : 1;
+  77:main.c        ****     counter = 0;
+  78:main.c        ****     
+  79:main.c        ****     Button_ClearInterrupt();
+  80:main.c        **** }
+  81:main.c        **** 
+  82:main.c        **** CY_ISR(button_encoder_isr_interrupt)
+  83:main.c        **** {
+  84:main.c        ****     if (displayMode >= 3)
+  85:main.c        ****     {
+  86:main.c        ****         displayMode = 0;
+  87:main.c        ****     }
+  88:main.c        ****     else
+  89:main.c        ****     {
+  90:main.c        ****         displayMode++;
+  91:main.c        ****     }
+  92:main.c        ****     modeHasChanged = 1;
+  93:main.c        ****     
+  94:main.c        ****     Button_Encoder_ClearInterrupt();
+  95:main.c        **** }
+  96:main.c        **** 
+  97:main.c        **** int main(void)
+  98:main.c        **** {
+  99:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
+ 100:main.c        ****     
+ 101:main.c        ****     redTime = 8;
+ 102:main.c        ****     yellowTime = 2;
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 4
+
+
+ 103:main.c        ****     greenTime = 8;
+ 104:main.c        ****     
+ 105:main.c        ****     displayCounter.counter = redTime;
+ 106:main.c        ****     displayCounter.position = POSITION_RED;
+ 107:main.c        ****     
+ 108:main.c        ****     Timer_Counter_Start();
+ 109:main.c        ****     timer_isr_StartEx(timer_isr_interrupt);
+ 110:main.c        ****     button_isr_StartEx(button_isr_interrupt);
+ 111:main.c        ****     button_encoder_isr_StartEx(button_encoder_isr_interrupt);
+ 112:main.c        ****     
+ 113:main.c        ****     QuadDec_Start();
+ 114:main.c        ****     
+ 115:main.c        ****     LCD_Char_Start();
+ 116:main.c        ****     LCD_Char_ClearDisplay();
+ 117:main.c        ****     
+ 118:main.c        ****     LCD_Char_Position(0, 5);
+ 119:main.c        ****     LCD_Char_PrintString("Author");
+ 120:main.c        ****     LCD_Char_Position(1, 2);
+ 121:main.c        ****     LCD_Char_PrintString("Denys Shutka");
+ 122:main.c        ****     CyDelay(INITIAL_DELAY);
+ 123:main.c        ****     LCD_Char_ClearDisplay();
+ 124:main.c        ****     
+ 125:main.c        ****     LCD_Char_Position(0, 0);
+ 126:main.c        ****     LCD_Char_PrintString(LIGHTS_BAR);
+ 127:main.c        ****     
+ 128:main.c        ****     uint8_t currentCounter = displayCounter.counter;
+ 129:main.c        ****     uint8_t currentPosition = displayCounter.position;
+ 130:main.c        ****     
+ 131:main.c        ****     for(;;)
+ 132:main.c        ****     {
+ 133:main.c        ****         /* LED algorithm is executed in timer_isr_interrupt */
+ 134:main.c        ****         
+ 135:main.c        ****         /* DISPLAY MODES:
+ 136:main.c        ****          * 0 is "INIT": display remaining time of lighting 
+ 137:main.c        ****          * 1 is "SET RED": set time for red diode
+ 138:main.c        ****          * 2 is "SET YELLOW": set time for yellow diode
+ 139:main.c        ****          * 3 is "SET GREEN": set time for green diode
+ 140:main.c        ****          */
+ 141:main.c        ****         
+ 142:main.c        ****         if (QuadDec_GetCounter() > 20)
+ 143:main.c        ****         {
+ 144:main.c        ****             QuadDec_SetCounter(20);
+ 145:main.c        ****         }
+ 146:main.c        ****         if (QuadDec_GetCounter() < 1)
+ 147:main.c        ****         {
+ 148:main.c        ****             QuadDec_SetCounter(1);
+ 149:main.c        ****         }
+ 150:main.c        ****         
+ 151:main.c        ****         if (modeHasChanged)
+ 152:main.c        ****         {
+ 153:main.c        ****             LCD_Char_ClearDisplay();
+ 154:main.c        ****             if (displayMode == 0)
+ 155:main.c        ****             {
+ 156:main.c        ****                 LCD_Char_Position(0, 0);
+ 157:main.c        ****                 LCD_Char_PrintString(LIGHTS_BAR);
+ 158:main.c        ****             }
+ 159:main.c        ****             else if (displayMode == 1)
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 5
+
+
+ 160:main.c        ****             {
+ 161:main.c        ****                 LCD_Char_Position(0, 0);
+ 162:main.c        ****                 LCD_Char_PrintString(SET_RED);
+ 163:main.c        ****                 LCD_Char_Position(1, 0);
+ 164:main.c        ****                 LCD_Char_PrintString(TIME);
+ 165:main.c        ****                 QuadDec_SetCounter(redTime);
+ 166:main.c        ****             }
+ 167:main.c        ****             else if (displayMode == 2)
+ 168:main.c        ****             {
+ 169:main.c        ****                 LCD_Char_Position(0, 0);
+ 170:main.c        ****                 LCD_Char_PrintString(SET_YELLOW);
+ 171:main.c        ****                 LCD_Char_Position(1, 0);
+ 172:main.c        ****                 LCD_Char_PrintString(TIME);
+ 173:main.c        ****                 QuadDec_SetCounter(yellowTime);
+ 174:main.c        ****             }
+ 175:main.c        ****             else if (displayMode == 3)
+ 176:main.c        ****             {
+ 177:main.c        ****                 LCD_Char_Position(0, 0);
+ 178:main.c        ****                 LCD_Char_PrintString(SET_GREEN);
+ 179:main.c        ****                 LCD_Char_Position(1, 0);
+ 180:main.c        ****                 LCD_Char_PrintString(TIME);
+ 181:main.c        ****                 QuadDec_SetCounter(greenTime);
+ 182:main.c        ****             }
+ 183:main.c        ****             
+ 184:main.c        ****             modeHasChanged = 0;
+ 185:main.c        ****         }
+ 186:main.c        ****         
+ 187:main.c        ****         if (displayMode == 0)
+ 188:main.c        ****         {
+ 189:main.c        ****             if (currentPosition != displayCounter.position)
+ 190:main.c        ****             {
+ 191:main.c        ****                 LCD_Char_Position(1, 0);
+ 192:main.c        ****                 LCD_Char_PrintString(EMPTY_LINE);
+ 193:main.c        ****                 currentCounter = displayCounter.counter;
+ 194:main.c        ****                 currentPosition = displayCounter.position;
+ 195:main.c        ****             }
+ 196:main.c        ****             currentCounter = displayCounter.counter;
+ 197:main.c        ****             
+ 198:main.c        ****             LCD_Char_Position(1, currentPosition);
+ 199:main.c        ****             if (currentCounter < 10)
+ 200:main.c        ****             {
+ 201:main.c        ****                 LCD_Char_PutChar('0');
+ 202:main.c        ****                 LCD_Char_Position(1, currentPosition + 1);
+ 203:main.c        ****             }
+ 204:main.c        ****             LCD_Char_PrintDecUint16(currentCounter);
+ 205:main.c        ****         }
+ 206:main.c        ****         else if (displayMode == 1)
+ 207:main.c        ****         {
+ 208:main.c        ****             LCD_Char_Position(1, POSITITON_SET_TIME);
+ 209:main.c        ****             if (QuadDec_GetCounter() < 10)
+ 210:main.c        ****             {
+ 211:main.c        ****                 LCD_Char_PutChar('0');
+ 212:main.c        ****                 LCD_Char_Position(1, POSITITON_SET_TIME + 1);
+ 213:main.c        ****             }
+ 214:main.c        ****             LCD_Char_PrintDecUint16(QuadDec_GetCounter());
+ 215:main.c        ****             
+ 216:main.c        ****             redTime = QuadDec_GetCounter();
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 6
+
+
+ 217:main.c        ****         }
+ 218:main.c        ****         else if (displayMode == 2)
+ 219:main.c        ****         {
+ 220:main.c        ****             LCD_Char_Position(1, POSITITON_SET_TIME);
+ 221:main.c        ****             if (QuadDec_GetCounter() < 10)
+ 222:main.c        ****             {
+ 223:main.c        ****                 LCD_Char_PutChar('0');
+ 224:main.c        ****                 LCD_Char_Position(1, POSITITON_SET_TIME + 1);
+ 225:main.c        ****             }
+ 226:main.c        ****             LCD_Char_PrintDecUint16(QuadDec_GetCounter());
+ 227:main.c        ****             
+ 228:main.c        ****             yellowTime = QuadDec_GetCounter();
+ 229:main.c        ****         }
+ 230:main.c        ****         else if (displayMode == 3)
+ 231:main.c        ****         {
+ 232:main.c        ****             LCD_Char_Position(1, POSITITON_SET_TIME);
+ 233:main.c        ****             if (QuadDec_GetCounter() < 10)
+ 234:main.c        ****             {
+ 235:main.c        ****                 LCD_Char_PutChar('0');
+ 236:main.c        ****                 LCD_Char_Position(1, POSITITON_SET_TIME + 1);
+ 237:main.c        ****             }
+ 238:main.c        ****             LCD_Char_PrintDecUint16(QuadDec_GetCounter());
+ 239:main.c        ****             
+ 240:main.c        ****             greenTime = QuadDec_GetCounter();
+ 241:main.c        ****         }
+ 242:main.c        ****     }
+ 243:main.c        **** }
+ 244:main.c        **** 
+ 245:main.c        **** inline void runAlgorithmGreenPart(const uint8_t* pShift)
+ 246:main.c        **** {
+ 247:main.c        ****     if (greenTime > 4)
+ 248:main.c        ****     {
+ 249:main.c        ****         if (counter < *pShift + (greenTime - 4))
+ 250:main.c        ****         {
+ 251:main.c        ****             Control_Reg_Write(GREEN);
+ 252:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 253:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 254:main.c        ****         }
+ 255:main.c        ****         else if (counter < *pShift + (greenTime - 3))
+ 256:main.c        ****         {
+ 257:main.c        ****             Control_Reg_Write(NO_COLOR);
+ 258:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 259:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 260:main.c        ****         }
+ 261:main.c        ****         else if (counter < *pShift + (greenTime - 2))
+ 262:main.c        ****         {
+ 263:main.c        ****             Control_Reg_Write(GREEN);
+ 264:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 265:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 266:main.c        ****         }
+ 267:main.c        ****         else if (counter < *pShift + (greenTime - 1))
+ 268:main.c        ****         {
+ 269:main.c        ****             Control_Reg_Write(NO_COLOR);
+ 270:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 271:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 272:main.c        ****         }
+ 273:main.c        ****         else if (counter < *pShift + greenTime)
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 7
+
+
+ 274:main.c        ****         {
+ 275:main.c        ****             Control_Reg_Write(GREEN);
+ 276:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 277:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 278:main.c        ****         }
+ 279:main.c        ****         else if (counter < *pShift + greenTime + yellowTime)
+ 280:main.c        ****         {
+ 281:main.c        ****             Control_Reg_Write(YELLOW);
+ 282:main.c        ****             displayCounter.position = POSITION_YELLOW;
+ 283:main.c        ****             displayCounter.counter = yellowTime - (counter - *pShift - greenTime);
+ 284:main.c        ****         }
+ 285:main.c        ****     }
+ 286:main.c        ****     else
+ 287:main.c        ****     {
+ 288:main.c        ****         if (counter < *pShift + greenTime)
+ 289:main.c        ****         {
+ 290:main.c        ****             Control_Reg_Write(GREEN);
+ 291:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 292:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 293:main.c        ****         }
+ 294:main.c        ****         else if (counter < *pShift + (greenTime + yellowTime))
+ 295:main.c        ****         {
+ 296:main.c        ****             Control_Reg_Write(YELLOW);
+ 297:main.c        ****             displayCounter.position = POSITION_YELLOW;
+ 298:main.c        ****             displayCounter.counter = yellowTime - (counter - *pShift - greenTime);
+ 299:main.c        ****         }
+ 300:main.c        ****     }
+ 301:main.c        ****     
+ 302:main.c        **** }
+ 303:main.c        **** 
+ 304:main.c        **** inline void runAlgorithmRedPart(const uint8_t* pShift)
+ 305:main.c        **** {
+ 306:main.c        ****     if (counter < *pShift + redTime)
+ 307:main.c        ****     {
+ 308:main.c        ****         Control_Reg_Write(RED);
+ 309:main.c        ****         displayCounter.position = POSITION_RED;
+ 310:main.c        ****         displayCounter.counter = redTime - (counter - *pShift);
+ 311:main.c        ****     }
+ 312:main.c        ****     else if (counter < *pShift + (redTime + yellowTime))
+ 313:main.c        ****     {
+ 314:main.c        ****         Control_Reg_Write(YELLOW);
+ 315:main.c        ****         displayCounter.position = POSITION_YELLOW;
+ 316:main.c        ****         displayCounter.counter = yellowTime - (counter - *pShift - redTime);
+ 317:main.c        ****     }
+ 318:main.c        **** }
+ 319:main.c        **** 
+ 320:main.c        **** inline void runAlgorithm1()
+ 321:main.c        **** {
+ 322:main.c        ****     uint8 shift;
+ 323:main.c        ****     if (counter < redTime + yellowTime)
+ 324:main.c        ****     {
+ 325:main.c        ****         shift = 0;
+ 326:main.c        ****         runAlgorithmRedPart(&shift);
+ 327:main.c        ****     }
+ 328:main.c        ****     else 
+ 329:main.c        ****     {
+ 330:main.c        ****         shift = redTime + yellowTime;
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 8
+
+
+ 331:main.c        ****         runAlgorithmGreenPart(&shift);
+ 332:main.c        ****     }
+ 333:main.c        **** }
+ 334:main.c        **** 
+ 335:main.c        **** inline void runAlgorithm2()
+ 336:main.c        **** {
+ 337:main.c        ****     uint8 shift;
+ 338:main.c        ****     if (counter < greenTime + yellowTime)
+  70              		.loc 1 338 0
+  71 0030 B248     		ldr	r0, .L23
+  72 0032 0078     		ldrb	r0, [r0]
+  73 0034 5C18     		adds	r4, r3, r1
+  74 0036 A042     		cmp	r0, r4
+  75 0038 7DDA     		bge	.L4
+  76              	.LVL0:
+  77              	.LBB24:
+  78              	.LBB25:
+ 247:main.c        ****     {
+  79              		.loc 1 247 0
+  80 003a 042B     		cmp	r3, #4
+  81 003c 5BD9     		bls	.L5
+ 249:main.c        ****         {
+  82              		.loc 1 249 0
+  83 003e 1A1F     		subs	r2, r3, #4
+  84 0040 9042     		cmp	r0, r2
+  85 0042 0BDA     		bge	.L6
+ 251:main.c        ****             displayCounter.position = POSITION_GREEN;
+  86              		.loc 1 251 0
+  87 0044 0420     		movs	r0, #4
+  88 0046 FFF7FEFF 		bl	Control_Reg_Write
+  89              	.LVL1:
+ 252:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+  90              		.loc 1 252 0
+  91 004a AC4B     		ldr	r3, .L23
+  92 004c 0B22     		movs	r2, #11
+  93 004e 1A71     		strb	r2, [r3, #4]
+ 253:main.c        ****         }
+  94              		.loc 1 253 0
+  95 0050 AB4A     		ldr	r2, .L23+4
+  96 0052 1278     		ldrb	r2, [r2]
+  97 0054 1978     		ldrb	r1, [r3]
+  98 0056 521A     		subs	r2, r2, r1
+  99 0058 5A71     		strb	r2, [r3, #5]
+ 100 005a 46E1     		b	.L7
+ 101              	.L6:
+ 255:main.c        ****         {
+ 102              		.loc 1 255 0
+ 103 005c DA1E     		subs	r2, r3, #3
+ 104 005e 9042     		cmp	r0, r2
+ 105 0060 0BDA     		bge	.L8
+ 257:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 106              		.loc 1 257 0
+ 107 0062 0020     		movs	r0, #0
+ 108 0064 FFF7FEFF 		bl	Control_Reg_Write
+ 109              	.LVL2:
+ 258:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 110              		.loc 1 258 0
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 9
+
+
+ 111 0068 A44B     		ldr	r3, .L23
+ 112 006a 0B22     		movs	r2, #11
+ 113 006c 1A71     		strb	r2, [r3, #4]
+ 259:main.c        ****         }
+ 114              		.loc 1 259 0
+ 115 006e A44A     		ldr	r2, .L23+4
+ 116 0070 1278     		ldrb	r2, [r2]
+ 117 0072 1978     		ldrb	r1, [r3]
+ 118 0074 521A     		subs	r2, r2, r1
+ 119 0076 5A71     		strb	r2, [r3, #5]
+ 120 0078 37E1     		b	.L7
+ 121              	.L8:
+ 261:main.c        ****         {
+ 122              		.loc 1 261 0
+ 123 007a 9A1E     		subs	r2, r3, #2
+ 124 007c 9042     		cmp	r0, r2
+ 125 007e 0BDA     		bge	.L9
+ 263:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 126              		.loc 1 263 0
+ 127 0080 0420     		movs	r0, #4
+ 128 0082 FFF7FEFF 		bl	Control_Reg_Write
+ 129              	.LVL3:
+ 264:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 130              		.loc 1 264 0
+ 131 0086 9D4B     		ldr	r3, .L23
+ 132 0088 0B22     		movs	r2, #11
+ 133 008a 1A71     		strb	r2, [r3, #4]
+ 265:main.c        ****         }
+ 134              		.loc 1 265 0
+ 135 008c 9C4A     		ldr	r2, .L23+4
+ 136 008e 1278     		ldrb	r2, [r2]
+ 137 0090 1978     		ldrb	r1, [r3]
+ 138 0092 521A     		subs	r2, r2, r1
+ 139 0094 5A71     		strb	r2, [r3, #5]
+ 140 0096 28E1     		b	.L7
+ 141              	.L9:
+ 267:main.c        ****         {
+ 142              		.loc 1 267 0
+ 143 0098 013B     		subs	r3, r3, #1
+ 144 009a 9842     		cmp	r0, r3
+ 145 009c 0BDA     		bge	.L10
+ 269:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 146              		.loc 1 269 0
+ 147 009e 0020     		movs	r0, #0
+ 148 00a0 FFF7FEFF 		bl	Control_Reg_Write
+ 149              	.LVL4:
+ 270:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 150              		.loc 1 270 0
+ 151 00a4 954B     		ldr	r3, .L23
+ 152 00a6 0B22     		movs	r2, #11
+ 153 00a8 1A71     		strb	r2, [r3, #4]
+ 271:main.c        ****         }
+ 154              		.loc 1 271 0
+ 155 00aa 954A     		ldr	r2, .L23+4
+ 156 00ac 1278     		ldrb	r2, [r2]
+ 157 00ae 1978     		ldrb	r1, [r3]
+ 158 00b0 521A     		subs	r2, r2, r1
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 10
+
+
+ 159 00b2 5A71     		strb	r2, [r3, #5]
+ 160 00b4 19E1     		b	.L7
+ 161              	.L10:
+ 273:main.c        ****         {
+ 162              		.loc 1 273 0
+ 163 00b6 8542     		cmp	r5, r0
+ 164 00b8 0BDD     		ble	.L11
+ 275:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 165              		.loc 1 275 0
+ 166 00ba 0420     		movs	r0, #4
+ 167 00bc FFF7FEFF 		bl	Control_Reg_Write
+ 168              	.LVL5:
+ 276:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 169              		.loc 1 276 0
+ 170 00c0 8E4B     		ldr	r3, .L23
+ 171 00c2 0B22     		movs	r2, #11
+ 172 00c4 1A71     		strb	r2, [r3, #4]
+ 277:main.c        ****         }
+ 173              		.loc 1 277 0
+ 174 00c6 8E4A     		ldr	r2, .L23+4
+ 175 00c8 1278     		ldrb	r2, [r2]
+ 176 00ca 1978     		ldrb	r1, [r3]
+ 177 00cc 521A     		subs	r2, r2, r1
+ 178 00ce 5A71     		strb	r2, [r3, #5]
+ 179 00d0 0BE1     		b	.L7
+ 180              	.L11:
+ 279:main.c        ****         {
+ 181              		.loc 1 279 0
+ 182 00d2 A042     		cmp	r0, r4
+ 183 00d4 00DB     		blt	.LCB139
+ 184 00d6 08E1     		b	.L7	@long jump
+ 185              	.LCB139:
+ 281:main.c        ****             displayCounter.position = POSITION_YELLOW;
+ 186              		.loc 1 281 0
+ 187 00d8 0220     		movs	r0, #2
+ 188 00da FFF7FEFF 		bl	Control_Reg_Write
+ 189              	.LVL6:
+ 282:main.c        ****             displayCounter.counter = yellowTime - (counter - *pShift - greenTime);
+ 190              		.loc 1 282 0
+ 191 00de 874B     		ldr	r3, .L23
+ 192 00e0 0422     		movs	r2, #4
+ 193 00e2 1A71     		strb	r2, [r3, #4]
+ 283:main.c        ****         }
+ 194              		.loc 1 283 0
+ 195 00e4 864A     		ldr	r2, .L23+4
+ 196 00e6 1278     		ldrb	r2, [r2]
+ 197 00e8 1978     		ldrb	r1, [r3]
+ 198 00ea 511A     		subs	r1, r2, r1
+ 199 00ec 864A     		ldr	r2, .L23+12
+ 200 00ee 1278     		ldrb	r2, [r2]
+ 201 00f0 8A18     		adds	r2, r1, r2
+ 202 00f2 5A71     		strb	r2, [r3, #5]
+ 203 00f4 F9E0     		b	.L7
+ 204              	.L5:
+ 288:main.c        ****         {
+ 205              		.loc 1 288 0
+ 206 00f6 8542     		cmp	r5, r0
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 11
+
+
+ 207 00f8 0BDD     		ble	.L12
+ 290:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 208              		.loc 1 290 0
+ 209 00fa 0420     		movs	r0, #4
+ 210 00fc FFF7FEFF 		bl	Control_Reg_Write
+ 211              	.LVL7:
+ 291:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 212              		.loc 1 291 0
+ 213 0100 7E4B     		ldr	r3, .L23
+ 214 0102 0B22     		movs	r2, #11
+ 215 0104 1A71     		strb	r2, [r3, #4]
+ 292:main.c        ****         }
+ 216              		.loc 1 292 0
+ 217 0106 7E4A     		ldr	r2, .L23+4
+ 218 0108 1278     		ldrb	r2, [r2]
+ 219 010a 1978     		ldrb	r1, [r3]
+ 220 010c 521A     		subs	r2, r2, r1
+ 221 010e 5A71     		strb	r2, [r3, #5]
+ 222 0110 EBE0     		b	.L7
+ 223              	.L12:
+ 294:main.c        ****         {
+ 224              		.loc 1 294 0
+ 225 0112 A042     		cmp	r0, r4
+ 226 0114 00DB     		blt	.LCB176
+ 227 0116 E8E0     		b	.L7	@long jump
+ 228              	.LCB176:
+ 296:main.c        ****             displayCounter.position = POSITION_YELLOW;
+ 229              		.loc 1 296 0
+ 230 0118 0220     		movs	r0, #2
+ 231 011a FFF7FEFF 		bl	Control_Reg_Write
+ 232              	.LVL8:
+ 297:main.c        ****             displayCounter.counter = yellowTime - (counter - *pShift - greenTime);
+ 233              		.loc 1 297 0
+ 234 011e 774B     		ldr	r3, .L23
+ 235 0120 0422     		movs	r2, #4
+ 236 0122 1A71     		strb	r2, [r3, #4]
+ 298:main.c        ****         }
+ 237              		.loc 1 298 0
+ 238 0124 764A     		ldr	r2, .L23+4
+ 239 0126 1278     		ldrb	r2, [r2]
+ 240 0128 1978     		ldrb	r1, [r3]
+ 241 012a 511A     		subs	r1, r2, r1
+ 242 012c 764A     		ldr	r2, .L23+12
+ 243 012e 1278     		ldrb	r2, [r2]
+ 244 0130 8A18     		adds	r2, r1, r2
+ 245 0132 5A71     		strb	r2, [r3, #5]
+ 246 0134 D9E0     		b	.L7
+ 247              	.LVL9:
+ 248              	.L4:
+ 249              	.LBE25:
+ 250              	.LBE24:
+ 339:main.c        ****     {
+ 340:main.c        ****         shift = 0;
+ 341:main.c        ****         runAlgorithmGreenPart(&shift);
+ 342:main.c        ****     }
+ 343:main.c        ****     else 
+ 344:main.c        ****     {
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 12
+
+
+ 345:main.c        ****         shift = greenTime + yellowTime;
+ 251              		.loc 1 345 0
+ 252 0136 5B18     		adds	r3, r3, r1
+ 253 0138 DCB2     		uxtb	r4, r3
+ 254              	.LVL10:
+ 255              	.LBB26:
+ 256              	.LBB27:
+ 306:main.c        ****     {
+ 257              		.loc 1 306 0
+ 258 013a 1319     		adds	r3, r2, r4
+ 259 013c 9842     		cmp	r0, r3
+ 260 013e 0CDA     		bge	.L13
+ 308:main.c        ****         displayCounter.position = POSITION_RED;
+ 261              		.loc 1 308 0
+ 262 0140 0120     		movs	r0, #1
+ 263 0142 FFF7FEFF 		bl	Control_Reg_Write
+ 264              	.LVL11:
+ 309:main.c        ****         displayCounter.counter = redTime - (counter - *pShift);
+ 265              		.loc 1 309 0
+ 266 0146 6D4A     		ldr	r2, .L23
+ 267 0148 0023     		movs	r3, #0
+ 268 014a 1371     		strb	r3, [r2, #4]
+ 310:main.c        ****     }
+ 269              		.loc 1 310 0
+ 270 014c 1378     		ldrb	r3, [r2]
+ 271 014e E41A     		subs	r4, r4, r3
+ 272              	.LVL12:
+ 273 0150 6C4B     		ldr	r3, .L23+8
+ 274 0152 1978     		ldrb	r1, [r3]
+ 275 0154 6418     		adds	r4, r4, r1
+ 276 0156 5471     		strb	r4, [r2, #5]
+ 277 0158 C7E0     		b	.L7
+ 278              	.LVL13:
+ 279              	.L13:
+ 312:main.c        ****     {
+ 280              		.loc 1 312 0
+ 281 015a 5218     		adds	r2, r2, r1
+ 282 015c A218     		adds	r2, r4, r2
+ 283 015e 9042     		cmp	r0, r2
+ 284 0160 00DB     		blt	.LCB229
+ 285 0162 C2E0     		b	.L7	@long jump
+ 286              	.LCB229:
+ 314:main.c        ****         displayCounter.position = POSITION_YELLOW;
+ 287              		.loc 1 314 0
+ 288 0164 0220     		movs	r0, #2
+ 289 0166 FFF7FEFF 		bl	Control_Reg_Write
+ 290              	.LVL14:
+ 315:main.c        ****         displayCounter.counter = yellowTime - (counter - *pShift - redTime);
+ 291              		.loc 1 315 0
+ 292 016a 644A     		ldr	r2, .L23
+ 293 016c 0423     		movs	r3, #4
+ 294 016e 1371     		strb	r3, [r2, #4]
+ 316:main.c        ****     }
+ 295              		.loc 1 316 0
+ 296 0170 1378     		ldrb	r3, [r2]
+ 297 0172 E41A     		subs	r4, r4, r3
+ 298              	.LVL15:
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 13
+
+
+ 299 0174 634B     		ldr	r3, .L23+8
+ 300 0176 1B78     		ldrb	r3, [r3]
+ 301 0178 E418     		adds	r4, r4, r3
+ 302 017a 634B     		ldr	r3, .L23+12
+ 303 017c 1978     		ldrb	r1, [r3]
+ 304 017e 6418     		adds	r4, r4, r1
+ 305 0180 5471     		strb	r4, [r2, #5]
+ 306 0182 B2E0     		b	.L7
+ 307              	.LVL16:
+ 308              	.L3:
+ 309              	.LBE27:
+ 310              	.LBE26:
+ 311              	.LBE23:
+ 312              	.LBE22:
+ 313              	.LBB28:
+ 314              	.LBB29:
+ 323:main.c        ****     {
+ 315              		.loc 1 323 0
+ 316 0184 5D48     		ldr	r0, .L23
+ 317 0186 0078     		ldrb	r0, [r0]
+ 318 0188 5518     		adds	r5, r2, r1
+ 319 018a A842     		cmp	r0, r5
+ 320 018c 1FDA     		bge	.L14
+ 321              	.LVL17:
+ 322              	.LBB30:
+ 323              	.LBB31:
+ 306:main.c        ****     {
+ 324              		.loc 1 306 0
+ 325 018e 8442     		cmp	r4, r0
+ 326 0190 0BDD     		ble	.L15
+ 308:main.c        ****         displayCounter.position = POSITION_RED;
+ 327              		.loc 1 308 0
+ 328 0192 0120     		movs	r0, #1
+ 329 0194 FFF7FEFF 		bl	Control_Reg_Write
+ 330              	.LVL18:
+ 309:main.c        ****         displayCounter.counter = redTime - (counter - *pShift);
+ 331              		.loc 1 309 0
+ 332 0198 584B     		ldr	r3, .L23
+ 333 019a 0022     		movs	r2, #0
+ 334 019c 1A71     		strb	r2, [r3, #4]
+ 310:main.c        ****     }
+ 335              		.loc 1 310 0
+ 336 019e 594A     		ldr	r2, .L23+8
+ 337 01a0 1278     		ldrb	r2, [r2]
+ 338 01a2 1978     		ldrb	r1, [r3]
+ 339 01a4 521A     		subs	r2, r2, r1
+ 340 01a6 5A71     		strb	r2, [r3, #5]
+ 341 01a8 9FE0     		b	.L7
+ 342              	.L15:
+ 312:main.c        ****     {
+ 343              		.loc 1 312 0
+ 344 01aa A842     		cmp	r0, r5
+ 345 01ac 00DB     		blt	.LCB285
+ 346 01ae 9CE0     		b	.L7	@long jump
+ 347              	.LCB285:
+ 314:main.c        ****         displayCounter.position = POSITION_YELLOW;
+ 348              		.loc 1 314 0
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 14
+
+
+ 349 01b0 0220     		movs	r0, #2
+ 350 01b2 FFF7FEFF 		bl	Control_Reg_Write
+ 351              	.LVL19:
+ 315:main.c        ****         displayCounter.counter = yellowTime - (counter - *pShift - redTime);
+ 352              		.loc 1 315 0
+ 353 01b6 514B     		ldr	r3, .L23
+ 354 01b8 0422     		movs	r2, #4
+ 355 01ba 1A71     		strb	r2, [r3, #4]
+ 316:main.c        ****     }
+ 356              		.loc 1 316 0
+ 357 01bc 514A     		ldr	r2, .L23+8
+ 358 01be 1278     		ldrb	r2, [r2]
+ 359 01c0 1978     		ldrb	r1, [r3]
+ 360 01c2 511A     		subs	r1, r2, r1
+ 361 01c4 504A     		ldr	r2, .L23+12
+ 362 01c6 1278     		ldrb	r2, [r2]
+ 363 01c8 8A18     		adds	r2, r1, r2
+ 364 01ca 5A71     		strb	r2, [r3, #5]
+ 365 01cc 8DE0     		b	.L7
+ 366              	.LVL20:
+ 367              	.L14:
+ 368              	.LBE31:
+ 369              	.LBE30:
+ 330:main.c        ****         runAlgorithmGreenPart(&shift);
+ 370              		.loc 1 330 0
+ 371 01ce 5218     		adds	r2, r2, r1
+ 372 01d0 D4B2     		uxtb	r4, r2
+ 373              	.LVL21:
+ 374              	.LBB32:
+ 375              	.LBB33:
+ 247:main.c        ****     {
+ 376              		.loc 1 247 0
+ 377 01d2 042B     		cmp	r3, #4
+ 378 01d4 66D9     		bls	.L16
+ 249:main.c        ****         {
+ 379              		.loc 1 249 0
+ 380 01d6 1A1F     		subs	r2, r3, #4
+ 381 01d8 A218     		adds	r2, r4, r2
+ 382 01da 9042     		cmp	r0, r2
+ 383 01dc 0CDA     		bge	.L17
+ 251:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 384              		.loc 1 251 0
+ 385 01de 0420     		movs	r0, #4
+ 386 01e0 FFF7FEFF 		bl	Control_Reg_Write
+ 387              	.LVL22:
+ 252:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 388              		.loc 1 252 0
+ 389 01e4 454B     		ldr	r3, .L23
+ 390 01e6 0B22     		movs	r2, #11
+ 391 01e8 1A71     		strb	r2, [r3, #4]
+ 253:main.c        ****         }
+ 392              		.loc 1 253 0
+ 393 01ea 1A78     		ldrb	r2, [r3]
+ 394 01ec A41A     		subs	r4, r4, r2
+ 395              	.LVL23:
+ 396 01ee 444A     		ldr	r2, .L23+4
+ 397 01f0 1178     		ldrb	r1, [r2]
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 15
+
+
+ 398 01f2 6418     		adds	r4, r4, r1
+ 399 01f4 5C71     		strb	r4, [r3, #5]
+ 400 01f6 78E0     		b	.L7
+ 401              	.LVL24:
+ 402              	.L17:
+ 255:main.c        ****         {
+ 403              		.loc 1 255 0
+ 404 01f8 DA1E     		subs	r2, r3, #3
+ 405 01fa A218     		adds	r2, r4, r2
+ 406 01fc 9042     		cmp	r0, r2
+ 407 01fe 0CDA     		bge	.L18
+ 257:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 408              		.loc 1 257 0
+ 409 0200 0020     		movs	r0, #0
+ 410 0202 FFF7FEFF 		bl	Control_Reg_Write
+ 411              	.LVL25:
+ 258:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 412              		.loc 1 258 0
+ 413 0206 3D4B     		ldr	r3, .L23
+ 414 0208 0B22     		movs	r2, #11
+ 415 020a 1A71     		strb	r2, [r3, #4]
+ 259:main.c        ****         }
+ 416              		.loc 1 259 0
+ 417 020c 1A78     		ldrb	r2, [r3]
+ 418 020e A41A     		subs	r4, r4, r2
+ 419              	.LVL26:
+ 420 0210 3B4A     		ldr	r2, .L23+4
+ 421 0212 1178     		ldrb	r1, [r2]
+ 422 0214 6418     		adds	r4, r4, r1
+ 423 0216 5C71     		strb	r4, [r3, #5]
+ 424 0218 67E0     		b	.L7
+ 425              	.LVL27:
+ 426              	.L18:
+ 261:main.c        ****         {
+ 427              		.loc 1 261 0
+ 428 021a 9A1E     		subs	r2, r3, #2
+ 429 021c A218     		adds	r2, r4, r2
+ 430 021e 9042     		cmp	r0, r2
+ 431 0220 0CDA     		bge	.L19
+ 263:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 432              		.loc 1 263 0
+ 433 0222 0420     		movs	r0, #4
+ 434 0224 FFF7FEFF 		bl	Control_Reg_Write
+ 435              	.LVL28:
+ 264:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 436              		.loc 1 264 0
+ 437 0228 344B     		ldr	r3, .L23
+ 438 022a 0B22     		movs	r2, #11
+ 439 022c 1A71     		strb	r2, [r3, #4]
+ 265:main.c        ****         }
+ 440              		.loc 1 265 0
+ 441 022e 1A78     		ldrb	r2, [r3]
+ 442 0230 A41A     		subs	r4, r4, r2
+ 443              	.LVL29:
+ 444 0232 334A     		ldr	r2, .L23+4
+ 445 0234 1178     		ldrb	r1, [r2]
+ 446 0236 6418     		adds	r4, r4, r1
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 16
+
+
+ 447 0238 5C71     		strb	r4, [r3, #5]
+ 448 023a 56E0     		b	.L7
+ 449              	.LVL30:
+ 450              	.L19:
+ 267:main.c        ****         {
+ 451              		.loc 1 267 0
+ 452 023c 5A1E     		subs	r2, r3, #1
+ 453 023e A218     		adds	r2, r4, r2
+ 454 0240 9042     		cmp	r0, r2
+ 455 0242 0CDA     		bge	.L20
+ 269:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 456              		.loc 1 269 0
+ 457 0244 0020     		movs	r0, #0
+ 458 0246 FFF7FEFF 		bl	Control_Reg_Write
+ 459              	.LVL31:
+ 270:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 460              		.loc 1 270 0
+ 461 024a 2C4B     		ldr	r3, .L23
+ 462 024c 0B22     		movs	r2, #11
+ 463 024e 1A71     		strb	r2, [r3, #4]
+ 271:main.c        ****         }
+ 464              		.loc 1 271 0
+ 465 0250 1A78     		ldrb	r2, [r3]
+ 466 0252 A41A     		subs	r4, r4, r2
+ 467              	.LVL32:
+ 468 0254 2A4A     		ldr	r2, .L23+4
+ 469 0256 1178     		ldrb	r1, [r2]
+ 470 0258 6418     		adds	r4, r4, r1
+ 471 025a 5C71     		strb	r4, [r3, #5]
+ 472 025c 45E0     		b	.L7
+ 473              	.LVL33:
+ 474              	.L20:
+ 273:main.c        ****         {
+ 475              		.loc 1 273 0
+ 476 025e 1B19     		adds	r3, r3, r4
+ 477 0260 9842     		cmp	r0, r3
+ 478 0262 0CDA     		bge	.L21
+ 275:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 479              		.loc 1 275 0
+ 480 0264 0420     		movs	r0, #4
+ 481 0266 FFF7FEFF 		bl	Control_Reg_Write
+ 482              	.LVL34:
+ 276:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 483              		.loc 1 276 0
+ 484 026a 244B     		ldr	r3, .L23
+ 485 026c 0B22     		movs	r2, #11
+ 486 026e 1A71     		strb	r2, [r3, #4]
+ 277:main.c        ****         }
+ 487              		.loc 1 277 0
+ 488 0270 1A78     		ldrb	r2, [r3]
+ 489 0272 A41A     		subs	r4, r4, r2
+ 490              	.LVL35:
+ 491 0274 224A     		ldr	r2, .L23+4
+ 492 0276 1178     		ldrb	r1, [r2]
+ 493 0278 6418     		adds	r4, r4, r1
+ 494 027a 5C71     		strb	r4, [r3, #5]
+ 495 027c 35E0     		b	.L7
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 17
+
+
+ 496              	.LVL36:
+ 497              	.L21:
+ 279:main.c        ****         {
+ 498              		.loc 1 279 0
+ 499 027e CB18     		adds	r3, r1, r3
+ 500 0280 9842     		cmp	r0, r3
+ 501 0282 32DA     		bge	.L7
+ 281:main.c        ****             displayCounter.position = POSITION_YELLOW;
+ 502              		.loc 1 281 0
+ 503 0284 0220     		movs	r0, #2
+ 504 0286 FFF7FEFF 		bl	Control_Reg_Write
+ 505              	.LVL37:
+ 282:main.c        ****             displayCounter.counter = yellowTime - (counter - *pShift - greenTime);
+ 506              		.loc 1 282 0
+ 507 028a 1C4B     		ldr	r3, .L23
+ 508 028c 0422     		movs	r2, #4
+ 509 028e 1A71     		strb	r2, [r3, #4]
+ 283:main.c        ****         }
+ 510              		.loc 1 283 0
+ 511 0290 1A78     		ldrb	r2, [r3]
+ 512 0292 A41A     		subs	r4, r4, r2
+ 513              	.LVL38:
+ 514 0294 1A4A     		ldr	r2, .L23+4
+ 515 0296 1178     		ldrb	r1, [r2]
+ 516 0298 6418     		adds	r4, r4, r1
+ 517 029a 1B4A     		ldr	r2, .L23+12
+ 518 029c 1178     		ldrb	r1, [r2]
+ 519 029e 6418     		adds	r4, r4, r1
+ 520 02a0 5C71     		strb	r4, [r3, #5]
+ 521 02a2 22E0     		b	.L7
+ 522              	.LVL39:
+ 523              	.L16:
+ 288:main.c        ****         {
+ 524              		.loc 1 288 0
+ 525 02a4 1A19     		adds	r2, r3, r4
+ 526 02a6 9042     		cmp	r0, r2
+ 527 02a8 0CDA     		bge	.L22
+ 290:main.c        ****             displayCounter.position = POSITION_GREEN;
+ 528              		.loc 1 290 0
+ 529 02aa 0420     		movs	r0, #4
+ 530 02ac FFF7FEFF 		bl	Control_Reg_Write
+ 531              	.LVL40:
+ 291:main.c        ****             displayCounter.counter = greenTime - (counter - *pShift);
+ 532              		.loc 1 291 0
+ 533 02b0 124B     		ldr	r3, .L23
+ 534 02b2 0B22     		movs	r2, #11
+ 535 02b4 1A71     		strb	r2, [r3, #4]
+ 292:main.c        ****         }
+ 536              		.loc 1 292 0
+ 537 02b6 1A78     		ldrb	r2, [r3]
+ 538 02b8 A41A     		subs	r4, r4, r2
+ 539              	.LVL41:
+ 540 02ba 114A     		ldr	r2, .L23+4
+ 541 02bc 1178     		ldrb	r1, [r2]
+ 542 02be 6418     		adds	r4, r4, r1
+ 543 02c0 5C71     		strb	r4, [r3, #5]
+ 544 02c2 12E0     		b	.L7
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 18
+
+
+ 545              	.LVL42:
+ 546              	.L22:
+ 294:main.c        ****         {
+ 547              		.loc 1 294 0
+ 548 02c4 5B18     		adds	r3, r3, r1
+ 549 02c6 E318     		adds	r3, r4, r3
+ 550 02c8 9842     		cmp	r0, r3
+ 551 02ca 0EDA     		bge	.L7
+ 296:main.c        ****             displayCounter.position = POSITION_YELLOW;
+ 552              		.loc 1 296 0
+ 553 02cc 0220     		movs	r0, #2
+ 554 02ce FFF7FEFF 		bl	Control_Reg_Write
+ 555              	.LVL43:
+ 297:main.c        ****             displayCounter.counter = yellowTime - (counter - *pShift - greenTime);
+ 556              		.loc 1 297 0
+ 557 02d2 0A4B     		ldr	r3, .L23
+ 558 02d4 0422     		movs	r2, #4
+ 559 02d6 1A71     		strb	r2, [r3, #4]
+ 298:main.c        ****         }
+ 560              		.loc 1 298 0
+ 561 02d8 1A78     		ldrb	r2, [r3]
+ 562 02da A41A     		subs	r4, r4, r2
+ 563              	.LVL44:
+ 564 02dc 084A     		ldr	r2, .L23+4
+ 565 02de 1278     		ldrb	r2, [r2]
+ 566 02e0 A418     		adds	r4, r4, r2
+ 567 02e2 094A     		ldr	r2, .L23+12
+ 568 02e4 1178     		ldrb	r1, [r2]
+ 569 02e6 6418     		adds	r4, r4, r1
+ 570 02e8 5C71     		strb	r4, [r3, #5]
+ 571              	.LVL45:
+ 572              	.L7:
+ 573              	.LBE33:
+ 574              	.LBE32:
+ 575              	.LBE29:
+ 576              	.LBE28:
+  70:main.c        ****     Timer_Counter_ClearInterrupt(Timer_Counter_INTR_MASK_TC);
+ 577              		.loc 1 70 0
+ 578 02ea 044A     		ldr	r2, .L23
+ 579 02ec 1378     		ldrb	r3, [r2]
+ 580 02ee 0133     		adds	r3, r3, #1
+ 581 02f0 1370     		strb	r3, [r2]
+  71:main.c        **** }
+ 582              		.loc 1 71 0
+ 583 02f2 0120     		movs	r0, #1
+ 584 02f4 FFF7FEFF 		bl	Timer_Counter_ClearInterrupt
+ 585              	.LVL46:
+  72:main.c        **** 
+ 586              		.loc 1 72 0
+ 587              		@ sp needed
+ 588 02f8 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 589              	.L24:
+ 590 02fa C046     		.align	2
+ 591              	.L23:
+ 592 02fc 00000000 		.word	.LANCHOR0
+ 593 0300 00000000 		.word	greenTime
+ 594 0304 00000000 		.word	redTime
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 19
+
+
+ 595 0308 00000000 		.word	yellowTime
+ 596              		.cfi_endproc
+ 597              	.LFE34:
+ 598              		.size	timer_isr_interrupt, .-timer_isr_interrupt
+ 599              		.section	.text.button_isr_interrupt,"ax",%progbits
+ 600              		.align	2
+ 601              		.global	button_isr_interrupt
+ 602              		.code	16
+ 603              		.thumb_func
+ 604              		.type	button_isr_interrupt, %function
+ 605              	button_isr_interrupt:
+ 606              	.LFB35:
+  75:main.c        ****     algorithm = algorithm ? 0 : 1;
+ 607              		.loc 1 75 0
+ 608              		.cfi_startproc
+ 609              		@ args = 0, pretend = 0, frame = 0
+ 610              		@ frame_needed = 0, uses_anonymous_args = 0
+ 611 0000 10B5     		push	{r4, lr}
+ 612              		.cfi_def_cfa_offset 8
+ 613              		.cfi_offset 4, -8
+ 614              		.cfi_offset 14, -4
+  76:main.c        ****     counter = 0;
+ 615              		.loc 1 76 0
+ 616 0002 054B     		ldr	r3, .L26
+ 617 0004 5A78     		ldrb	r2, [r3, #1]
+ 618 0006 5142     		rsbs	r1, r2, #0
+ 619 0008 4A41     		adcs	r2, r2, r1
+ 620 000a 5A70     		strb	r2, [r3, #1]
+  77:main.c        ****     
+ 621              		.loc 1 77 0
+ 622 000c 0022     		movs	r2, #0
+ 623 000e 1A70     		strb	r2, [r3]
+  79:main.c        **** }
+ 624              		.loc 1 79 0
+ 625 0010 FFF7FEFF 		bl	Button_ClearInterrupt
+ 626              	.LVL47:
+  80:main.c        **** 
+ 627              		.loc 1 80 0
+ 628              		@ sp needed
+ 629 0014 10BD     		pop	{r4, pc}
+ 630              	.L27:
+ 631 0016 C046     		.align	2
+ 632              	.L26:
+ 633 0018 00000000 		.word	.LANCHOR0
+ 634              		.cfi_endproc
+ 635              	.LFE35:
+ 636              		.size	button_isr_interrupt, .-button_isr_interrupt
+ 637              		.section	.text.button_encoder_isr_interrupt,"ax",%progbits
+ 638              		.align	2
+ 639              		.global	button_encoder_isr_interrupt
+ 640              		.code	16
+ 641              		.thumb_func
+ 642              		.type	button_encoder_isr_interrupt, %function
+ 643              	button_encoder_isr_interrupt:
+ 644              	.LFB36:
+  83:main.c        ****     if (displayMode >= 3)
+ 645              		.loc 1 83 0
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 20
+
+
+ 646              		.cfi_startproc
+ 647              		@ args = 0, pretend = 0, frame = 0
+ 648              		@ frame_needed = 0, uses_anonymous_args = 0
+ 649 0000 10B5     		push	{r4, lr}
+ 650              		.cfi_def_cfa_offset 8
+ 651              		.cfi_offset 4, -8
+ 652              		.cfi_offset 14, -4
+  84:main.c        ****     {
+ 653              		.loc 1 84 0
+ 654 0002 084B     		ldr	r3, .L31
+ 655 0004 9B79     		ldrb	r3, [r3, #6]
+ 656 0006 022B     		cmp	r3, #2
+ 657 0008 03D9     		bls	.L29
+  86:main.c        ****     }
+ 658              		.loc 1 86 0
+ 659 000a 0022     		movs	r2, #0
+ 660 000c 054B     		ldr	r3, .L31
+ 661 000e 9A71     		strb	r2, [r3, #6]
+ 662 0010 02E0     		b	.L30
+ 663              	.L29:
+  90:main.c        ****     }
+ 664              		.loc 1 90 0
+ 665 0012 0133     		adds	r3, r3, #1
+ 666 0014 034A     		ldr	r2, .L31
+ 667 0016 9371     		strb	r3, [r2, #6]
+ 668              	.L30:
+  92:main.c        ****     
+ 669              		.loc 1 92 0
+ 670 0018 0122     		movs	r2, #1
+ 671 001a 024B     		ldr	r3, .L31
+ 672 001c DA71     		strb	r2, [r3, #7]
+  94:main.c        **** }
+ 673              		.loc 1 94 0
+ 674 001e FFF7FEFF 		bl	Button_Encoder_ClearInterrupt
+ 675              	.LVL48:
+  95:main.c        **** 
+ 676              		.loc 1 95 0
+ 677              		@ sp needed
+ 678 0022 10BD     		pop	{r4, pc}
+ 679              	.L32:
+ 680              		.align	2
+ 681              	.L31:
+ 682 0024 00000000 		.word	.LANCHOR0
+ 683              		.cfi_endproc
+ 684              	.LFE36:
+ 685              		.size	button_encoder_isr_interrupt, .-button_encoder_isr_interrupt
+ 686              		.section	.text.main,"ax",%progbits
+ 687              		.align	2
+ 688              		.global	main
+ 689              		.code	16
+ 690              		.thumb_func
+ 691              		.type	main, %function
+ 692              	main:
+ 693              	.LFB37:
+  98:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
+ 694              		.loc 1 98 0
+ 695              		.cfi_startproc
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 21
+
+
+ 696              		@ args = 0, pretend = 0, frame = 0
+ 697              		@ frame_needed = 0, uses_anonymous_args = 0
+ 698 0000 70B5     		push	{r4, r5, r6, lr}
+ 699              		.cfi_def_cfa_offset 16
+ 700              		.cfi_offset 4, -16
+ 701              		.cfi_offset 5, -12
+ 702              		.cfi_offset 6, -8
+ 703              		.cfi_offset 14, -4
+  99:main.c        ****     
+ 704              		.loc 1 99 0
+ 705              		.syntax divided
+ 706              	@ 99 "main.c" 1
+ 707 0002 62B6     		CPSIE   i
+ 708              	@ 0 "" 2
+ 101:main.c        ****     yellowTime = 2;
+ 709              		.loc 1 101 0
+ 710              		.thumb
+ 711              		.syntax unified
+ 712 0004 0823     		movs	r3, #8
+ 713 0006 8A4A     		ldr	r2, .L51
+ 714 0008 1370     		strb	r3, [r2]
+ 102:main.c        ****     greenTime = 8;
+ 715              		.loc 1 102 0
+ 716 000a 0221     		movs	r1, #2
+ 717 000c 894A     		ldr	r2, .L51+4
+ 718 000e 1170     		strb	r1, [r2]
+ 103:main.c        ****     
+ 719              		.loc 1 103 0
+ 720 0010 894A     		ldr	r2, .L51+8
+ 721 0012 1370     		strb	r3, [r2]
+ 105:main.c        ****     displayCounter.position = POSITION_RED;
+ 722              		.loc 1 105 0
+ 723 0014 894C     		ldr	r4, .L51+12
+ 724 0016 6371     		strb	r3, [r4, #5]
+ 106:main.c        ****     
+ 725              		.loc 1 106 0
+ 726 0018 0023     		movs	r3, #0
+ 727 001a 2371     		strb	r3, [r4, #4]
+ 108:main.c        ****     timer_isr_StartEx(timer_isr_interrupt);
+ 728              		.loc 1 108 0
+ 729 001c FFF7FEFF 		bl	Timer_Counter_Start
+ 730              	.LVL49:
+ 109:main.c        ****     button_isr_StartEx(button_isr_interrupt);
+ 731              		.loc 1 109 0
+ 732 0020 8748     		ldr	r0, .L51+16
+ 733 0022 FFF7FEFF 		bl	timer_isr_StartEx
+ 734              	.LVL50:
+ 110:main.c        ****     button_encoder_isr_StartEx(button_encoder_isr_interrupt);
+ 735              		.loc 1 110 0
+ 736 0026 8748     		ldr	r0, .L51+20
+ 737 0028 FFF7FEFF 		bl	button_isr_StartEx
+ 738              	.LVL51:
+ 111:main.c        ****     
+ 739              		.loc 1 111 0
+ 740 002c 8648     		ldr	r0, .L51+24
+ 741 002e FFF7FEFF 		bl	button_encoder_isr_StartEx
+ 742              	.LVL52:
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 22
+
+
+ 113:main.c        ****     
+ 743              		.loc 1 113 0
+ 744 0032 FFF7FEFF 		bl	QuadDec_Start
+ 745              	.LVL53:
+ 115:main.c        ****     LCD_Char_ClearDisplay();
+ 746              		.loc 1 115 0
+ 747 0036 FFF7FEFF 		bl	LCD_Char_Start
+ 748              	.LVL54:
+ 116:main.c        ****     
+ 749              		.loc 1 116 0
+ 750 003a 0120     		movs	r0, #1
+ 751 003c FFF7FEFF 		bl	LCD_Char_WriteControl
+ 752              	.LVL55:
+ 118:main.c        ****     LCD_Char_PrintString("Author");
+ 753              		.loc 1 118 0
+ 754 0040 0521     		movs	r1, #5
+ 755 0042 0020     		movs	r0, #0
+ 756 0044 FFF7FEFF 		bl	LCD_Char_Position
+ 757              	.LVL56:
+ 119:main.c        ****     LCD_Char_Position(1, 2);
+ 758              		.loc 1 119 0
+ 759 0048 8048     		ldr	r0, .L51+28
+ 760 004a FFF7FEFF 		bl	LCD_Char_PrintString
+ 761              	.LVL57:
+ 120:main.c        ****     LCD_Char_PrintString("Denys Shutka");
+ 762              		.loc 1 120 0
+ 763 004e 0221     		movs	r1, #2
+ 764 0050 0120     		movs	r0, #1
+ 765 0052 FFF7FEFF 		bl	LCD_Char_Position
+ 766              	.LVL58:
+ 121:main.c        ****     CyDelay(INITIAL_DELAY);
+ 767              		.loc 1 121 0
+ 768 0056 7E48     		ldr	r0, .L51+32
+ 769 0058 FFF7FEFF 		bl	LCD_Char_PrintString
+ 770              	.LVL59:
+ 122:main.c        ****     LCD_Char_ClearDisplay();
+ 771              		.loc 1 122 0
+ 772 005c 7D48     		ldr	r0, .L51+36
+ 773 005e FFF7FEFF 		bl	CyDelay
+ 774              	.LVL60:
+ 123:main.c        ****     
+ 775              		.loc 1 123 0
+ 776 0062 0120     		movs	r0, #1
+ 777 0064 FFF7FEFF 		bl	LCD_Char_WriteControl
+ 778              	.LVL61:
+ 125:main.c        ****     LCD_Char_PrintString(LIGHTS_BAR);
+ 779              		.loc 1 125 0
+ 780 0068 0021     		movs	r1, #0
+ 781 006a 0020     		movs	r0, #0
+ 782 006c FFF7FEFF 		bl	LCD_Char_Position
+ 783              	.LVL62:
+ 126:main.c        ****     
+ 784              		.loc 1 126 0
+ 785 0070 7948     		ldr	r0, .L51+40
+ 786 0072 FFF7FEFF 		bl	LCD_Char_PrintString
+ 787              	.LVL63:
+ 129:main.c        ****     
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 23
+
+
+ 788              		.loc 1 129 0
+ 789 0076 2579     		ldrb	r5, [r4, #4]
+ 790              	.LVL64:
+ 791              	.L34:
+ 142:main.c        ****         {
+ 792              		.loc 1 142 0
+ 793 0078 FFF7FEFF 		bl	QuadDec_GetCounter
+ 794              	.LVL65:
+ 795 007c 1428     		cmp	r0, #20
+ 796 007e 02DD     		ble	.L35
+ 144:main.c        ****         }
+ 797              		.loc 1 144 0
+ 798 0080 1420     		movs	r0, #20
+ 799 0082 FFF7FEFF 		bl	QuadDec_SetCounter
+ 800              	.LVL66:
+ 801              	.L35:
+ 146:main.c        ****         {
+ 802              		.loc 1 146 0
+ 803 0086 FFF7FEFF 		bl	QuadDec_GetCounter
+ 804              	.LVL67:
+ 805 008a 0028     		cmp	r0, #0
+ 806 008c 02DC     		bgt	.L36
+ 148:main.c        ****         }
+ 807              		.loc 1 148 0
+ 808 008e 0120     		movs	r0, #1
+ 809 0090 FFF7FEFF 		bl	QuadDec_SetCounter
+ 810              	.LVL68:
+ 811              	.L36:
+ 151:main.c        ****         {
+ 812              		.loc 1 151 0
+ 813 0094 694B     		ldr	r3, .L51+12
+ 814 0096 DB79     		ldrb	r3, [r3, #7]
+ 815 0098 002B     		cmp	r3, #0
+ 816 009a 52D0     		beq	.L37
+ 153:main.c        ****             if (displayMode == 0)
+ 817              		.loc 1 153 0
+ 818 009c 0120     		movs	r0, #1
+ 819 009e FFF7FEFF 		bl	LCD_Char_WriteControl
+ 820              	.LVL69:
+ 154:main.c        ****             {
+ 821              		.loc 1 154 0
+ 822 00a2 664B     		ldr	r3, .L51+12
+ 823 00a4 9B79     		ldrb	r3, [r3, #6]
+ 824 00a6 002B     		cmp	r3, #0
+ 825 00a8 07D1     		bne	.L38
+ 156:main.c        ****                 LCD_Char_PrintString(LIGHTS_BAR);
+ 826              		.loc 1 156 0
+ 827 00aa 0021     		movs	r1, #0
+ 828 00ac 0020     		movs	r0, #0
+ 829 00ae FFF7FEFF 		bl	LCD_Char_Position
+ 830              	.LVL70:
+ 157:main.c        ****             }
+ 831              		.loc 1 157 0
+ 832 00b2 6948     		ldr	r0, .L51+40
+ 833 00b4 FFF7FEFF 		bl	LCD_Char_PrintString
+ 834              	.LVL71:
+ 835 00b8 40E0     		b	.L39
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 24
+
+
+ 836              	.L38:
+ 159:main.c        ****             {
+ 837              		.loc 1 159 0
+ 838 00ba 012B     		cmp	r3, #1
+ 839 00bc 13D1     		bne	.L40
+ 161:main.c        ****                 LCD_Char_PrintString(SET_RED);
+ 840              		.loc 1 161 0
+ 841 00be 0021     		movs	r1, #0
+ 842 00c0 0020     		movs	r0, #0
+ 843 00c2 FFF7FEFF 		bl	LCD_Char_Position
+ 844              	.LVL72:
+ 162:main.c        ****                 LCD_Char_Position(1, 0);
+ 845              		.loc 1 162 0
+ 846 00c6 6548     		ldr	r0, .L51+44
+ 847 00c8 FFF7FEFF 		bl	LCD_Char_PrintString
+ 848              	.LVL73:
+ 163:main.c        ****                 LCD_Char_PrintString(TIME);
+ 849              		.loc 1 163 0
+ 850 00cc 0021     		movs	r1, #0
+ 851 00ce 0120     		movs	r0, #1
+ 852 00d0 FFF7FEFF 		bl	LCD_Char_Position
+ 853              	.LVL74:
+ 164:main.c        ****                 QuadDec_SetCounter(redTime);
+ 854              		.loc 1 164 0
+ 855 00d4 6248     		ldr	r0, .L51+48
+ 856 00d6 FFF7FEFF 		bl	LCD_Char_PrintString
+ 857              	.LVL75:
+ 165:main.c        ****             }
+ 858              		.loc 1 165 0
+ 859 00da 554B     		ldr	r3, .L51
+ 860 00dc 0020     		movs	r0, #0
+ 861 00de 1856     		ldrsb	r0, [r3, r0]
+ 862 00e0 FFF7FEFF 		bl	QuadDec_SetCounter
+ 863              	.LVL76:
+ 864 00e4 2AE0     		b	.L39
+ 865              	.L40:
+ 167:main.c        ****             {
+ 866              		.loc 1 167 0
+ 867 00e6 022B     		cmp	r3, #2
+ 868 00e8 13D1     		bne	.L41
+ 169:main.c        ****                 LCD_Char_PrintString(SET_YELLOW);
+ 869              		.loc 1 169 0
+ 870 00ea 0021     		movs	r1, #0
+ 871 00ec 0020     		movs	r0, #0
+ 872 00ee FFF7FEFF 		bl	LCD_Char_Position
+ 873              	.LVL77:
+ 170:main.c        ****                 LCD_Char_Position(1, 0);
+ 874              		.loc 1 170 0
+ 875 00f2 5C48     		ldr	r0, .L51+52
+ 876 00f4 FFF7FEFF 		bl	LCD_Char_PrintString
+ 877              	.LVL78:
+ 171:main.c        ****                 LCD_Char_PrintString(TIME);
+ 878              		.loc 1 171 0
+ 879 00f8 0021     		movs	r1, #0
+ 880 00fa 0120     		movs	r0, #1
+ 881 00fc FFF7FEFF 		bl	LCD_Char_Position
+ 882              	.LVL79:
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 25
+
+
+ 172:main.c        ****                 QuadDec_SetCounter(yellowTime);
+ 883              		.loc 1 172 0
+ 884 0100 5748     		ldr	r0, .L51+48
+ 885 0102 FFF7FEFF 		bl	LCD_Char_PrintString
+ 886              	.LVL80:
+ 173:main.c        ****             }
+ 887              		.loc 1 173 0
+ 888 0106 4B4B     		ldr	r3, .L51+4
+ 889 0108 0020     		movs	r0, #0
+ 890 010a 1856     		ldrsb	r0, [r3, r0]
+ 891 010c FFF7FEFF 		bl	QuadDec_SetCounter
+ 892              	.LVL81:
+ 893 0110 14E0     		b	.L39
+ 894              	.L41:
+ 175:main.c        ****             {
+ 895              		.loc 1 175 0
+ 896 0112 032B     		cmp	r3, #3
+ 897 0114 12D1     		bne	.L39
+ 177:main.c        ****                 LCD_Char_PrintString(SET_GREEN);
+ 898              		.loc 1 177 0
+ 899 0116 0021     		movs	r1, #0
+ 900 0118 0020     		movs	r0, #0
+ 901 011a FFF7FEFF 		bl	LCD_Char_Position
+ 902              	.LVL82:
+ 178:main.c        ****                 LCD_Char_Position(1, 0);
+ 903              		.loc 1 178 0
+ 904 011e 5248     		ldr	r0, .L51+56
+ 905 0120 FFF7FEFF 		bl	LCD_Char_PrintString
+ 906              	.LVL83:
+ 179:main.c        ****                 LCD_Char_PrintString(TIME);
+ 907              		.loc 1 179 0
+ 908 0124 0021     		movs	r1, #0
+ 909 0126 0120     		movs	r0, #1
+ 910 0128 FFF7FEFF 		bl	LCD_Char_Position
+ 911              	.LVL84:
+ 180:main.c        ****                 QuadDec_SetCounter(greenTime);
+ 912              		.loc 1 180 0
+ 913 012c 4C48     		ldr	r0, .L51+48
+ 914 012e FFF7FEFF 		bl	LCD_Char_PrintString
+ 915              	.LVL85:
+ 181:main.c        ****             }
+ 916              		.loc 1 181 0
+ 917 0132 414B     		ldr	r3, .L51+8
+ 918 0134 0020     		movs	r0, #0
+ 919 0136 1856     		ldrsb	r0, [r3, r0]
+ 920 0138 FFF7FEFF 		bl	QuadDec_SetCounter
+ 921              	.LVL86:
+ 922              	.L39:
+ 184:main.c        ****         }
+ 923              		.loc 1 184 0
+ 924 013c 0022     		movs	r2, #0
+ 925 013e 3F4B     		ldr	r3, .L51+12
+ 926 0140 DA71     		strb	r2, [r3, #7]
+ 927              	.L37:
+ 187:main.c        ****         {
+ 928              		.loc 1 187 0
+ 929 0142 3E4B     		ldr	r3, .L51+12
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 26
+
+
+ 930 0144 9B79     		ldrb	r3, [r3, #6]
+ 931 0146 002B     		cmp	r3, #0
+ 932 0148 20D1     		bne	.L42
+ 189:main.c        ****             {
+ 933              		.loc 1 189 0
+ 934 014a 3C4B     		ldr	r3, .L51+12
+ 935 014c 1B79     		ldrb	r3, [r3, #4]
+ 936 014e 9D42     		cmp	r5, r3
+ 937 0150 08D0     		beq	.L43
+ 191:main.c        ****                 LCD_Char_PrintString(EMPTY_LINE);
+ 938              		.loc 1 191 0
+ 939 0152 0021     		movs	r1, #0
+ 940 0154 0120     		movs	r0, #1
+ 941 0156 FFF7FEFF 		bl	LCD_Char_Position
+ 942              	.LVL87:
+ 192:main.c        ****                 currentCounter = displayCounter.counter;
+ 943              		.loc 1 192 0
+ 944 015a 4448     		ldr	r0, .L51+60
+ 945 015c FFF7FEFF 		bl	LCD_Char_PrintString
+ 946              	.LVL88:
+ 194:main.c        ****             }
+ 947              		.loc 1 194 0
+ 948 0160 364B     		ldr	r3, .L51+12
+ 949 0162 1D79     		ldrb	r5, [r3, #4]
+ 950              	.LVL89:
+ 951              	.L43:
+ 196:main.c        ****             
+ 952              		.loc 1 196 0
+ 953 0164 354B     		ldr	r3, .L51+12
+ 954 0166 5C79     		ldrb	r4, [r3, #5]
+ 955              	.LVL90:
+ 198:main.c        ****             if (currentCounter < 10)
+ 956              		.loc 1 198 0
+ 957 0168 2900     		movs	r1, r5
+ 958 016a 0120     		movs	r0, #1
+ 959 016c FFF7FEFF 		bl	LCD_Char_Position
+ 960              	.LVL91:
+ 199:main.c        ****             {
+ 961              		.loc 1 199 0
+ 962 0170 092C     		cmp	r4, #9
+ 963 0172 07D8     		bhi	.L44
+ 201:main.c        ****                 LCD_Char_Position(1, currentPosition + 1);
+ 964              		.loc 1 201 0
+ 965 0174 3020     		movs	r0, #48
+ 966 0176 FFF7FEFF 		bl	LCD_Char_PutChar
+ 967              	.LVL92:
+ 202:main.c        ****             }
+ 968              		.loc 1 202 0
+ 969 017a 691C     		adds	r1, r5, #1
+ 970 017c C9B2     		uxtb	r1, r1
+ 971 017e 0120     		movs	r0, #1
+ 972 0180 FFF7FEFF 		bl	LCD_Char_Position
+ 973              	.LVL93:
+ 974              	.L44:
+ 204:main.c        ****         }
+ 975              		.loc 1 204 0
+ 976 0184 2000     		movs	r0, r4
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 27
+
+
+ 977 0186 FFF7FEFF 		bl	LCD_Char_PrintU32Number
+ 978              	.LVL94:
+ 979 018a 75E7     		b	.L34
+ 980              	.LVL95:
+ 981              	.L42:
+ 206:main.c        ****         {
+ 982              		.loc 1 206 0
+ 983 018c 012B     		cmp	r3, #1
+ 984 018e 18D1     		bne	.L46
+ 208:main.c        ****             if (QuadDec_GetCounter() < 10)
+ 985              		.loc 1 208 0
+ 986 0190 0521     		movs	r1, #5
+ 987 0192 0120     		movs	r0, #1
+ 988 0194 FFF7FEFF 		bl	LCD_Char_Position
+ 989              	.LVL96:
+ 209:main.c        ****             {
+ 990              		.loc 1 209 0
+ 991 0198 FFF7FEFF 		bl	QuadDec_GetCounter
+ 992              	.LVL97:
+ 993 019c 0928     		cmp	r0, #9
+ 994 019e 06DC     		bgt	.L47
+ 211:main.c        ****                 LCD_Char_Position(1, POSITITON_SET_TIME + 1);
+ 995              		.loc 1 211 0
+ 996 01a0 3020     		movs	r0, #48
+ 997 01a2 FFF7FEFF 		bl	LCD_Char_PutChar
+ 998              	.LVL98:
+ 212:main.c        ****             }
+ 999              		.loc 1 212 0
+ 1000 01a6 0621     		movs	r1, #6
+ 1001 01a8 0120     		movs	r0, #1
+ 1002 01aa FFF7FEFF 		bl	LCD_Char_Position
+ 1003              	.LVL99:
+ 1004              	.L47:
+ 214:main.c        ****             
+ 1005              		.loc 1 214 0
+ 1006 01ae FFF7FEFF 		bl	QuadDec_GetCounter
+ 1007              	.LVL100:
+ 1008 01b2 80B2     		uxth	r0, r0
+ 1009 01b4 FFF7FEFF 		bl	LCD_Char_PrintU32Number
+ 1010              	.LVL101:
+ 216:main.c        ****         }
+ 1011              		.loc 1 216 0
+ 1012 01b8 FFF7FEFF 		bl	QuadDec_GetCounter
+ 1013              	.LVL102:
+ 1014 01bc 1C4B     		ldr	r3, .L51
+ 1015 01be 1870     		strb	r0, [r3]
+ 1016 01c0 5AE7     		b	.L34
+ 1017              	.L46:
+ 218:main.c        ****         {
+ 1018              		.loc 1 218 0
+ 1019 01c2 022B     		cmp	r3, #2
+ 1020 01c4 18D1     		bne	.L48
+ 220:main.c        ****             if (QuadDec_GetCounter() < 10)
+ 1021              		.loc 1 220 0
+ 1022 01c6 0521     		movs	r1, #5
+ 1023 01c8 0120     		movs	r0, #1
+ 1024 01ca FFF7FEFF 		bl	LCD_Char_Position
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 28
+
+
+ 1025              	.LVL103:
+ 221:main.c        ****             {
+ 1026              		.loc 1 221 0
+ 1027 01ce FFF7FEFF 		bl	QuadDec_GetCounter
+ 1028              	.LVL104:
+ 1029 01d2 0928     		cmp	r0, #9
+ 1030 01d4 06DC     		bgt	.L49
+ 223:main.c        ****                 LCD_Char_Position(1, POSITITON_SET_TIME + 1);
+ 1031              		.loc 1 223 0
+ 1032 01d6 3020     		movs	r0, #48
+ 1033 01d8 FFF7FEFF 		bl	LCD_Char_PutChar
+ 1034              	.LVL105:
+ 224:main.c        ****             }
+ 1035              		.loc 1 224 0
+ 1036 01dc 0621     		movs	r1, #6
+ 1037 01de 0120     		movs	r0, #1
+ 1038 01e0 FFF7FEFF 		bl	LCD_Char_Position
+ 1039              	.LVL106:
+ 1040              	.L49:
+ 226:main.c        ****             
+ 1041              		.loc 1 226 0
+ 1042 01e4 FFF7FEFF 		bl	QuadDec_GetCounter
+ 1043              	.LVL107:
+ 1044 01e8 80B2     		uxth	r0, r0
+ 1045 01ea FFF7FEFF 		bl	LCD_Char_PrintU32Number
+ 1046              	.LVL108:
+ 228:main.c        ****         }
+ 1047              		.loc 1 228 0
+ 1048 01ee FFF7FEFF 		bl	QuadDec_GetCounter
+ 1049              	.LVL109:
+ 1050 01f2 104B     		ldr	r3, .L51+4
+ 1051 01f4 1870     		strb	r0, [r3]
+ 1052 01f6 3FE7     		b	.L34
+ 1053              	.L48:
+ 230:main.c        ****         {
+ 1054              		.loc 1 230 0
+ 1055 01f8 032B     		cmp	r3, #3
+ 1056 01fa 00D0     		beq	.LCB905
+ 1057 01fc 3CE7     		b	.L34	@long jump
+ 1058              	.LCB905:
+ 232:main.c        ****             if (QuadDec_GetCounter() < 10)
+ 1059              		.loc 1 232 0
+ 1060 01fe 0521     		movs	r1, #5
+ 1061 0200 0120     		movs	r0, #1
+ 1062 0202 FFF7FEFF 		bl	LCD_Char_Position
+ 1063              	.LVL110:
+ 233:main.c        ****             {
+ 1064              		.loc 1 233 0
+ 1065 0206 FFF7FEFF 		bl	QuadDec_GetCounter
+ 1066              	.LVL111:
+ 1067 020a 0928     		cmp	r0, #9
+ 1068 020c 06DC     		bgt	.L50
+ 235:main.c        ****                 LCD_Char_Position(1, POSITITON_SET_TIME + 1);
+ 1069              		.loc 1 235 0
+ 1070 020e 3020     		movs	r0, #48
+ 1071 0210 FFF7FEFF 		bl	LCD_Char_PutChar
+ 1072              	.LVL112:
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 29
+
+
+ 236:main.c        ****             }
+ 1073              		.loc 1 236 0
+ 1074 0214 0621     		movs	r1, #6
+ 1075 0216 0120     		movs	r0, #1
+ 1076 0218 FFF7FEFF 		bl	LCD_Char_Position
+ 1077              	.LVL113:
+ 1078              	.L50:
+ 238:main.c        ****             
+ 1079              		.loc 1 238 0
+ 1080 021c FFF7FEFF 		bl	QuadDec_GetCounter
+ 1081              	.LVL114:
+ 1082 0220 80B2     		uxth	r0, r0
+ 1083 0222 FFF7FEFF 		bl	LCD_Char_PrintU32Number
+ 1084              	.LVL115:
+ 240:main.c        ****         }
+ 1085              		.loc 1 240 0
+ 1086 0226 FFF7FEFF 		bl	QuadDec_GetCounter
+ 1087              	.LVL116:
+ 1088 022a 034B     		ldr	r3, .L51+8
+ 1089 022c 1870     		strb	r0, [r3]
+ 1090 022e 23E7     		b	.L34
+ 1091              	.L52:
+ 1092              		.align	2
+ 1093              	.L51:
+ 1094 0230 00000000 		.word	redTime
+ 1095 0234 00000000 		.word	yellowTime
+ 1096 0238 00000000 		.word	greenTime
+ 1097 023c 00000000 		.word	.LANCHOR0
+ 1098 0240 00000000 		.word	timer_isr_interrupt
+ 1099 0244 00000000 		.word	button_isr_interrupt
+ 1100 0248 00000000 		.word	button_encoder_isr_interrupt
+ 1101 024c 00000000 		.word	.LC13
+ 1102 0250 08000000 		.word	.LC15
+ 1103 0254 B80B0000 		.word	3000
+ 1104 0258 18000000 		.word	.LC17
+ 1105 025c 2C000000 		.word	.LC19
+ 1106 0260 40000000 		.word	.LC21
+ 1107 0264 54000000 		.word	.LC23
+ 1108 0268 68000000 		.word	.LC25
+ 1109 026c 7C000000 		.word	.LC27
+ 1110              		.cfi_endproc
+ 1111              	.LFE37:
+ 1112              		.size	main, .-main
+ 1113              		.global	displayCounter
+ 1114              		.global	modeHasChanged
+ 1115              		.global	displayMode
+ 1116              		.comm	greenTime,1,1
+ 1117              		.comm	yellowTime,1,1
+ 1118              		.comm	redTime,1,1
+ 1119              		.global	algorithm
+ 1120              		.global	counter
+ 1121              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 1122              		.align	2
+ 1123              	.LC13:
+ 1124 0000 41757468 		.ascii	"Author\000"
+ 1124      6F7200
+ 1125 0007 00       		.space	1
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 30
+
+
+ 1126              	.LC15:
+ 1127 0008 44656E79 		.ascii	"Denys Shutka\000"
+ 1127      73205368 
+ 1127      75746B61 
+ 1127      00
+ 1128 0015 000000   		.space	3
+ 1129              	.LC17:
+ 1130 0018 52454420 		.ascii	"RED YELLOW GREEN\000"
+ 1130      59454C4C 
+ 1130      4F572047 
+ 1130      5245454E 
+ 1130      00
+ 1131 0029 000000   		.space	3
+ 1132              	.LC19:
+ 1133 002c 53455420 		.ascii	"SET RED TIME:   \000"
+ 1133      52454420 
+ 1133      54494D45 
+ 1133      3A202020 
+ 1133      00
+ 1134 003d 000000   		.space	3
+ 1135              	.LC21:
+ 1136 0040 54494D45 		.ascii	"TIME=           \000"
+ 1136      3D202020 
+ 1136      20202020 
+ 1136      20202020 
+ 1136      00
+ 1137 0051 000000   		.space	3
+ 1138              	.LC23:
+ 1139 0054 53455420 		.ascii	"SET YELLOW TIME:\000"
+ 1139      59454C4C 
+ 1139      4F572054 
+ 1139      494D453A 
+ 1139      00
+ 1140 0065 000000   		.space	3
+ 1141              	.LC25:
+ 1142 0068 53455420 		.ascii	"SET GREEN TIME: \000"
+ 1142      47524545 
+ 1142      4E205449 
+ 1142      4D453A20 
+ 1142      00
+ 1143 0079 000000   		.space	3
+ 1144              	.LC27:
+ 1145 007c 20202020 		.ascii	"                \000"
+ 1145      20202020 
+ 1145      20202020 
+ 1145      20202020 
+ 1145      00
+ 1146              		.bss
+ 1147              		.align	2
+ 1148              		.set	.LANCHOR0,. + 0
+ 1149              		.type	counter, %object
+ 1150              		.size	counter, 1
+ 1151              	counter:
+ 1152 0000 00       		.space	1
+ 1153              		.type	algorithm, %object
+ 1154              		.size	algorithm, 1
+ 1155              	algorithm:
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 31
+
+
+ 1156 0001 00       		.space	1
+ 1157 0002 0000     		.space	2
+ 1158              		.type	displayCounter, %object
+ 1159              		.size	displayCounter, 2
+ 1160              	displayCounter:
+ 1161 0004 0000     		.space	2
+ 1162              		.type	displayMode, %object
+ 1163              		.size	displayMode, 1
+ 1164              	displayMode:
+ 1165 0006 00       		.space	1
+ 1166              		.type	modeHasChanged, %object
+ 1167              		.size	modeHasChanged, 1
+ 1168              	modeHasChanged:
+ 1169 0007 00       		.space	1
+ 1170              		.text
+ 1171              	.Letext0:
+ 1172              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1173              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1174              		.file 4 "Generated_Source\\PSoC4/cytypes.h"
+ 1175              		.file 5 "Generated_Source\\PSoC4/Control_Reg.h"
+ 1176              		.file 6 "Generated_Source\\PSoC4/Timer_Counter.h"
+ 1177              		.file 7 "Generated_Source\\PSoC4/Button.h"
+ 1178              		.file 8 "Generated_Source\\PSoC4/Button_Encoder.h"
+ 1179              		.file 9 "Generated_Source\\PSoC4/timer_isr.h"
+ 1180              		.file 10 "Generated_Source\\PSoC4/button_isr.h"
+ 1181              		.file 11 "Generated_Source\\PSoC4/button_encoder_isr.h"
+ 1182              		.file 12 "Generated_Source\\PSoC4/QuadDec.h"
+ 1183              		.file 13 "Generated_Source\\PSoC4/LCD_Char.h"
+ 1184              		.file 14 "Generated_Source\\PSoC4/CyLib.h"
+ 1185              		.section	.debug_info,"",%progbits
+ 1186              	.Ldebug_info0:
+ 1187 0000 060A0000 		.4byte	0xa06
+ 1188 0004 0400     		.2byte	0x4
+ 1189 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1190 000a 04       		.byte	0x4
+ 1191 000b 01       		.uleb128 0x1
+ 1192 000c 3E020000 		.4byte	.LASF57
+ 1193 0010 0C       		.byte	0xc
+ 1194 0011 F7020000 		.4byte	.LASF58
+ 1195 0015 5A030000 		.4byte	.LASF59
+ 1196 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 1197 001d 00000000 		.4byte	0
+ 1198 0021 00000000 		.4byte	.Ldebug_line0
+ 1199 0025 02       		.uleb128 0x2
+ 1200 0026 01       		.byte	0x1
+ 1201 0027 06       		.byte	0x6
+ 1202 0028 DE030000 		.4byte	.LASF0
+ 1203 002c 03       		.uleb128 0x3
+ 1204 002d 19000000 		.4byte	.LASF9
+ 1205 0031 02       		.byte	0x2
+ 1206 0032 1D       		.byte	0x1d
+ 1207 0033 37000000 		.4byte	0x37
+ 1208 0037 02       		.uleb128 0x2
+ 1209 0038 01       		.byte	0x1
+ 1210 0039 08       		.byte	0x8
+ 1211 003a 5E010000 		.4byte	.LASF1
+ 1212 003e 02       		.uleb128 0x2
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 32
+
+
+ 1213 003f 02       		.byte	0x2
+ 1214 0040 05       		.byte	0x5
+ 1215 0041 50030000 		.4byte	.LASF2
+ 1216 0045 02       		.uleb128 0x2
+ 1217 0046 02       		.byte	0x2
+ 1218 0047 07       		.byte	0x7
+ 1219 0048 2D010000 		.4byte	.LASF3
+ 1220 004c 02       		.uleb128 0x2
+ 1221 004d 04       		.byte	0x4
+ 1222 004e 05       		.byte	0x5
+ 1223 004f B7030000 		.4byte	.LASF4
+ 1224 0053 02       		.uleb128 0x2
+ 1225 0054 04       		.byte	0x4
+ 1226 0055 07       		.byte	0x7
+ 1227 0056 1B010000 		.4byte	.LASF5
+ 1228 005a 02       		.uleb128 0x2
+ 1229 005b 08       		.byte	0x8
+ 1230 005c 05       		.byte	0x5
+ 1231 005d D5020000 		.4byte	.LASF6
+ 1232 0061 02       		.uleb128 0x2
+ 1233 0062 08       		.byte	0x8
+ 1234 0063 07       		.byte	0x7
+ 1235 0064 E0010000 		.4byte	.LASF7
+ 1236 0068 04       		.uleb128 0x4
+ 1237 0069 04       		.byte	0x4
+ 1238 006a 05       		.byte	0x5
+ 1239 006b 696E7400 		.ascii	"int\000"
+ 1240 006f 02       		.uleb128 0x2
+ 1241 0070 04       		.byte	0x4
+ 1242 0071 07       		.byte	0x7
+ 1243 0072 D3010000 		.4byte	.LASF8
+ 1244 0076 03       		.uleb128 0x3
+ 1245 0077 F7010000 		.4byte	.LASF10
+ 1246 007b 03       		.byte	0x3
+ 1247 007c 18       		.byte	0x18
+ 1248 007d 2C000000 		.4byte	0x2c
+ 1249 0081 05       		.uleb128 0x5
+ 1250 0082 97030000 		.4byte	.LASF11
+ 1251 0086 04       		.byte	0x4
+ 1252 0087 F701     		.2byte	0x1f7
+ 1253 0089 37000000 		.4byte	0x37
+ 1254 008d 05       		.uleb128 0x5
+ 1255 008e 73010000 		.4byte	.LASF12
+ 1256 0092 04       		.byte	0x4
+ 1257 0093 F801     		.2byte	0x1f8
+ 1258 0095 45000000 		.4byte	0x45
+ 1259 0099 05       		.uleb128 0x5
+ 1260 009a B6010000 		.4byte	.LASF13
+ 1261 009e 04       		.byte	0x4
+ 1262 009f F901     		.2byte	0x1f9
+ 1263 00a1 53000000 		.4byte	0x53
+ 1264 00a5 02       		.uleb128 0x2
+ 1265 00a6 04       		.byte	0x4
+ 1266 00a7 04       		.byte	0x4
+ 1267 00a8 D7000000 		.4byte	.LASF14
+ 1268 00ac 02       		.uleb128 0x2
+ 1269 00ad 08       		.byte	0x8
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 33
+
+
+ 1270 00ae 04       		.byte	0x4
+ 1271 00af 6C010000 		.4byte	.LASF15
+ 1272 00b3 02       		.uleb128 0x2
+ 1273 00b4 01       		.byte	0x1
+ 1274 00b5 08       		.byte	0x8
+ 1275 00b6 FE020000 		.4byte	.LASF16
+ 1276 00ba 02       		.uleb128 0x2
+ 1277 00bb 08       		.byte	0x8
+ 1278 00bc 04       		.byte	0x4
+ 1279 00bd D2030000 		.4byte	.LASF17
+ 1280 00c1 02       		.uleb128 0x2
+ 1281 00c2 04       		.byte	0x4
+ 1282 00c3 07       		.byte	0x7
+ 1283 00c4 CC020000 		.4byte	.LASF18
+ 1284 00c8 06       		.uleb128 0x6
+ 1285 00c9 44000000 		.4byte	.LASF60
+ 1286 00cd 02       		.byte	0x2
+ 1287 00ce 01       		.byte	0x1
+ 1288 00cf 2B       		.byte	0x2b
+ 1289 00d0 ED000000 		.4byte	0xed
+ 1290 00d4 07       		.uleb128 0x7
+ 1291 00d5 AD010000 		.4byte	.LASF19
+ 1292 00d9 01       		.byte	0x1
+ 1293 00da 2D       		.byte	0x2d
+ 1294 00db 76000000 		.4byte	0x76
+ 1295 00df 00       		.byte	0
+ 1296 00e0 07       		.uleb128 0x7
+ 1297 00e1 DD000000 		.4byte	.LASF20
+ 1298 00e5 01       		.byte	0x1
+ 1299 00e6 2D       		.byte	0x2d
+ 1300 00e7 76000000 		.4byte	0x76
+ 1301 00eb 01       		.byte	0x1
+ 1302 00ec 00       		.byte	0
+ 1303 00ed 08       		.uleb128 0x8
+ 1304 00ee 12030000 		.4byte	.LASF21
+ 1305 00f2 01       		.byte	0x1
+ 1306 00f3 3001     		.2byte	0x130
+ 1307 00f5 03       		.byte	0x3
+ 1308 00f6 07010000 		.4byte	0x107
+ 1309 00fa 09       		.uleb128 0x9
+ 1310 00fb 9D030000 		.4byte	.LASF23
+ 1311 00ff 01       		.byte	0x1
+ 1312 0100 3001     		.2byte	0x130
+ 1313 0102 07010000 		.4byte	0x107
+ 1314 0106 00       		.byte	0
+ 1315 0107 0A       		.uleb128 0xa
+ 1316 0108 04       		.byte	0x4
+ 1317 0109 0D010000 		.4byte	0x10d
+ 1318 010d 0B       		.uleb128 0xb
+ 1319 010e 76000000 		.4byte	0x76
+ 1320 0112 0C       		.uleb128 0xc
+ 1321 0113 BD010000 		.4byte	.LASF22
+ 1322 0117 01       		.byte	0x1
+ 1323 0118 F5       		.byte	0xf5
+ 1324 0119 03       		.byte	0x3
+ 1325 011a 2A010000 		.4byte	0x12a
+ 1326 011e 0D       		.uleb128 0xd
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 34
+
+
+ 1327 011f 9D030000 		.4byte	.LASF23
+ 1328 0123 01       		.byte	0x1
+ 1329 0124 F5       		.byte	0xf5
+ 1330 0125 07010000 		.4byte	0x107
+ 1331 0129 00       		.byte	0
+ 1332 012a 0E       		.uleb128 0xe
+ 1333 012b 8C000000 		.4byte	.LASF24
+ 1334 012f 01       		.byte	0x1
+ 1335 0130 4F01     		.2byte	0x14f
+ 1336 0132 03       		.byte	0x3
+ 1337 0133 44010000 		.4byte	0x144
+ 1338 0137 0F       		.uleb128 0xf
+ 1339 0138 00000000 		.4byte	.LASF26
+ 1340 013c 01       		.byte	0x1
+ 1341 013d 5101     		.2byte	0x151
+ 1342 013f 81000000 		.4byte	0x81
+ 1343 0143 00       		.byte	0
+ 1344 0144 0E       		.uleb128 0xe
+ 1345 0145 7E000000 		.4byte	.LASF25
+ 1346 0149 01       		.byte	0x1
+ 1347 014a 4001     		.2byte	0x140
+ 1348 014c 03       		.byte	0x3
+ 1349 014d 5E010000 		.4byte	0x15e
+ 1350 0151 0F       		.uleb128 0xf
+ 1351 0152 00000000 		.4byte	.LASF26
+ 1352 0156 01       		.byte	0x1
+ 1353 0157 4201     		.2byte	0x142
+ 1354 0159 81000000 		.4byte	0x81
+ 1355 015d 00       		.byte	0
+ 1356 015e 10       		.uleb128 0x10
+ 1357 015f C3000000 		.4byte	.LASF27
+ 1358 0163 01       		.byte	0x1
+ 1359 0164 36       		.byte	0x36
+ 1360 0165 00000000 		.4byte	.LFB34
+ 1361 0169 0C030000 		.4byte	.LFE34-.LFB34
+ 1362 016d 01       		.uleb128 0x1
+ 1363 016e 9C       		.byte	0x9c
+ 1364 016f AD030000 		.4byte	0x3ad
+ 1365 0173 11       		.uleb128 0x11
+ 1366 0174 2A010000 		.4byte	0x12a
+ 1367 0178 30000000 		.4byte	.LBB22
+ 1368 017c 54010000 		.4byte	.LBE22-.LBB22
+ 1369 0180 01       		.byte	0x1
+ 1370 0181 3F       		.byte	0x3f
+ 1371 0182 88020000 		.4byte	0x288
+ 1372 0186 12       		.uleb128 0x12
+ 1373 0187 30000000 		.4byte	.LBB23
+ 1374 018b 54010000 		.4byte	.LBE23-.LBB23
+ 1375 018f 13       		.uleb128 0x13
+ 1376 0190 37010000 		.4byte	0x137
+ 1377 0194 00000000 		.4byte	.LLST0
+ 1378 0198 14       		.uleb128 0x14
+ 1379 0199 12010000 		.4byte	0x112
+ 1380 019d 3A000000 		.4byte	.LBB24
+ 1381 01a1 FC000000 		.4byte	.LBE24-.LBB24
+ 1382 01a5 01       		.byte	0x1
+ 1383 01a6 5501     		.2byte	0x155
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 35
+
+
+ 1384 01a8 4A020000 		.4byte	0x24a
+ 1385 01ac 15       		.uleb128 0x15
+ 1386 01ad 1E010000 		.4byte	0x11e
+ 1387 01b1 2A000000 		.4byte	.LLST1
+ 1388 01b5 16       		.uleb128 0x16
+ 1389 01b6 4A000000 		.4byte	.LVL1
+ 1390 01ba 41090000 		.4byte	0x941
+ 1391 01be C8010000 		.4byte	0x1c8
+ 1392 01c2 17       		.uleb128 0x17
+ 1393 01c3 01       		.uleb128 0x1
+ 1394 01c4 50       		.byte	0x50
+ 1395 01c5 01       		.uleb128 0x1
+ 1396 01c6 34       		.byte	0x34
+ 1397 01c7 00       		.byte	0
+ 1398 01c8 16       		.uleb128 0x16
+ 1399 01c9 68000000 		.4byte	.LVL2
+ 1400 01cd 41090000 		.4byte	0x941
+ 1401 01d1 DB010000 		.4byte	0x1db
+ 1402 01d5 17       		.uleb128 0x17
+ 1403 01d6 01       		.uleb128 0x1
+ 1404 01d7 50       		.byte	0x50
+ 1405 01d8 01       		.uleb128 0x1
+ 1406 01d9 30       		.byte	0x30
+ 1407 01da 00       		.byte	0
+ 1408 01db 16       		.uleb128 0x16
+ 1409 01dc 86000000 		.4byte	.LVL3
+ 1410 01e0 41090000 		.4byte	0x941
+ 1411 01e4 EE010000 		.4byte	0x1ee
+ 1412 01e8 17       		.uleb128 0x17
+ 1413 01e9 01       		.uleb128 0x1
+ 1414 01ea 50       		.byte	0x50
+ 1415 01eb 01       		.uleb128 0x1
+ 1416 01ec 34       		.byte	0x34
+ 1417 01ed 00       		.byte	0
+ 1418 01ee 16       		.uleb128 0x16
+ 1419 01ef A4000000 		.4byte	.LVL4
+ 1420 01f3 41090000 		.4byte	0x941
+ 1421 01f7 01020000 		.4byte	0x201
+ 1422 01fb 17       		.uleb128 0x17
+ 1423 01fc 01       		.uleb128 0x1
+ 1424 01fd 50       		.byte	0x50
+ 1425 01fe 01       		.uleb128 0x1
+ 1426 01ff 30       		.byte	0x30
+ 1427 0200 00       		.byte	0
+ 1428 0201 16       		.uleb128 0x16
+ 1429 0202 C0000000 		.4byte	.LVL5
+ 1430 0206 41090000 		.4byte	0x941
+ 1431 020a 14020000 		.4byte	0x214
+ 1432 020e 17       		.uleb128 0x17
+ 1433 020f 01       		.uleb128 0x1
+ 1434 0210 50       		.byte	0x50
+ 1435 0211 01       		.uleb128 0x1
+ 1436 0212 34       		.byte	0x34
+ 1437 0213 00       		.byte	0
+ 1438 0214 16       		.uleb128 0x16
+ 1439 0215 DE000000 		.4byte	.LVL6
+ 1440 0219 41090000 		.4byte	0x941
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 36
+
+
+ 1441 021d 27020000 		.4byte	0x227
+ 1442 0221 17       		.uleb128 0x17
+ 1443 0222 01       		.uleb128 0x1
+ 1444 0223 50       		.byte	0x50
+ 1445 0224 01       		.uleb128 0x1
+ 1446 0225 32       		.byte	0x32
+ 1447 0226 00       		.byte	0
+ 1448 0227 16       		.uleb128 0x16
+ 1449 0228 00010000 		.4byte	.LVL7
+ 1450 022c 41090000 		.4byte	0x941
+ 1451 0230 3A020000 		.4byte	0x23a
+ 1452 0234 17       		.uleb128 0x17
+ 1453 0235 01       		.uleb128 0x1
+ 1454 0236 50       		.byte	0x50
+ 1455 0237 01       		.uleb128 0x1
+ 1456 0238 34       		.byte	0x34
+ 1457 0239 00       		.byte	0
+ 1458 023a 18       		.uleb128 0x18
+ 1459 023b 1E010000 		.4byte	.LVL8
+ 1460 023f 41090000 		.4byte	0x941
+ 1461 0243 17       		.uleb128 0x17
+ 1462 0244 01       		.uleb128 0x1
+ 1463 0245 50       		.byte	0x50
+ 1464 0246 01       		.uleb128 0x1
+ 1465 0247 32       		.byte	0x32
+ 1466 0248 00       		.byte	0
+ 1467 0249 00       		.byte	0
+ 1468 024a 19       		.uleb128 0x19
+ 1469 024b ED000000 		.4byte	0xed
+ 1470 024f 3A010000 		.4byte	.LBB26
+ 1471 0253 4A000000 		.4byte	.LBE26-.LBB26
+ 1472 0257 01       		.byte	0x1
+ 1473 0258 5A01     		.2byte	0x15a
+ 1474 025a 15       		.uleb128 0x15
+ 1475 025b FA000000 		.4byte	0xfa
+ 1476 025f 42000000 		.4byte	.LLST2
+ 1477 0263 16       		.uleb128 0x16
+ 1478 0264 46010000 		.4byte	.LVL11
+ 1479 0268 41090000 		.4byte	0x941
+ 1480 026c 76020000 		.4byte	0x276
+ 1481 0270 17       		.uleb128 0x17
+ 1482 0271 01       		.uleb128 0x1
+ 1483 0272 50       		.byte	0x50
+ 1484 0273 01       		.uleb128 0x1
+ 1485 0274 31       		.byte	0x31
+ 1486 0275 00       		.byte	0
+ 1487 0276 18       		.uleb128 0x18
+ 1488 0277 6A010000 		.4byte	.LVL14
+ 1489 027b 41090000 		.4byte	0x941
+ 1490 027f 17       		.uleb128 0x17
+ 1491 0280 01       		.uleb128 0x1
+ 1492 0281 50       		.byte	0x50
+ 1493 0282 01       		.uleb128 0x1
+ 1494 0283 32       		.byte	0x32
+ 1495 0284 00       		.byte	0
+ 1496 0285 00       		.byte	0
+ 1497 0286 00       		.byte	0
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 37
+
+
+ 1498 0287 00       		.byte	0
+ 1499 0288 11       		.uleb128 0x11
+ 1500 0289 44010000 		.4byte	0x144
+ 1501 028d 84010000 		.4byte	.LBB28
+ 1502 0291 66010000 		.4byte	.LBE28-.LBB28
+ 1503 0295 01       		.byte	0x1
+ 1504 0296 43       		.byte	0x43
+ 1505 0297 9D030000 		.4byte	0x39d
+ 1506 029b 12       		.uleb128 0x12
+ 1507 029c 84010000 		.4byte	.LBB29
+ 1508 02a0 66010000 		.4byte	.LBE29-.LBB29
+ 1509 02a4 13       		.uleb128 0x13
+ 1510 02a5 51010000 		.4byte	0x151
+ 1511 02a9 5A000000 		.4byte	.LLST3
+ 1512 02ad 14       		.uleb128 0x14
+ 1513 02ae ED000000 		.4byte	0xed
+ 1514 02b2 8E010000 		.4byte	.LBB30
+ 1515 02b6 40000000 		.4byte	.LBE30-.LBB30
+ 1516 02ba 01       		.byte	0x1
+ 1517 02bb 4601     		.2byte	0x146
+ 1518 02bd ED020000 		.4byte	0x2ed
+ 1519 02c1 15       		.uleb128 0x15
+ 1520 02c2 FA000000 		.4byte	0xfa
+ 1521 02c6 C6000000 		.4byte	.LLST4
+ 1522 02ca 16       		.uleb128 0x16
+ 1523 02cb 98010000 		.4byte	.LVL18
+ 1524 02cf 41090000 		.4byte	0x941
+ 1525 02d3 DD020000 		.4byte	0x2dd
+ 1526 02d7 17       		.uleb128 0x17
+ 1527 02d8 01       		.uleb128 0x1
+ 1528 02d9 50       		.byte	0x50
+ 1529 02da 01       		.uleb128 0x1
+ 1530 02db 31       		.byte	0x31
+ 1531 02dc 00       		.byte	0
+ 1532 02dd 18       		.uleb128 0x18
+ 1533 02de B6010000 		.4byte	.LVL19
+ 1534 02e2 41090000 		.4byte	0x941
+ 1535 02e6 17       		.uleb128 0x17
+ 1536 02e7 01       		.uleb128 0x1
+ 1537 02e8 50       		.byte	0x50
+ 1538 02e9 01       		.uleb128 0x1
+ 1539 02ea 32       		.byte	0x32
+ 1540 02eb 00       		.byte	0
+ 1541 02ec 00       		.byte	0
+ 1542 02ed 19       		.uleb128 0x19
+ 1543 02ee 12010000 		.4byte	0x112
+ 1544 02f2 D2010000 		.4byte	.LBB32
+ 1545 02f6 18010000 		.4byte	.LBE32-.LBB32
+ 1546 02fa 01       		.byte	0x1
+ 1547 02fb 4B01     		.2byte	0x14b
+ 1548 02fd 15       		.uleb128 0x15
+ 1549 02fe 1E010000 		.4byte	0x11e
+ 1550 0302 DE000000 		.4byte	.LLST5
+ 1551 0306 16       		.uleb128 0x16
+ 1552 0307 E4010000 		.4byte	.LVL22
+ 1553 030b 41090000 		.4byte	0x941
+ 1554 030f 19030000 		.4byte	0x319
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 38
+
+
+ 1555 0313 17       		.uleb128 0x17
+ 1556 0314 01       		.uleb128 0x1
+ 1557 0315 50       		.byte	0x50
+ 1558 0316 01       		.uleb128 0x1
+ 1559 0317 34       		.byte	0x34
+ 1560 0318 00       		.byte	0
+ 1561 0319 16       		.uleb128 0x16
+ 1562 031a 06020000 		.4byte	.LVL25
+ 1563 031e 41090000 		.4byte	0x941
+ 1564 0322 2C030000 		.4byte	0x32c
+ 1565 0326 17       		.uleb128 0x17
+ 1566 0327 01       		.uleb128 0x1
+ 1567 0328 50       		.byte	0x50
+ 1568 0329 01       		.uleb128 0x1
+ 1569 032a 30       		.byte	0x30
+ 1570 032b 00       		.byte	0
+ 1571 032c 16       		.uleb128 0x16
+ 1572 032d 28020000 		.4byte	.LVL28
+ 1573 0331 41090000 		.4byte	0x941
+ 1574 0335 3F030000 		.4byte	0x33f
+ 1575 0339 17       		.uleb128 0x17
+ 1576 033a 01       		.uleb128 0x1
+ 1577 033b 50       		.byte	0x50
+ 1578 033c 01       		.uleb128 0x1
+ 1579 033d 34       		.byte	0x34
+ 1580 033e 00       		.byte	0
+ 1581 033f 16       		.uleb128 0x16
+ 1582 0340 4A020000 		.4byte	.LVL31
+ 1583 0344 41090000 		.4byte	0x941
+ 1584 0348 52030000 		.4byte	0x352
+ 1585 034c 17       		.uleb128 0x17
+ 1586 034d 01       		.uleb128 0x1
+ 1587 034e 50       		.byte	0x50
+ 1588 034f 01       		.uleb128 0x1
+ 1589 0350 30       		.byte	0x30
+ 1590 0351 00       		.byte	0
+ 1591 0352 16       		.uleb128 0x16
+ 1592 0353 6A020000 		.4byte	.LVL34
+ 1593 0357 41090000 		.4byte	0x941
+ 1594 035b 65030000 		.4byte	0x365
+ 1595 035f 17       		.uleb128 0x17
+ 1596 0360 01       		.uleb128 0x1
+ 1597 0361 50       		.byte	0x50
+ 1598 0362 01       		.uleb128 0x1
+ 1599 0363 34       		.byte	0x34
+ 1600 0364 00       		.byte	0
+ 1601 0365 16       		.uleb128 0x16
+ 1602 0366 8A020000 		.4byte	.LVL37
+ 1603 036a 41090000 		.4byte	0x941
+ 1604 036e 78030000 		.4byte	0x378
+ 1605 0372 17       		.uleb128 0x17
+ 1606 0373 01       		.uleb128 0x1
+ 1607 0374 50       		.byte	0x50
+ 1608 0375 01       		.uleb128 0x1
+ 1609 0376 32       		.byte	0x32
+ 1610 0377 00       		.byte	0
+ 1611 0378 16       		.uleb128 0x16
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 39
+
+
+ 1612 0379 B0020000 		.4byte	.LVL40
+ 1613 037d 41090000 		.4byte	0x941
+ 1614 0381 8B030000 		.4byte	0x38b
+ 1615 0385 17       		.uleb128 0x17
+ 1616 0386 01       		.uleb128 0x1
+ 1617 0387 50       		.byte	0x50
+ 1618 0388 01       		.uleb128 0x1
+ 1619 0389 34       		.byte	0x34
+ 1620 038a 00       		.byte	0
+ 1621 038b 18       		.uleb128 0x18
+ 1622 038c D2020000 		.4byte	.LVL43
+ 1623 0390 41090000 		.4byte	0x941
+ 1624 0394 17       		.uleb128 0x17
+ 1625 0395 01       		.uleb128 0x1
+ 1626 0396 50       		.byte	0x50
+ 1627 0397 01       		.uleb128 0x1
+ 1628 0398 32       		.byte	0x32
+ 1629 0399 00       		.byte	0
+ 1630 039a 00       		.byte	0
+ 1631 039b 00       		.byte	0
+ 1632 039c 00       		.byte	0
+ 1633 039d 18       		.uleb128 0x18
+ 1634 039e F8020000 		.4byte	.LVL46
+ 1635 03a2 4C090000 		.4byte	0x94c
+ 1636 03a6 17       		.uleb128 0x17
+ 1637 03a7 01       		.uleb128 0x1
+ 1638 03a8 50       		.byte	0x50
+ 1639 03a9 01       		.uleb128 0x1
+ 1640 03aa 31       		.byte	0x31
+ 1641 03ab 00       		.byte	0
+ 1642 03ac 00       		.byte	0
+ 1643 03ad 10       		.uleb128 0x10
+ 1644 03ae 3B030000 		.4byte	.LASF28
+ 1645 03b2 01       		.byte	0x1
+ 1646 03b3 4A       		.byte	0x4a
+ 1647 03b4 00000000 		.4byte	.LFB35
+ 1648 03b8 1C000000 		.4byte	.LFE35-.LFB35
+ 1649 03bc 01       		.uleb128 0x1
+ 1650 03bd 9C       		.byte	0x9c
+ 1651 03be CC030000 		.4byte	0x3cc
+ 1652 03c2 1A       		.uleb128 0x1a
+ 1653 03c3 14000000 		.4byte	.LVL47
+ 1654 03c7 58090000 		.4byte	0x958
+ 1655 03cb 00       		.byte	0
+ 1656 03cc 10       		.uleb128 0x10
+ 1657 03cd FE000000 		.4byte	.LASF29
+ 1658 03d1 01       		.byte	0x1
+ 1659 03d2 52       		.byte	0x52
+ 1660 03d3 00000000 		.4byte	.LFB36
+ 1661 03d7 28000000 		.4byte	.LFE36-.LFB36
+ 1662 03db 01       		.uleb128 0x1
+ 1663 03dc 9C       		.byte	0x9c
+ 1664 03dd EB030000 		.4byte	0x3eb
+ 1665 03e1 1A       		.uleb128 0x1a
+ 1666 03e2 22000000 		.4byte	.LVL48
+ 1667 03e6 63090000 		.4byte	0x963
+ 1668 03ea 00       		.byte	0
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 40
+
+
+ 1669 03eb 1B       		.uleb128 0x1b
+ 1670 03ec 7A010000 		.4byte	.LASF61
+ 1671 03f0 01       		.byte	0x1
+ 1672 03f1 61       		.byte	0x61
+ 1673 03f2 68000000 		.4byte	0x68
+ 1674 03f6 00000000 		.4byte	.LFB37
+ 1675 03fa 70020000 		.4byte	.LFE37-.LFB37
+ 1676 03fe 01       		.uleb128 0x1
+ 1677 03ff 9C       		.byte	0x9c
+ 1678 0400 B9080000 		.4byte	0x8b9
+ 1679 0404 1C       		.uleb128 0x1c
+ 1680 0405 03030000 		.4byte	.LASF30
+ 1681 0409 01       		.byte	0x1
+ 1682 040a 80       		.byte	0x80
+ 1683 040b 76000000 		.4byte	0x76
+ 1684 040f F6000000 		.4byte	.LLST6
+ 1685 0413 1D       		.uleb128 0x1d
+ 1686 0414 23000000 		.4byte	.LASF31
+ 1687 0418 01       		.byte	0x1
+ 1688 0419 81       		.byte	0x81
+ 1689 041a 76000000 		.4byte	0x76
+ 1690 041e 01       		.uleb128 0x1
+ 1691 041f 55       		.byte	0x55
+ 1692 0420 1A       		.uleb128 0x1a
+ 1693 0421 20000000 		.4byte	.LVL49
+ 1694 0425 6E090000 		.4byte	0x96e
+ 1695 0429 16       		.uleb128 0x16
+ 1696 042a 26000000 		.4byte	.LVL50
+ 1697 042e 7A090000 		.4byte	0x97a
+ 1698 0432 40040000 		.4byte	0x440
+ 1699 0436 17       		.uleb128 0x17
+ 1700 0437 01       		.uleb128 0x1
+ 1701 0438 50       		.byte	0x50
+ 1702 0439 05       		.uleb128 0x5
+ 1703 043a 03       		.byte	0x3
+ 1704 043b 00000000 		.4byte	timer_isr_interrupt
+ 1705 043f 00       		.byte	0
+ 1706 0440 16       		.uleb128 0x16
+ 1707 0441 2C000000 		.4byte	.LVL51
+ 1708 0445 85090000 		.4byte	0x985
+ 1709 0449 57040000 		.4byte	0x457
+ 1710 044d 17       		.uleb128 0x17
+ 1711 044e 01       		.uleb128 0x1
+ 1712 044f 50       		.byte	0x50
+ 1713 0450 05       		.uleb128 0x5
+ 1714 0451 03       		.byte	0x3
+ 1715 0452 00000000 		.4byte	button_isr_interrupt
+ 1716 0456 00       		.byte	0
+ 1717 0457 16       		.uleb128 0x16
+ 1718 0458 32000000 		.4byte	.LVL52
+ 1719 045c 90090000 		.4byte	0x990
+ 1720 0460 6E040000 		.4byte	0x46e
+ 1721 0464 17       		.uleb128 0x17
+ 1722 0465 01       		.uleb128 0x1
+ 1723 0466 50       		.byte	0x50
+ 1724 0467 05       		.uleb128 0x5
+ 1725 0468 03       		.byte	0x3
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 41
+
+
+ 1726 0469 00000000 		.4byte	button_encoder_isr_interrupt
+ 1727 046d 00       		.byte	0
+ 1728 046e 1A       		.uleb128 0x1a
+ 1729 046f 36000000 		.4byte	.LVL53
+ 1730 0473 9B090000 		.4byte	0x99b
+ 1731 0477 1A       		.uleb128 0x1a
+ 1732 0478 3A000000 		.4byte	.LVL54
+ 1733 047c A6090000 		.4byte	0x9a6
+ 1734 0480 16       		.uleb128 0x16
+ 1735 0481 40000000 		.4byte	.LVL55
+ 1736 0485 B1090000 		.4byte	0x9b1
+ 1737 0489 93040000 		.4byte	0x493
+ 1738 048d 17       		.uleb128 0x17
+ 1739 048e 01       		.uleb128 0x1
+ 1740 048f 50       		.byte	0x50
+ 1741 0490 01       		.uleb128 0x1
+ 1742 0491 31       		.byte	0x31
+ 1743 0492 00       		.byte	0
+ 1744 0493 16       		.uleb128 0x16
+ 1745 0494 48000000 		.4byte	.LVL56
+ 1746 0498 BC090000 		.4byte	0x9bc
+ 1747 049c AB040000 		.4byte	0x4ab
+ 1748 04a0 17       		.uleb128 0x17
+ 1749 04a1 01       		.uleb128 0x1
+ 1750 04a2 50       		.byte	0x50
+ 1751 04a3 01       		.uleb128 0x1
+ 1752 04a4 30       		.byte	0x30
+ 1753 04a5 17       		.uleb128 0x17
+ 1754 04a6 01       		.uleb128 0x1
+ 1755 04a7 51       		.byte	0x51
+ 1756 04a8 01       		.uleb128 0x1
+ 1757 04a9 35       		.byte	0x35
+ 1758 04aa 00       		.byte	0
+ 1759 04ab 16       		.uleb128 0x16
+ 1760 04ac 4E000000 		.4byte	.LVL57
+ 1761 04b0 C7090000 		.4byte	0x9c7
+ 1762 04b4 C2040000 		.4byte	0x4c2
+ 1763 04b8 17       		.uleb128 0x17
+ 1764 04b9 01       		.uleb128 0x1
+ 1765 04ba 50       		.byte	0x50
+ 1766 04bb 05       		.uleb128 0x5
+ 1767 04bc 03       		.byte	0x3
+ 1768 04bd 00000000 		.4byte	.LC13
+ 1769 04c1 00       		.byte	0
+ 1770 04c2 16       		.uleb128 0x16
+ 1771 04c3 56000000 		.4byte	.LVL58
+ 1772 04c7 BC090000 		.4byte	0x9bc
+ 1773 04cb DA040000 		.4byte	0x4da
+ 1774 04cf 17       		.uleb128 0x17
+ 1775 04d0 01       		.uleb128 0x1
+ 1776 04d1 50       		.byte	0x50
+ 1777 04d2 01       		.uleb128 0x1
+ 1778 04d3 31       		.byte	0x31
+ 1779 04d4 17       		.uleb128 0x17
+ 1780 04d5 01       		.uleb128 0x1
+ 1781 04d6 51       		.byte	0x51
+ 1782 04d7 01       		.uleb128 0x1
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 42
+
+
+ 1783 04d8 32       		.byte	0x32
+ 1784 04d9 00       		.byte	0
+ 1785 04da 16       		.uleb128 0x16
+ 1786 04db 5C000000 		.4byte	.LVL59
+ 1787 04df C7090000 		.4byte	0x9c7
+ 1788 04e3 F1040000 		.4byte	0x4f1
+ 1789 04e7 17       		.uleb128 0x17
+ 1790 04e8 01       		.uleb128 0x1
+ 1791 04e9 50       		.byte	0x50
+ 1792 04ea 05       		.uleb128 0x5
+ 1793 04eb 03       		.byte	0x3
+ 1794 04ec 08000000 		.4byte	.LC15
+ 1795 04f0 00       		.byte	0
+ 1796 04f1 16       		.uleb128 0x16
+ 1797 04f2 62000000 		.4byte	.LVL60
+ 1798 04f6 D2090000 		.4byte	0x9d2
+ 1799 04fa 06050000 		.4byte	0x506
+ 1800 04fe 17       		.uleb128 0x17
+ 1801 04ff 01       		.uleb128 0x1
+ 1802 0500 50       		.byte	0x50
+ 1803 0501 03       		.uleb128 0x3
+ 1804 0502 0A       		.byte	0xa
+ 1805 0503 B80B     		.2byte	0xbb8
+ 1806 0505 00       		.byte	0
+ 1807 0506 16       		.uleb128 0x16
+ 1808 0507 68000000 		.4byte	.LVL61
+ 1809 050b B1090000 		.4byte	0x9b1
+ 1810 050f 19050000 		.4byte	0x519
+ 1811 0513 17       		.uleb128 0x17
+ 1812 0514 01       		.uleb128 0x1
+ 1813 0515 50       		.byte	0x50
+ 1814 0516 01       		.uleb128 0x1
+ 1815 0517 31       		.byte	0x31
+ 1816 0518 00       		.byte	0
+ 1817 0519 16       		.uleb128 0x16
+ 1818 051a 70000000 		.4byte	.LVL62
+ 1819 051e BC090000 		.4byte	0x9bc
+ 1820 0522 31050000 		.4byte	0x531
+ 1821 0526 17       		.uleb128 0x17
+ 1822 0527 01       		.uleb128 0x1
+ 1823 0528 50       		.byte	0x50
+ 1824 0529 01       		.uleb128 0x1
+ 1825 052a 30       		.byte	0x30
+ 1826 052b 17       		.uleb128 0x17
+ 1827 052c 01       		.uleb128 0x1
+ 1828 052d 51       		.byte	0x51
+ 1829 052e 01       		.uleb128 0x1
+ 1830 052f 30       		.byte	0x30
+ 1831 0530 00       		.byte	0
+ 1832 0531 16       		.uleb128 0x16
+ 1833 0532 76000000 		.4byte	.LVL63
+ 1834 0536 C7090000 		.4byte	0x9c7
+ 1835 053a 48050000 		.4byte	0x548
+ 1836 053e 17       		.uleb128 0x17
+ 1837 053f 01       		.uleb128 0x1
+ 1838 0540 50       		.byte	0x50
+ 1839 0541 05       		.uleb128 0x5
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 43
+
+
+ 1840 0542 03       		.byte	0x3
+ 1841 0543 18000000 		.4byte	.LC17
+ 1842 0547 00       		.byte	0
+ 1843 0548 1A       		.uleb128 0x1a
+ 1844 0549 7C000000 		.4byte	.LVL65
+ 1845 054d DD090000 		.4byte	0x9dd
+ 1846 0551 16       		.uleb128 0x16
+ 1847 0552 86000000 		.4byte	.LVL66
+ 1848 0556 E8090000 		.4byte	0x9e8
+ 1849 055a 64050000 		.4byte	0x564
+ 1850 055e 17       		.uleb128 0x17
+ 1851 055f 01       		.uleb128 0x1
+ 1852 0560 50       		.byte	0x50
+ 1853 0561 01       		.uleb128 0x1
+ 1854 0562 44       		.byte	0x44
+ 1855 0563 00       		.byte	0
+ 1856 0564 1A       		.uleb128 0x1a
+ 1857 0565 8A000000 		.4byte	.LVL67
+ 1858 0569 DD090000 		.4byte	0x9dd
+ 1859 056d 16       		.uleb128 0x16
+ 1860 056e 94000000 		.4byte	.LVL68
+ 1861 0572 E8090000 		.4byte	0x9e8
+ 1862 0576 80050000 		.4byte	0x580
+ 1863 057a 17       		.uleb128 0x17
+ 1864 057b 01       		.uleb128 0x1
+ 1865 057c 50       		.byte	0x50
+ 1866 057d 01       		.uleb128 0x1
+ 1867 057e 31       		.byte	0x31
+ 1868 057f 00       		.byte	0
+ 1869 0580 16       		.uleb128 0x16
+ 1870 0581 A2000000 		.4byte	.LVL69
+ 1871 0585 B1090000 		.4byte	0x9b1
+ 1872 0589 93050000 		.4byte	0x593
+ 1873 058d 17       		.uleb128 0x17
+ 1874 058e 01       		.uleb128 0x1
+ 1875 058f 50       		.byte	0x50
+ 1876 0590 01       		.uleb128 0x1
+ 1877 0591 31       		.byte	0x31
+ 1878 0592 00       		.byte	0
+ 1879 0593 16       		.uleb128 0x16
+ 1880 0594 B2000000 		.4byte	.LVL70
+ 1881 0598 BC090000 		.4byte	0x9bc
+ 1882 059c AB050000 		.4byte	0x5ab
+ 1883 05a0 17       		.uleb128 0x17
+ 1884 05a1 01       		.uleb128 0x1
+ 1885 05a2 50       		.byte	0x50
+ 1886 05a3 01       		.uleb128 0x1
+ 1887 05a4 30       		.byte	0x30
+ 1888 05a5 17       		.uleb128 0x17
+ 1889 05a6 01       		.uleb128 0x1
+ 1890 05a7 51       		.byte	0x51
+ 1891 05a8 01       		.uleb128 0x1
+ 1892 05a9 30       		.byte	0x30
+ 1893 05aa 00       		.byte	0
+ 1894 05ab 16       		.uleb128 0x16
+ 1895 05ac B8000000 		.4byte	.LVL71
+ 1896 05b0 C7090000 		.4byte	0x9c7
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 44
+
+
+ 1897 05b4 C2050000 		.4byte	0x5c2
+ 1898 05b8 17       		.uleb128 0x17
+ 1899 05b9 01       		.uleb128 0x1
+ 1900 05ba 50       		.byte	0x50
+ 1901 05bb 05       		.uleb128 0x5
+ 1902 05bc 03       		.byte	0x3
+ 1903 05bd 18000000 		.4byte	.LC17
+ 1904 05c1 00       		.byte	0
+ 1905 05c2 16       		.uleb128 0x16
+ 1906 05c3 C6000000 		.4byte	.LVL72
+ 1907 05c7 BC090000 		.4byte	0x9bc
+ 1908 05cb DA050000 		.4byte	0x5da
+ 1909 05cf 17       		.uleb128 0x17
+ 1910 05d0 01       		.uleb128 0x1
+ 1911 05d1 50       		.byte	0x50
+ 1912 05d2 01       		.uleb128 0x1
+ 1913 05d3 30       		.byte	0x30
+ 1914 05d4 17       		.uleb128 0x17
+ 1915 05d5 01       		.uleb128 0x1
+ 1916 05d6 51       		.byte	0x51
+ 1917 05d7 01       		.uleb128 0x1
+ 1918 05d8 30       		.byte	0x30
+ 1919 05d9 00       		.byte	0
+ 1920 05da 16       		.uleb128 0x16
+ 1921 05db CC000000 		.4byte	.LVL73
+ 1922 05df C7090000 		.4byte	0x9c7
+ 1923 05e3 F1050000 		.4byte	0x5f1
+ 1924 05e7 17       		.uleb128 0x17
+ 1925 05e8 01       		.uleb128 0x1
+ 1926 05e9 50       		.byte	0x50
+ 1927 05ea 05       		.uleb128 0x5
+ 1928 05eb 03       		.byte	0x3
+ 1929 05ec 2C000000 		.4byte	.LC19
+ 1930 05f0 00       		.byte	0
+ 1931 05f1 16       		.uleb128 0x16
+ 1932 05f2 D4000000 		.4byte	.LVL74
+ 1933 05f6 BC090000 		.4byte	0x9bc
+ 1934 05fa 09060000 		.4byte	0x609
+ 1935 05fe 17       		.uleb128 0x17
+ 1936 05ff 01       		.uleb128 0x1
+ 1937 0600 50       		.byte	0x50
+ 1938 0601 01       		.uleb128 0x1
+ 1939 0602 31       		.byte	0x31
+ 1940 0603 17       		.uleb128 0x17
+ 1941 0604 01       		.uleb128 0x1
+ 1942 0605 51       		.byte	0x51
+ 1943 0606 01       		.uleb128 0x1
+ 1944 0607 30       		.byte	0x30
+ 1945 0608 00       		.byte	0
+ 1946 0609 16       		.uleb128 0x16
+ 1947 060a DA000000 		.4byte	.LVL75
+ 1948 060e C7090000 		.4byte	0x9c7
+ 1949 0612 20060000 		.4byte	0x620
+ 1950 0616 17       		.uleb128 0x17
+ 1951 0617 01       		.uleb128 0x1
+ 1952 0618 50       		.byte	0x50
+ 1953 0619 05       		.uleb128 0x5
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 45
+
+
+ 1954 061a 03       		.byte	0x3
+ 1955 061b 40000000 		.4byte	.LC21
+ 1956 061f 00       		.byte	0
+ 1957 0620 1A       		.uleb128 0x1a
+ 1958 0621 E4000000 		.4byte	.LVL76
+ 1959 0625 E8090000 		.4byte	0x9e8
+ 1960 0629 16       		.uleb128 0x16
+ 1961 062a F2000000 		.4byte	.LVL77
+ 1962 062e BC090000 		.4byte	0x9bc
+ 1963 0632 41060000 		.4byte	0x641
+ 1964 0636 17       		.uleb128 0x17
+ 1965 0637 01       		.uleb128 0x1
+ 1966 0638 50       		.byte	0x50
+ 1967 0639 01       		.uleb128 0x1
+ 1968 063a 30       		.byte	0x30
+ 1969 063b 17       		.uleb128 0x17
+ 1970 063c 01       		.uleb128 0x1
+ 1971 063d 51       		.byte	0x51
+ 1972 063e 01       		.uleb128 0x1
+ 1973 063f 30       		.byte	0x30
+ 1974 0640 00       		.byte	0
+ 1975 0641 16       		.uleb128 0x16
+ 1976 0642 F8000000 		.4byte	.LVL78
+ 1977 0646 C7090000 		.4byte	0x9c7
+ 1978 064a 58060000 		.4byte	0x658
+ 1979 064e 17       		.uleb128 0x17
+ 1980 064f 01       		.uleb128 0x1
+ 1981 0650 50       		.byte	0x50
+ 1982 0651 05       		.uleb128 0x5
+ 1983 0652 03       		.byte	0x3
+ 1984 0653 54000000 		.4byte	.LC23
+ 1985 0657 00       		.byte	0
+ 1986 0658 16       		.uleb128 0x16
+ 1987 0659 00010000 		.4byte	.LVL79
+ 1988 065d BC090000 		.4byte	0x9bc
+ 1989 0661 70060000 		.4byte	0x670
+ 1990 0665 17       		.uleb128 0x17
+ 1991 0666 01       		.uleb128 0x1
+ 1992 0667 50       		.byte	0x50
+ 1993 0668 01       		.uleb128 0x1
+ 1994 0669 31       		.byte	0x31
+ 1995 066a 17       		.uleb128 0x17
+ 1996 066b 01       		.uleb128 0x1
+ 1997 066c 51       		.byte	0x51
+ 1998 066d 01       		.uleb128 0x1
+ 1999 066e 30       		.byte	0x30
+ 2000 066f 00       		.byte	0
+ 2001 0670 16       		.uleb128 0x16
+ 2002 0671 06010000 		.4byte	.LVL80
+ 2003 0675 C7090000 		.4byte	0x9c7
+ 2004 0679 87060000 		.4byte	0x687
+ 2005 067d 17       		.uleb128 0x17
+ 2006 067e 01       		.uleb128 0x1
+ 2007 067f 50       		.byte	0x50
+ 2008 0680 05       		.uleb128 0x5
+ 2009 0681 03       		.byte	0x3
+ 2010 0682 40000000 		.4byte	.LC21
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 46
+
+
+ 2011 0686 00       		.byte	0
+ 2012 0687 1A       		.uleb128 0x1a
+ 2013 0688 10010000 		.4byte	.LVL81
+ 2014 068c E8090000 		.4byte	0x9e8
+ 2015 0690 16       		.uleb128 0x16
+ 2016 0691 1E010000 		.4byte	.LVL82
+ 2017 0695 BC090000 		.4byte	0x9bc
+ 2018 0699 A8060000 		.4byte	0x6a8
+ 2019 069d 17       		.uleb128 0x17
+ 2020 069e 01       		.uleb128 0x1
+ 2021 069f 50       		.byte	0x50
+ 2022 06a0 01       		.uleb128 0x1
+ 2023 06a1 30       		.byte	0x30
+ 2024 06a2 17       		.uleb128 0x17
+ 2025 06a3 01       		.uleb128 0x1
+ 2026 06a4 51       		.byte	0x51
+ 2027 06a5 01       		.uleb128 0x1
+ 2028 06a6 30       		.byte	0x30
+ 2029 06a7 00       		.byte	0
+ 2030 06a8 16       		.uleb128 0x16
+ 2031 06a9 24010000 		.4byte	.LVL83
+ 2032 06ad C7090000 		.4byte	0x9c7
+ 2033 06b1 BF060000 		.4byte	0x6bf
+ 2034 06b5 17       		.uleb128 0x17
+ 2035 06b6 01       		.uleb128 0x1
+ 2036 06b7 50       		.byte	0x50
+ 2037 06b8 05       		.uleb128 0x5
+ 2038 06b9 03       		.byte	0x3
+ 2039 06ba 68000000 		.4byte	.LC25
+ 2040 06be 00       		.byte	0
+ 2041 06bf 16       		.uleb128 0x16
+ 2042 06c0 2C010000 		.4byte	.LVL84
+ 2043 06c4 BC090000 		.4byte	0x9bc
+ 2044 06c8 D7060000 		.4byte	0x6d7
+ 2045 06cc 17       		.uleb128 0x17
+ 2046 06cd 01       		.uleb128 0x1
+ 2047 06ce 50       		.byte	0x50
+ 2048 06cf 01       		.uleb128 0x1
+ 2049 06d0 31       		.byte	0x31
+ 2050 06d1 17       		.uleb128 0x17
+ 2051 06d2 01       		.uleb128 0x1
+ 2052 06d3 51       		.byte	0x51
+ 2053 06d4 01       		.uleb128 0x1
+ 2054 06d5 30       		.byte	0x30
+ 2055 06d6 00       		.byte	0
+ 2056 06d7 16       		.uleb128 0x16
+ 2057 06d8 32010000 		.4byte	.LVL85
+ 2058 06dc C7090000 		.4byte	0x9c7
+ 2059 06e0 EE060000 		.4byte	0x6ee
+ 2060 06e4 17       		.uleb128 0x17
+ 2061 06e5 01       		.uleb128 0x1
+ 2062 06e6 50       		.byte	0x50
+ 2063 06e7 05       		.uleb128 0x5
+ 2064 06e8 03       		.byte	0x3
+ 2065 06e9 40000000 		.4byte	.LC21
+ 2066 06ed 00       		.byte	0
+ 2067 06ee 1A       		.uleb128 0x1a
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 47
+
+
+ 2068 06ef 3C010000 		.4byte	.LVL86
+ 2069 06f3 E8090000 		.4byte	0x9e8
+ 2070 06f7 16       		.uleb128 0x16
+ 2071 06f8 5A010000 		.4byte	.LVL87
+ 2072 06fc BC090000 		.4byte	0x9bc
+ 2073 0700 0F070000 		.4byte	0x70f
+ 2074 0704 17       		.uleb128 0x17
+ 2075 0705 01       		.uleb128 0x1
+ 2076 0706 50       		.byte	0x50
+ 2077 0707 01       		.uleb128 0x1
+ 2078 0708 31       		.byte	0x31
+ 2079 0709 17       		.uleb128 0x17
+ 2080 070a 01       		.uleb128 0x1
+ 2081 070b 51       		.byte	0x51
+ 2082 070c 01       		.uleb128 0x1
+ 2083 070d 30       		.byte	0x30
+ 2084 070e 00       		.byte	0
+ 2085 070f 16       		.uleb128 0x16
+ 2086 0710 60010000 		.4byte	.LVL88
+ 2087 0714 C7090000 		.4byte	0x9c7
+ 2088 0718 26070000 		.4byte	0x726
+ 2089 071c 17       		.uleb128 0x17
+ 2090 071d 01       		.uleb128 0x1
+ 2091 071e 50       		.byte	0x50
+ 2092 071f 05       		.uleb128 0x5
+ 2093 0720 03       		.byte	0x3
+ 2094 0721 7C000000 		.4byte	.LC27
+ 2095 0725 00       		.byte	0
+ 2096 0726 16       		.uleb128 0x16
+ 2097 0727 70010000 		.4byte	.LVL91
+ 2098 072b BC090000 		.4byte	0x9bc
+ 2099 072f 3F070000 		.4byte	0x73f
+ 2100 0733 17       		.uleb128 0x17
+ 2101 0734 01       		.uleb128 0x1
+ 2102 0735 50       		.byte	0x50
+ 2103 0736 01       		.uleb128 0x1
+ 2104 0737 31       		.byte	0x31
+ 2105 0738 17       		.uleb128 0x17
+ 2106 0739 01       		.uleb128 0x1
+ 2107 073a 51       		.byte	0x51
+ 2108 073b 02       		.uleb128 0x2
+ 2109 073c 75       		.byte	0x75
+ 2110 073d 00       		.sleb128 0
+ 2111 073e 00       		.byte	0
+ 2112 073f 16       		.uleb128 0x16
+ 2113 0740 7A010000 		.4byte	.LVL92
+ 2114 0744 F3090000 		.4byte	0x9f3
+ 2115 0748 53070000 		.4byte	0x753
+ 2116 074c 17       		.uleb128 0x17
+ 2117 074d 01       		.uleb128 0x1
+ 2118 074e 50       		.byte	0x50
+ 2119 074f 02       		.uleb128 0x2
+ 2120 0750 08       		.byte	0x8
+ 2121 0751 30       		.byte	0x30
+ 2122 0752 00       		.byte	0
+ 2123 0753 16       		.uleb128 0x16
+ 2124 0754 84010000 		.4byte	.LVL93
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 48
+
+
+ 2125 0758 BC090000 		.4byte	0x9bc
+ 2126 075c 6C070000 		.4byte	0x76c
+ 2127 0760 17       		.uleb128 0x17
+ 2128 0761 01       		.uleb128 0x1
+ 2129 0762 50       		.byte	0x50
+ 2130 0763 01       		.uleb128 0x1
+ 2131 0764 31       		.byte	0x31
+ 2132 0765 17       		.uleb128 0x17
+ 2133 0766 01       		.uleb128 0x1
+ 2134 0767 51       		.byte	0x51
+ 2135 0768 02       		.uleb128 0x2
+ 2136 0769 75       		.byte	0x75
+ 2137 076a 01       		.sleb128 1
+ 2138 076b 00       		.byte	0
+ 2139 076c 16       		.uleb128 0x16
+ 2140 076d 8A010000 		.4byte	.LVL94
+ 2141 0771 FE090000 		.4byte	0x9fe
+ 2142 0775 80070000 		.4byte	0x780
+ 2143 0779 17       		.uleb128 0x17
+ 2144 077a 01       		.uleb128 0x1
+ 2145 077b 50       		.byte	0x50
+ 2146 077c 02       		.uleb128 0x2
+ 2147 077d 74       		.byte	0x74
+ 2148 077e 00       		.sleb128 0
+ 2149 077f 00       		.byte	0
+ 2150 0780 16       		.uleb128 0x16
+ 2151 0781 98010000 		.4byte	.LVL96
+ 2152 0785 BC090000 		.4byte	0x9bc
+ 2153 0789 98070000 		.4byte	0x798
+ 2154 078d 17       		.uleb128 0x17
+ 2155 078e 01       		.uleb128 0x1
+ 2156 078f 50       		.byte	0x50
+ 2157 0790 01       		.uleb128 0x1
+ 2158 0791 31       		.byte	0x31
+ 2159 0792 17       		.uleb128 0x17
+ 2160 0793 01       		.uleb128 0x1
+ 2161 0794 51       		.byte	0x51
+ 2162 0795 01       		.uleb128 0x1
+ 2163 0796 35       		.byte	0x35
+ 2164 0797 00       		.byte	0
+ 2165 0798 1A       		.uleb128 0x1a
+ 2166 0799 9C010000 		.4byte	.LVL97
+ 2167 079d DD090000 		.4byte	0x9dd
+ 2168 07a1 16       		.uleb128 0x16
+ 2169 07a2 A6010000 		.4byte	.LVL98
+ 2170 07a6 F3090000 		.4byte	0x9f3
+ 2171 07aa B5070000 		.4byte	0x7b5
+ 2172 07ae 17       		.uleb128 0x17
+ 2173 07af 01       		.uleb128 0x1
+ 2174 07b0 50       		.byte	0x50
+ 2175 07b1 02       		.uleb128 0x2
+ 2176 07b2 08       		.byte	0x8
+ 2177 07b3 30       		.byte	0x30
+ 2178 07b4 00       		.byte	0
+ 2179 07b5 16       		.uleb128 0x16
+ 2180 07b6 AE010000 		.4byte	.LVL99
+ 2181 07ba BC090000 		.4byte	0x9bc
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 49
+
+
+ 2182 07be CD070000 		.4byte	0x7cd
+ 2183 07c2 17       		.uleb128 0x17
+ 2184 07c3 01       		.uleb128 0x1
+ 2185 07c4 50       		.byte	0x50
+ 2186 07c5 01       		.uleb128 0x1
+ 2187 07c6 31       		.byte	0x31
+ 2188 07c7 17       		.uleb128 0x17
+ 2189 07c8 01       		.uleb128 0x1
+ 2190 07c9 51       		.byte	0x51
+ 2191 07ca 01       		.uleb128 0x1
+ 2192 07cb 36       		.byte	0x36
+ 2193 07cc 00       		.byte	0
+ 2194 07cd 1A       		.uleb128 0x1a
+ 2195 07ce B2010000 		.4byte	.LVL100
+ 2196 07d2 DD090000 		.4byte	0x9dd
+ 2197 07d6 1A       		.uleb128 0x1a
+ 2198 07d7 B8010000 		.4byte	.LVL101
+ 2199 07db FE090000 		.4byte	0x9fe
+ 2200 07df 1A       		.uleb128 0x1a
+ 2201 07e0 BC010000 		.4byte	.LVL102
+ 2202 07e4 DD090000 		.4byte	0x9dd
+ 2203 07e8 16       		.uleb128 0x16
+ 2204 07e9 CE010000 		.4byte	.LVL103
+ 2205 07ed BC090000 		.4byte	0x9bc
+ 2206 07f1 00080000 		.4byte	0x800
+ 2207 07f5 17       		.uleb128 0x17
+ 2208 07f6 01       		.uleb128 0x1
+ 2209 07f7 50       		.byte	0x50
+ 2210 07f8 01       		.uleb128 0x1
+ 2211 07f9 31       		.byte	0x31
+ 2212 07fa 17       		.uleb128 0x17
+ 2213 07fb 01       		.uleb128 0x1
+ 2214 07fc 51       		.byte	0x51
+ 2215 07fd 01       		.uleb128 0x1
+ 2216 07fe 35       		.byte	0x35
+ 2217 07ff 00       		.byte	0
+ 2218 0800 1A       		.uleb128 0x1a
+ 2219 0801 D2010000 		.4byte	.LVL104
+ 2220 0805 DD090000 		.4byte	0x9dd
+ 2221 0809 16       		.uleb128 0x16
+ 2222 080a DC010000 		.4byte	.LVL105
+ 2223 080e F3090000 		.4byte	0x9f3
+ 2224 0812 1D080000 		.4byte	0x81d
+ 2225 0816 17       		.uleb128 0x17
+ 2226 0817 01       		.uleb128 0x1
+ 2227 0818 50       		.byte	0x50
+ 2228 0819 02       		.uleb128 0x2
+ 2229 081a 08       		.byte	0x8
+ 2230 081b 30       		.byte	0x30
+ 2231 081c 00       		.byte	0
+ 2232 081d 16       		.uleb128 0x16
+ 2233 081e E4010000 		.4byte	.LVL106
+ 2234 0822 BC090000 		.4byte	0x9bc
+ 2235 0826 35080000 		.4byte	0x835
+ 2236 082a 17       		.uleb128 0x17
+ 2237 082b 01       		.uleb128 0x1
+ 2238 082c 50       		.byte	0x50
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 50
+
+
+ 2239 082d 01       		.uleb128 0x1
+ 2240 082e 31       		.byte	0x31
+ 2241 082f 17       		.uleb128 0x17
+ 2242 0830 01       		.uleb128 0x1
+ 2243 0831 51       		.byte	0x51
+ 2244 0832 01       		.uleb128 0x1
+ 2245 0833 36       		.byte	0x36
+ 2246 0834 00       		.byte	0
+ 2247 0835 1A       		.uleb128 0x1a
+ 2248 0836 E8010000 		.4byte	.LVL107
+ 2249 083a DD090000 		.4byte	0x9dd
+ 2250 083e 1A       		.uleb128 0x1a
+ 2251 083f EE010000 		.4byte	.LVL108
+ 2252 0843 FE090000 		.4byte	0x9fe
+ 2253 0847 1A       		.uleb128 0x1a
+ 2254 0848 F2010000 		.4byte	.LVL109
+ 2255 084c DD090000 		.4byte	0x9dd
+ 2256 0850 16       		.uleb128 0x16
+ 2257 0851 06020000 		.4byte	.LVL110
+ 2258 0855 BC090000 		.4byte	0x9bc
+ 2259 0859 68080000 		.4byte	0x868
+ 2260 085d 17       		.uleb128 0x17
+ 2261 085e 01       		.uleb128 0x1
+ 2262 085f 50       		.byte	0x50
+ 2263 0860 01       		.uleb128 0x1
+ 2264 0861 31       		.byte	0x31
+ 2265 0862 17       		.uleb128 0x17
+ 2266 0863 01       		.uleb128 0x1
+ 2267 0864 51       		.byte	0x51
+ 2268 0865 01       		.uleb128 0x1
+ 2269 0866 35       		.byte	0x35
+ 2270 0867 00       		.byte	0
+ 2271 0868 1A       		.uleb128 0x1a
+ 2272 0869 0A020000 		.4byte	.LVL111
+ 2273 086d DD090000 		.4byte	0x9dd
+ 2274 0871 16       		.uleb128 0x16
+ 2275 0872 14020000 		.4byte	.LVL112
+ 2276 0876 F3090000 		.4byte	0x9f3
+ 2277 087a 85080000 		.4byte	0x885
+ 2278 087e 17       		.uleb128 0x17
+ 2279 087f 01       		.uleb128 0x1
+ 2280 0880 50       		.byte	0x50
+ 2281 0881 02       		.uleb128 0x2
+ 2282 0882 08       		.byte	0x8
+ 2283 0883 30       		.byte	0x30
+ 2284 0884 00       		.byte	0
+ 2285 0885 16       		.uleb128 0x16
+ 2286 0886 1C020000 		.4byte	.LVL113
+ 2287 088a BC090000 		.4byte	0x9bc
+ 2288 088e 9D080000 		.4byte	0x89d
+ 2289 0892 17       		.uleb128 0x17
+ 2290 0893 01       		.uleb128 0x1
+ 2291 0894 50       		.byte	0x50
+ 2292 0895 01       		.uleb128 0x1
+ 2293 0896 31       		.byte	0x31
+ 2294 0897 17       		.uleb128 0x17
+ 2295 0898 01       		.uleb128 0x1
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 51
+
+
+ 2296 0899 51       		.byte	0x51
+ 2297 089a 01       		.uleb128 0x1
+ 2298 089b 36       		.byte	0x36
+ 2299 089c 00       		.byte	0
+ 2300 089d 1A       		.uleb128 0x1a
+ 2301 089e 20020000 		.4byte	.LVL114
+ 2302 08a2 DD090000 		.4byte	0x9dd
+ 2303 08a6 1A       		.uleb128 0x1a
+ 2304 08a7 26020000 		.4byte	.LVL115
+ 2305 08ab FE090000 		.4byte	0x9fe
+ 2306 08af 1A       		.uleb128 0x1a
+ 2307 08b0 2A020000 		.4byte	.LVL116
+ 2308 08b4 DD090000 		.4byte	0x9dd
+ 2309 08b8 00       		.byte	0
+ 2310 08b9 1E       		.uleb128 0x1e
+ 2311 08ba DD000000 		.4byte	.LASF20
+ 2312 08be 01       		.byte	0x1
+ 2313 08bf 21       		.byte	0x21
+ 2314 08c0 76000000 		.4byte	0x76
+ 2315 08c4 05       		.uleb128 0x5
+ 2316 08c5 03       		.byte	0x3
+ 2317 08c6 00000000 		.4byte	counter
+ 2318 08ca 1E       		.uleb128 0x1e
+ 2319 08cb 53000000 		.4byte	.LASF32
+ 2320 08cf 01       		.byte	0x1
+ 2321 08d0 22       		.byte	0x22
+ 2322 08d1 81000000 		.4byte	0x81
+ 2323 08d5 05       		.uleb128 0x5
+ 2324 08d6 03       		.byte	0x3
+ 2325 08d7 00000000 		.4byte	algorithm
+ 2326 08db 1E       		.uleb128 0x1e
+ 2327 08dc 06000000 		.4byte	.LASF33
+ 2328 08e0 01       		.byte	0x1
+ 2329 08e1 24       		.byte	0x24
+ 2330 08e2 76000000 		.4byte	0x76
+ 2331 08e6 05       		.uleb128 0x5
+ 2332 08e7 03       		.byte	0x3
+ 2333 08e8 00000000 		.4byte	redTime
+ 2334 08ec 1E       		.uleb128 0x1e
+ 2335 08ed 0E000000 		.4byte	.LASF34
+ 2336 08f1 01       		.byte	0x1
+ 2337 08f2 25       		.byte	0x25
+ 2338 08f3 76000000 		.4byte	0x76
+ 2339 08f7 05       		.uleb128 0x5
+ 2340 08f8 03       		.byte	0x3
+ 2341 08f9 00000000 		.4byte	yellowTime
+ 2342 08fd 1E       		.uleb128 0x1e
+ 2343 08fe F4000000 		.4byte	.LASF35
+ 2344 0902 01       		.byte	0x1
+ 2345 0903 26       		.byte	0x26
+ 2346 0904 76000000 		.4byte	0x76
+ 2347 0908 05       		.uleb128 0x5
+ 2348 0909 03       		.byte	0x3
+ 2349 090a 00000000 		.4byte	greenTime
+ 2350 090e 1E       		.uleb128 0x1e
+ 2351 090f B7000000 		.4byte	.LASF36
+ 2352 0913 01       		.byte	0x1
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 52
+
+
+ 2353 0914 28       		.byte	0x28
+ 2354 0915 76000000 		.4byte	0x76
+ 2355 0919 05       		.uleb128 0x5
+ 2356 091a 03       		.byte	0x3
+ 2357 091b 00000000 		.4byte	displayMode
+ 2358 091f 1E       		.uleb128 0x1e
+ 2359 0920 E5000000 		.4byte	.LASF37
+ 2360 0924 01       		.byte	0x1
+ 2361 0925 29       		.byte	0x29
+ 2362 0926 81000000 		.4byte	0x81
+ 2363 092a 05       		.uleb128 0x5
+ 2364 092b 03       		.byte	0x3
+ 2365 092c 00000000 		.4byte	modeHasChanged
+ 2366 0930 1E       		.uleb128 0x1e
+ 2367 0931 A8000000 		.4byte	.LASF38
+ 2368 0935 01       		.byte	0x1
+ 2369 0936 2F       		.byte	0x2f
+ 2370 0937 C8000000 		.4byte	0xc8
+ 2371 093b 05       		.uleb128 0x5
+ 2372 093c 03       		.byte	0x3
+ 2373 093d 00000000 		.4byte	displayCounter
+ 2374 0941 1F       		.uleb128 0x1f
+ 2375 0942 02040000 		.4byte	.LASF39
+ 2376 0946 02040000 		.4byte	.LASF39
+ 2377 094a 05       		.byte	0x5
+ 2378 094b 2F       		.byte	0x2f
+ 2379 094c 20       		.uleb128 0x20
+ 2380 094d 1C040000 		.4byte	.LASF40
+ 2381 0951 1C040000 		.4byte	.LASF40
+ 2382 0955 06       		.byte	0x6
+ 2383 0956 4701     		.2byte	0x147
+ 2384 0958 1F       		.uleb128 0x1f
+ 2385 0959 12020000 		.4byte	.LASF41
+ 2386 095d 12020000 		.4byte	.LASF41
+ 2387 0961 07       		.byte	0x7
+ 2388 0962 39       		.byte	0x39
+ 2389 0963 1F       		.uleb128 0x1f
+ 2390 0964 40010000 		.4byte	.LASF42
+ 2391 0968 40010000 		.4byte	.LASF42
+ 2392 096c 08       		.byte	0x8
+ 2393 096d 39       		.byte	0x39
+ 2394 096e 20       		.uleb128 0x20
+ 2395 096f E3020000 		.4byte	.LASF43
+ 2396 0973 E3020000 		.4byte	.LASF43
+ 2397 0977 06       		.byte	0x6
+ 2398 0978 3201     		.2byte	0x132
+ 2399 097a 1F       		.uleb128 0x1f
+ 2400 097b C0030000 		.4byte	.LASF44
+ 2401 097f C0030000 		.4byte	.LASF44
+ 2402 0983 09       		.byte	0x9
+ 2403 0984 18       		.byte	0x18
+ 2404 0985 1F       		.uleb128 0x1f
+ 2405 0986 FF010000 		.4byte	.LASF45
+ 2406 098a FF010000 		.4byte	.LASF45
+ 2407 098e 0A       		.byte	0xa
+ 2408 098f 18       		.byte	0x18
+ 2409 0990 1F       		.uleb128 0x1f
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 53
+
+
+ 2410 0991 92010000 		.4byte	.LASF46
+ 2411 0995 92010000 		.4byte	.LASF46
+ 2412 0999 0B       		.byte	0xb
+ 2413 099a 18       		.byte	0x18
+ 2414 099b 1F       		.uleb128 0x1f
+ 2415 099c 9A000000 		.4byte	.LASF47
+ 2416 09a0 9A000000 		.4byte	.LASF47
+ 2417 09a4 0C       		.byte	0xc
+ 2418 09a5 48       		.byte	0x48
+ 2419 09a6 1F       		.uleb128 0x1f
+ 2420 09a7 5D000000 		.4byte	.LASF48
+ 2421 09ab 5D000000 		.4byte	.LASF48
+ 2422 09af 0D       		.byte	0xd
+ 2423 09b0 38       		.byte	0x38
+ 2424 09b1 1F       		.uleb128 0x1f
+ 2425 09b2 28020000 		.4byte	.LASF49
+ 2426 09b6 28020000 		.4byte	.LASF49
+ 2427 09ba 0D       		.byte	0xd
+ 2428 09bb 3A       		.byte	0x3a
+ 2429 09bc 1F       		.uleb128 0x1f
+ 2430 09bd 6C000000 		.4byte	.LASF50
+ 2431 09c1 6C000000 		.4byte	.LASF50
+ 2432 09c5 0D       		.byte	0xd
+ 2433 09c6 3D       		.byte	0x3d
+ 2434 09c7 1F       		.uleb128 0x1f
+ 2435 09c8 26030000 		.4byte	.LASF51
+ 2436 09cc 26030000 		.4byte	.LASF51
+ 2437 09d0 0D       		.byte	0xd
+ 2438 09d1 3C       		.byte	0x3c
+ 2439 09d2 1F       		.uleb128 0x1f
+ 2440 09d3 14040000 		.4byte	.LASF52
+ 2441 09d7 14040000 		.4byte	.LASF52
+ 2442 09db 0E       		.byte	0xe
+ 2443 09dc EC       		.byte	0xec
+ 2444 09dd 1F       		.uleb128 0x1f
+ 2445 09de 7F010000 		.4byte	.LASF53
+ 2446 09e2 7F010000 		.4byte	.LASF53
+ 2447 09e6 0C       		.byte	0xc
+ 2448 09e7 4E       		.byte	0x4e
+ 2449 09e8 1F       		.uleb128 0x1f
+ 2450 09e9 A4030000 		.4byte	.LASF54
+ 2451 09ed A4030000 		.4byte	.LASF54
+ 2452 09f1 0C       		.byte	0xc
+ 2453 09f2 4F       		.byte	0x4f
+ 2454 09f3 1F       		.uleb128 0x1f
+ 2455 09f4 33000000 		.4byte	.LASF55
+ 2456 09f8 33000000 		.4byte	.LASF55
+ 2457 09fc 0D       		.byte	0xd
+ 2458 09fd 3E       		.byte	0x3e
+ 2459 09fe 1F       		.uleb128 0x1f
+ 2460 09ff EA030000 		.4byte	.LASF56
+ 2461 0a03 EA030000 		.4byte	.LASF56
+ 2462 0a07 0D       		.byte	0xd
+ 2463 0a08 61       		.byte	0x61
+ 2464 0a09 00       		.byte	0
+ 2465              		.section	.debug_abbrev,"",%progbits
+ 2466              	.Ldebug_abbrev0:
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 54
+
+
+ 2467 0000 01       		.uleb128 0x1
+ 2468 0001 11       		.uleb128 0x11
+ 2469 0002 01       		.byte	0x1
+ 2470 0003 25       		.uleb128 0x25
+ 2471 0004 0E       		.uleb128 0xe
+ 2472 0005 13       		.uleb128 0x13
+ 2473 0006 0B       		.uleb128 0xb
+ 2474 0007 03       		.uleb128 0x3
+ 2475 0008 0E       		.uleb128 0xe
+ 2476 0009 1B       		.uleb128 0x1b
+ 2477 000a 0E       		.uleb128 0xe
+ 2478 000b 55       		.uleb128 0x55
+ 2479 000c 17       		.uleb128 0x17
+ 2480 000d 11       		.uleb128 0x11
+ 2481 000e 01       		.uleb128 0x1
+ 2482 000f 10       		.uleb128 0x10
+ 2483 0010 17       		.uleb128 0x17
+ 2484 0011 00       		.byte	0
+ 2485 0012 00       		.byte	0
+ 2486 0013 02       		.uleb128 0x2
+ 2487 0014 24       		.uleb128 0x24
+ 2488 0015 00       		.byte	0
+ 2489 0016 0B       		.uleb128 0xb
+ 2490 0017 0B       		.uleb128 0xb
+ 2491 0018 3E       		.uleb128 0x3e
+ 2492 0019 0B       		.uleb128 0xb
+ 2493 001a 03       		.uleb128 0x3
+ 2494 001b 0E       		.uleb128 0xe
+ 2495 001c 00       		.byte	0
+ 2496 001d 00       		.byte	0
+ 2497 001e 03       		.uleb128 0x3
+ 2498 001f 16       		.uleb128 0x16
+ 2499 0020 00       		.byte	0
+ 2500 0021 03       		.uleb128 0x3
+ 2501 0022 0E       		.uleb128 0xe
+ 2502 0023 3A       		.uleb128 0x3a
+ 2503 0024 0B       		.uleb128 0xb
+ 2504 0025 3B       		.uleb128 0x3b
+ 2505 0026 0B       		.uleb128 0xb
+ 2506 0027 49       		.uleb128 0x49
+ 2507 0028 13       		.uleb128 0x13
+ 2508 0029 00       		.byte	0
+ 2509 002a 00       		.byte	0
+ 2510 002b 04       		.uleb128 0x4
+ 2511 002c 24       		.uleb128 0x24
+ 2512 002d 00       		.byte	0
+ 2513 002e 0B       		.uleb128 0xb
+ 2514 002f 0B       		.uleb128 0xb
+ 2515 0030 3E       		.uleb128 0x3e
+ 2516 0031 0B       		.uleb128 0xb
+ 2517 0032 03       		.uleb128 0x3
+ 2518 0033 08       		.uleb128 0x8
+ 2519 0034 00       		.byte	0
+ 2520 0035 00       		.byte	0
+ 2521 0036 05       		.uleb128 0x5
+ 2522 0037 16       		.uleb128 0x16
+ 2523 0038 00       		.byte	0
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 55
+
+
+ 2524 0039 03       		.uleb128 0x3
+ 2525 003a 0E       		.uleb128 0xe
+ 2526 003b 3A       		.uleb128 0x3a
+ 2527 003c 0B       		.uleb128 0xb
+ 2528 003d 3B       		.uleb128 0x3b
+ 2529 003e 05       		.uleb128 0x5
+ 2530 003f 49       		.uleb128 0x49
+ 2531 0040 13       		.uleb128 0x13
+ 2532 0041 00       		.byte	0
+ 2533 0042 00       		.byte	0
+ 2534 0043 06       		.uleb128 0x6
+ 2535 0044 13       		.uleb128 0x13
+ 2536 0045 01       		.byte	0x1
+ 2537 0046 03       		.uleb128 0x3
+ 2538 0047 0E       		.uleb128 0xe
+ 2539 0048 0B       		.uleb128 0xb
+ 2540 0049 0B       		.uleb128 0xb
+ 2541 004a 3A       		.uleb128 0x3a
+ 2542 004b 0B       		.uleb128 0xb
+ 2543 004c 3B       		.uleb128 0x3b
+ 2544 004d 0B       		.uleb128 0xb
+ 2545 004e 01       		.uleb128 0x1
+ 2546 004f 13       		.uleb128 0x13
+ 2547 0050 00       		.byte	0
+ 2548 0051 00       		.byte	0
+ 2549 0052 07       		.uleb128 0x7
+ 2550 0053 0D       		.uleb128 0xd
+ 2551 0054 00       		.byte	0
+ 2552 0055 03       		.uleb128 0x3
+ 2553 0056 0E       		.uleb128 0xe
+ 2554 0057 3A       		.uleb128 0x3a
+ 2555 0058 0B       		.uleb128 0xb
+ 2556 0059 3B       		.uleb128 0x3b
+ 2557 005a 0B       		.uleb128 0xb
+ 2558 005b 49       		.uleb128 0x49
+ 2559 005c 13       		.uleb128 0x13
+ 2560 005d 38       		.uleb128 0x38
+ 2561 005e 0B       		.uleb128 0xb
+ 2562 005f 00       		.byte	0
+ 2563 0060 00       		.byte	0
+ 2564 0061 08       		.uleb128 0x8
+ 2565 0062 2E       		.uleb128 0x2e
+ 2566 0063 01       		.byte	0x1
+ 2567 0064 3F       		.uleb128 0x3f
+ 2568 0065 19       		.uleb128 0x19
+ 2569 0066 03       		.uleb128 0x3
+ 2570 0067 0E       		.uleb128 0xe
+ 2571 0068 3A       		.uleb128 0x3a
+ 2572 0069 0B       		.uleb128 0xb
+ 2573 006a 3B       		.uleb128 0x3b
+ 2574 006b 05       		.uleb128 0x5
+ 2575 006c 27       		.uleb128 0x27
+ 2576 006d 19       		.uleb128 0x19
+ 2577 006e 20       		.uleb128 0x20
+ 2578 006f 0B       		.uleb128 0xb
+ 2579 0070 01       		.uleb128 0x1
+ 2580 0071 13       		.uleb128 0x13
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 56
+
+
+ 2581 0072 00       		.byte	0
+ 2582 0073 00       		.byte	0
+ 2583 0074 09       		.uleb128 0x9
+ 2584 0075 05       		.uleb128 0x5
+ 2585 0076 00       		.byte	0
+ 2586 0077 03       		.uleb128 0x3
+ 2587 0078 0E       		.uleb128 0xe
+ 2588 0079 3A       		.uleb128 0x3a
+ 2589 007a 0B       		.uleb128 0xb
+ 2590 007b 3B       		.uleb128 0x3b
+ 2591 007c 05       		.uleb128 0x5
+ 2592 007d 49       		.uleb128 0x49
+ 2593 007e 13       		.uleb128 0x13
+ 2594 007f 00       		.byte	0
+ 2595 0080 00       		.byte	0
+ 2596 0081 0A       		.uleb128 0xa
+ 2597 0082 0F       		.uleb128 0xf
+ 2598 0083 00       		.byte	0
+ 2599 0084 0B       		.uleb128 0xb
+ 2600 0085 0B       		.uleb128 0xb
+ 2601 0086 49       		.uleb128 0x49
+ 2602 0087 13       		.uleb128 0x13
+ 2603 0088 00       		.byte	0
+ 2604 0089 00       		.byte	0
+ 2605 008a 0B       		.uleb128 0xb
+ 2606 008b 26       		.uleb128 0x26
+ 2607 008c 00       		.byte	0
+ 2608 008d 49       		.uleb128 0x49
+ 2609 008e 13       		.uleb128 0x13
+ 2610 008f 00       		.byte	0
+ 2611 0090 00       		.byte	0
+ 2612 0091 0C       		.uleb128 0xc
+ 2613 0092 2E       		.uleb128 0x2e
+ 2614 0093 01       		.byte	0x1
+ 2615 0094 3F       		.uleb128 0x3f
+ 2616 0095 19       		.uleb128 0x19
+ 2617 0096 03       		.uleb128 0x3
+ 2618 0097 0E       		.uleb128 0xe
+ 2619 0098 3A       		.uleb128 0x3a
+ 2620 0099 0B       		.uleb128 0xb
+ 2621 009a 3B       		.uleb128 0x3b
+ 2622 009b 0B       		.uleb128 0xb
+ 2623 009c 27       		.uleb128 0x27
+ 2624 009d 19       		.uleb128 0x19
+ 2625 009e 20       		.uleb128 0x20
+ 2626 009f 0B       		.uleb128 0xb
+ 2627 00a0 01       		.uleb128 0x1
+ 2628 00a1 13       		.uleb128 0x13
+ 2629 00a2 00       		.byte	0
+ 2630 00a3 00       		.byte	0
+ 2631 00a4 0D       		.uleb128 0xd
+ 2632 00a5 05       		.uleb128 0x5
+ 2633 00a6 00       		.byte	0
+ 2634 00a7 03       		.uleb128 0x3
+ 2635 00a8 0E       		.uleb128 0xe
+ 2636 00a9 3A       		.uleb128 0x3a
+ 2637 00aa 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 57
+
+
+ 2638 00ab 3B       		.uleb128 0x3b
+ 2639 00ac 0B       		.uleb128 0xb
+ 2640 00ad 49       		.uleb128 0x49
+ 2641 00ae 13       		.uleb128 0x13
+ 2642 00af 00       		.byte	0
+ 2643 00b0 00       		.byte	0
+ 2644 00b1 0E       		.uleb128 0xe
+ 2645 00b2 2E       		.uleb128 0x2e
+ 2646 00b3 01       		.byte	0x1
+ 2647 00b4 3F       		.uleb128 0x3f
+ 2648 00b5 19       		.uleb128 0x19
+ 2649 00b6 03       		.uleb128 0x3
+ 2650 00b7 0E       		.uleb128 0xe
+ 2651 00b8 3A       		.uleb128 0x3a
+ 2652 00b9 0B       		.uleb128 0xb
+ 2653 00ba 3B       		.uleb128 0x3b
+ 2654 00bb 05       		.uleb128 0x5
+ 2655 00bc 20       		.uleb128 0x20
+ 2656 00bd 0B       		.uleb128 0xb
+ 2657 00be 01       		.uleb128 0x1
+ 2658 00bf 13       		.uleb128 0x13
+ 2659 00c0 00       		.byte	0
+ 2660 00c1 00       		.byte	0
+ 2661 00c2 0F       		.uleb128 0xf
+ 2662 00c3 34       		.uleb128 0x34
+ 2663 00c4 00       		.byte	0
+ 2664 00c5 03       		.uleb128 0x3
+ 2665 00c6 0E       		.uleb128 0xe
+ 2666 00c7 3A       		.uleb128 0x3a
+ 2667 00c8 0B       		.uleb128 0xb
+ 2668 00c9 3B       		.uleb128 0x3b
+ 2669 00ca 05       		.uleb128 0x5
+ 2670 00cb 49       		.uleb128 0x49
+ 2671 00cc 13       		.uleb128 0x13
+ 2672 00cd 00       		.byte	0
+ 2673 00ce 00       		.byte	0
+ 2674 00cf 10       		.uleb128 0x10
+ 2675 00d0 2E       		.uleb128 0x2e
+ 2676 00d1 01       		.byte	0x1
+ 2677 00d2 3F       		.uleb128 0x3f
+ 2678 00d3 19       		.uleb128 0x19
+ 2679 00d4 03       		.uleb128 0x3
+ 2680 00d5 0E       		.uleb128 0xe
+ 2681 00d6 3A       		.uleb128 0x3a
+ 2682 00d7 0B       		.uleb128 0xb
+ 2683 00d8 3B       		.uleb128 0x3b
+ 2684 00d9 0B       		.uleb128 0xb
+ 2685 00da 27       		.uleb128 0x27
+ 2686 00db 19       		.uleb128 0x19
+ 2687 00dc 11       		.uleb128 0x11
+ 2688 00dd 01       		.uleb128 0x1
+ 2689 00de 12       		.uleb128 0x12
+ 2690 00df 06       		.uleb128 0x6
+ 2691 00e0 40       		.uleb128 0x40
+ 2692 00e1 18       		.uleb128 0x18
+ 2693 00e2 9742     		.uleb128 0x2117
+ 2694 00e4 19       		.uleb128 0x19
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 58
+
+
+ 2695 00e5 01       		.uleb128 0x1
+ 2696 00e6 13       		.uleb128 0x13
+ 2697 00e7 00       		.byte	0
+ 2698 00e8 00       		.byte	0
+ 2699 00e9 11       		.uleb128 0x11
+ 2700 00ea 1D       		.uleb128 0x1d
+ 2701 00eb 01       		.byte	0x1
+ 2702 00ec 31       		.uleb128 0x31
+ 2703 00ed 13       		.uleb128 0x13
+ 2704 00ee 11       		.uleb128 0x11
+ 2705 00ef 01       		.uleb128 0x1
+ 2706 00f0 12       		.uleb128 0x12
+ 2707 00f1 06       		.uleb128 0x6
+ 2708 00f2 58       		.uleb128 0x58
+ 2709 00f3 0B       		.uleb128 0xb
+ 2710 00f4 59       		.uleb128 0x59
+ 2711 00f5 0B       		.uleb128 0xb
+ 2712 00f6 01       		.uleb128 0x1
+ 2713 00f7 13       		.uleb128 0x13
+ 2714 00f8 00       		.byte	0
+ 2715 00f9 00       		.byte	0
+ 2716 00fa 12       		.uleb128 0x12
+ 2717 00fb 0B       		.uleb128 0xb
+ 2718 00fc 01       		.byte	0x1
+ 2719 00fd 11       		.uleb128 0x11
+ 2720 00fe 01       		.uleb128 0x1
+ 2721 00ff 12       		.uleb128 0x12
+ 2722 0100 06       		.uleb128 0x6
+ 2723 0101 00       		.byte	0
+ 2724 0102 00       		.byte	0
+ 2725 0103 13       		.uleb128 0x13
+ 2726 0104 34       		.uleb128 0x34
+ 2727 0105 00       		.byte	0
+ 2728 0106 31       		.uleb128 0x31
+ 2729 0107 13       		.uleb128 0x13
+ 2730 0108 02       		.uleb128 0x2
+ 2731 0109 17       		.uleb128 0x17
+ 2732 010a 00       		.byte	0
+ 2733 010b 00       		.byte	0
+ 2734 010c 14       		.uleb128 0x14
+ 2735 010d 1D       		.uleb128 0x1d
+ 2736 010e 01       		.byte	0x1
+ 2737 010f 31       		.uleb128 0x31
+ 2738 0110 13       		.uleb128 0x13
+ 2739 0111 11       		.uleb128 0x11
+ 2740 0112 01       		.uleb128 0x1
+ 2741 0113 12       		.uleb128 0x12
+ 2742 0114 06       		.uleb128 0x6
+ 2743 0115 58       		.uleb128 0x58
+ 2744 0116 0B       		.uleb128 0xb
+ 2745 0117 59       		.uleb128 0x59
+ 2746 0118 05       		.uleb128 0x5
+ 2747 0119 01       		.uleb128 0x1
+ 2748 011a 13       		.uleb128 0x13
+ 2749 011b 00       		.byte	0
+ 2750 011c 00       		.byte	0
+ 2751 011d 15       		.uleb128 0x15
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 59
+
+
+ 2752 011e 05       		.uleb128 0x5
+ 2753 011f 00       		.byte	0
+ 2754 0120 31       		.uleb128 0x31
+ 2755 0121 13       		.uleb128 0x13
+ 2756 0122 02       		.uleb128 0x2
+ 2757 0123 17       		.uleb128 0x17
+ 2758 0124 00       		.byte	0
+ 2759 0125 00       		.byte	0
+ 2760 0126 16       		.uleb128 0x16
+ 2761 0127 898201   		.uleb128 0x4109
+ 2762 012a 01       		.byte	0x1
+ 2763 012b 11       		.uleb128 0x11
+ 2764 012c 01       		.uleb128 0x1
+ 2765 012d 31       		.uleb128 0x31
+ 2766 012e 13       		.uleb128 0x13
+ 2767 012f 01       		.uleb128 0x1
+ 2768 0130 13       		.uleb128 0x13
+ 2769 0131 00       		.byte	0
+ 2770 0132 00       		.byte	0
+ 2771 0133 17       		.uleb128 0x17
+ 2772 0134 8A8201   		.uleb128 0x410a
+ 2773 0137 00       		.byte	0
+ 2774 0138 02       		.uleb128 0x2
+ 2775 0139 18       		.uleb128 0x18
+ 2776 013a 9142     		.uleb128 0x2111
+ 2777 013c 18       		.uleb128 0x18
+ 2778 013d 00       		.byte	0
+ 2779 013e 00       		.byte	0
+ 2780 013f 18       		.uleb128 0x18
+ 2781 0140 898201   		.uleb128 0x4109
+ 2782 0143 01       		.byte	0x1
+ 2783 0144 11       		.uleb128 0x11
+ 2784 0145 01       		.uleb128 0x1
+ 2785 0146 31       		.uleb128 0x31
+ 2786 0147 13       		.uleb128 0x13
+ 2787 0148 00       		.byte	0
+ 2788 0149 00       		.byte	0
+ 2789 014a 19       		.uleb128 0x19
+ 2790 014b 1D       		.uleb128 0x1d
+ 2791 014c 01       		.byte	0x1
+ 2792 014d 31       		.uleb128 0x31
+ 2793 014e 13       		.uleb128 0x13
+ 2794 014f 11       		.uleb128 0x11
+ 2795 0150 01       		.uleb128 0x1
+ 2796 0151 12       		.uleb128 0x12
+ 2797 0152 06       		.uleb128 0x6
+ 2798 0153 58       		.uleb128 0x58
+ 2799 0154 0B       		.uleb128 0xb
+ 2800 0155 59       		.uleb128 0x59
+ 2801 0156 05       		.uleb128 0x5
+ 2802 0157 00       		.byte	0
+ 2803 0158 00       		.byte	0
+ 2804 0159 1A       		.uleb128 0x1a
+ 2805 015a 898201   		.uleb128 0x4109
+ 2806 015d 00       		.byte	0
+ 2807 015e 11       		.uleb128 0x11
+ 2808 015f 01       		.uleb128 0x1
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 60
+
+
+ 2809 0160 31       		.uleb128 0x31
+ 2810 0161 13       		.uleb128 0x13
+ 2811 0162 00       		.byte	0
+ 2812 0163 00       		.byte	0
+ 2813 0164 1B       		.uleb128 0x1b
+ 2814 0165 2E       		.uleb128 0x2e
+ 2815 0166 01       		.byte	0x1
+ 2816 0167 3F       		.uleb128 0x3f
+ 2817 0168 19       		.uleb128 0x19
+ 2818 0169 03       		.uleb128 0x3
+ 2819 016a 0E       		.uleb128 0xe
+ 2820 016b 3A       		.uleb128 0x3a
+ 2821 016c 0B       		.uleb128 0xb
+ 2822 016d 3B       		.uleb128 0x3b
+ 2823 016e 0B       		.uleb128 0xb
+ 2824 016f 27       		.uleb128 0x27
+ 2825 0170 19       		.uleb128 0x19
+ 2826 0171 49       		.uleb128 0x49
+ 2827 0172 13       		.uleb128 0x13
+ 2828 0173 8701     		.uleb128 0x87
+ 2829 0175 19       		.uleb128 0x19
+ 2830 0176 11       		.uleb128 0x11
+ 2831 0177 01       		.uleb128 0x1
+ 2832 0178 12       		.uleb128 0x12
+ 2833 0179 06       		.uleb128 0x6
+ 2834 017a 40       		.uleb128 0x40
+ 2835 017b 18       		.uleb128 0x18
+ 2836 017c 9742     		.uleb128 0x2117
+ 2837 017e 19       		.uleb128 0x19
+ 2838 017f 01       		.uleb128 0x1
+ 2839 0180 13       		.uleb128 0x13
+ 2840 0181 00       		.byte	0
+ 2841 0182 00       		.byte	0
+ 2842 0183 1C       		.uleb128 0x1c
+ 2843 0184 34       		.uleb128 0x34
+ 2844 0185 00       		.byte	0
+ 2845 0186 03       		.uleb128 0x3
+ 2846 0187 0E       		.uleb128 0xe
+ 2847 0188 3A       		.uleb128 0x3a
+ 2848 0189 0B       		.uleb128 0xb
+ 2849 018a 3B       		.uleb128 0x3b
+ 2850 018b 0B       		.uleb128 0xb
+ 2851 018c 49       		.uleb128 0x49
+ 2852 018d 13       		.uleb128 0x13
+ 2853 018e 02       		.uleb128 0x2
+ 2854 018f 17       		.uleb128 0x17
+ 2855 0190 00       		.byte	0
+ 2856 0191 00       		.byte	0
+ 2857 0192 1D       		.uleb128 0x1d
+ 2858 0193 34       		.uleb128 0x34
+ 2859 0194 00       		.byte	0
+ 2860 0195 03       		.uleb128 0x3
+ 2861 0196 0E       		.uleb128 0xe
+ 2862 0197 3A       		.uleb128 0x3a
+ 2863 0198 0B       		.uleb128 0xb
+ 2864 0199 3B       		.uleb128 0x3b
+ 2865 019a 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 61
+
+
+ 2866 019b 49       		.uleb128 0x49
+ 2867 019c 13       		.uleb128 0x13
+ 2868 019d 02       		.uleb128 0x2
+ 2869 019e 18       		.uleb128 0x18
+ 2870 019f 00       		.byte	0
+ 2871 01a0 00       		.byte	0
+ 2872 01a1 1E       		.uleb128 0x1e
+ 2873 01a2 34       		.uleb128 0x34
+ 2874 01a3 00       		.byte	0
+ 2875 01a4 03       		.uleb128 0x3
+ 2876 01a5 0E       		.uleb128 0xe
+ 2877 01a6 3A       		.uleb128 0x3a
+ 2878 01a7 0B       		.uleb128 0xb
+ 2879 01a8 3B       		.uleb128 0x3b
+ 2880 01a9 0B       		.uleb128 0xb
+ 2881 01aa 49       		.uleb128 0x49
+ 2882 01ab 13       		.uleb128 0x13
+ 2883 01ac 3F       		.uleb128 0x3f
+ 2884 01ad 19       		.uleb128 0x19
+ 2885 01ae 02       		.uleb128 0x2
+ 2886 01af 18       		.uleb128 0x18
+ 2887 01b0 00       		.byte	0
+ 2888 01b1 00       		.byte	0
+ 2889 01b2 1F       		.uleb128 0x1f
+ 2890 01b3 2E       		.uleb128 0x2e
+ 2891 01b4 00       		.byte	0
+ 2892 01b5 3F       		.uleb128 0x3f
+ 2893 01b6 19       		.uleb128 0x19
+ 2894 01b7 3C       		.uleb128 0x3c
+ 2895 01b8 19       		.uleb128 0x19
+ 2896 01b9 6E       		.uleb128 0x6e
+ 2897 01ba 0E       		.uleb128 0xe
+ 2898 01bb 03       		.uleb128 0x3
+ 2899 01bc 0E       		.uleb128 0xe
+ 2900 01bd 3A       		.uleb128 0x3a
+ 2901 01be 0B       		.uleb128 0xb
+ 2902 01bf 3B       		.uleb128 0x3b
+ 2903 01c0 0B       		.uleb128 0xb
+ 2904 01c1 00       		.byte	0
+ 2905 01c2 00       		.byte	0
+ 2906 01c3 20       		.uleb128 0x20
+ 2907 01c4 2E       		.uleb128 0x2e
+ 2908 01c5 00       		.byte	0
+ 2909 01c6 3F       		.uleb128 0x3f
+ 2910 01c7 19       		.uleb128 0x19
+ 2911 01c8 3C       		.uleb128 0x3c
+ 2912 01c9 19       		.uleb128 0x19
+ 2913 01ca 6E       		.uleb128 0x6e
+ 2914 01cb 0E       		.uleb128 0xe
+ 2915 01cc 03       		.uleb128 0x3
+ 2916 01cd 0E       		.uleb128 0xe
+ 2917 01ce 3A       		.uleb128 0x3a
+ 2918 01cf 0B       		.uleb128 0xb
+ 2919 01d0 3B       		.uleb128 0x3b
+ 2920 01d1 05       		.uleb128 0x5
+ 2921 01d2 00       		.byte	0
+ 2922 01d3 00       		.byte	0
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 62
+
+
+ 2923 01d4 00       		.byte	0
+ 2924              		.section	.debug_loc,"",%progbits
+ 2925              	.Ldebug_loc0:
+ 2926              	.LLST0:
+ 2927 0000 3A000000 		.4byte	.LVL0
+ 2928 0004 36010000 		.4byte	.LVL9
+ 2929 0008 0200     		.2byte	0x2
+ 2930 000a 30       		.byte	0x30
+ 2931 000b 9F       		.byte	0x9f
+ 2932 000c 3A010000 		.4byte	.LVL10
+ 2933 0010 50010000 		.4byte	.LVL12
+ 2934 0014 0100     		.2byte	0x1
+ 2935 0016 54       		.byte	0x54
+ 2936 0017 5A010000 		.4byte	.LVL13
+ 2937 001b 74010000 		.4byte	.LVL15
+ 2938 001f 0100     		.2byte	0x1
+ 2939 0021 54       		.byte	0x54
+ 2940 0022 00000000 		.4byte	0
+ 2941 0026 00000000 		.4byte	0
+ 2942              	.LLST1:
+ 2943 002a 3A000000 		.4byte	.LVL0
+ 2944 002e 36010000 		.4byte	.LVL9
+ 2945 0032 0600     		.2byte	0x6
+ 2946 0034 F2       		.byte	0xf2
+ 2947 0035 8F010000 		.4byte	.Ldebug_info0+399
+ 2948 0039 00       		.sleb128 0
+ 2949 003a 00000000 		.4byte	0
+ 2950 003e 00000000 		.4byte	0
+ 2951              	.LLST2:
+ 2952 0042 3A010000 		.4byte	.LVL10
+ 2953 0046 84010000 		.4byte	.LVL16
+ 2954 004a 0600     		.2byte	0x6
+ 2955 004c F2       		.byte	0xf2
+ 2956 004d 8F010000 		.4byte	.Ldebug_info0+399
+ 2957 0051 00       		.sleb128 0
+ 2958 0052 00000000 		.4byte	0
+ 2959 0056 00000000 		.4byte	0
+ 2960              	.LLST3:
+ 2961 005a 8E010000 		.4byte	.LVL17
+ 2962 005e CE010000 		.4byte	.LVL20
+ 2963 0062 0200     		.2byte	0x2
+ 2964 0064 30       		.byte	0x30
+ 2965 0065 9F       		.byte	0x9f
+ 2966 0066 D2010000 		.4byte	.LVL21
+ 2967 006a EE010000 		.4byte	.LVL23
+ 2968 006e 0100     		.2byte	0x1
+ 2969 0070 54       		.byte	0x54
+ 2970 0071 F8010000 		.4byte	.LVL24
+ 2971 0075 10020000 		.4byte	.LVL26
+ 2972 0079 0100     		.2byte	0x1
+ 2973 007b 54       		.byte	0x54
+ 2974 007c 1A020000 		.4byte	.LVL27
+ 2975 0080 32020000 		.4byte	.LVL29
+ 2976 0084 0100     		.2byte	0x1
+ 2977 0086 54       		.byte	0x54
+ 2978 0087 3C020000 		.4byte	.LVL30
+ 2979 008b 54020000 		.4byte	.LVL32
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 63
+
+
+ 2980 008f 0100     		.2byte	0x1
+ 2981 0091 54       		.byte	0x54
+ 2982 0092 5E020000 		.4byte	.LVL33
+ 2983 0096 74020000 		.4byte	.LVL35
+ 2984 009a 0100     		.2byte	0x1
+ 2985 009c 54       		.byte	0x54
+ 2986 009d 7E020000 		.4byte	.LVL36
+ 2987 00a1 94020000 		.4byte	.LVL38
+ 2988 00a5 0100     		.2byte	0x1
+ 2989 00a7 54       		.byte	0x54
+ 2990 00a8 A4020000 		.4byte	.LVL39
+ 2991 00ac BA020000 		.4byte	.LVL41
+ 2992 00b0 0100     		.2byte	0x1
+ 2993 00b2 54       		.byte	0x54
+ 2994 00b3 C4020000 		.4byte	.LVL42
+ 2995 00b7 DC020000 		.4byte	.LVL44
+ 2996 00bb 0100     		.2byte	0x1
+ 2997 00bd 54       		.byte	0x54
+ 2998 00be 00000000 		.4byte	0
+ 2999 00c2 00000000 		.4byte	0
+ 3000              	.LLST4:
+ 3001 00c6 8E010000 		.4byte	.LVL17
+ 3002 00ca CE010000 		.4byte	.LVL20
+ 3003 00ce 0600     		.2byte	0x6
+ 3004 00d0 F2       		.byte	0xf2
+ 3005 00d1 A4020000 		.4byte	.Ldebug_info0+676
+ 3006 00d5 00       		.sleb128 0
+ 3007 00d6 00000000 		.4byte	0
+ 3008 00da 00000000 		.4byte	0
+ 3009              	.LLST5:
+ 3010 00de D2010000 		.4byte	.LVL21
+ 3011 00e2 EA020000 		.4byte	.LVL45
+ 3012 00e6 0600     		.2byte	0x6
+ 3013 00e8 F2       		.byte	0xf2
+ 3014 00e9 A4020000 		.4byte	.Ldebug_info0+676
+ 3015 00ed 00       		.sleb128 0
+ 3016 00ee 00000000 		.4byte	0
+ 3017 00f2 00000000 		.4byte	0
+ 3018              	.LLST6:
+ 3019 00f6 76000000 		.4byte	.LVL63
+ 3020 00fa 78000000 		.4byte	.LVL64
+ 3021 00fe 0500     		.2byte	0x5
+ 3022 0100 03       		.byte	0x3
+ 3023 0101 01000000 		.4byte	displayCounter+1
+ 3024 0105 60010000 		.4byte	.LVL88
+ 3025 0109 64010000 		.4byte	.LVL89
+ 3026 010d 0500     		.2byte	0x5
+ 3027 010f 03       		.byte	0x3
+ 3028 0110 01000000 		.4byte	displayCounter+1
+ 3029 0114 68010000 		.4byte	.LVL90
+ 3030 0118 8C010000 		.4byte	.LVL95
+ 3031 011c 0100     		.2byte	0x1
+ 3032 011e 54       		.byte	0x54
+ 3033 011f 00000000 		.4byte	0
+ 3034 0123 00000000 		.4byte	0
+ 3035              		.section	.debug_aranges,"",%progbits
+ 3036 0000 34000000 		.4byte	0x34
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 64
+
+
+ 3037 0004 0200     		.2byte	0x2
+ 3038 0006 00000000 		.4byte	.Ldebug_info0
+ 3039 000a 04       		.byte	0x4
+ 3040 000b 00       		.byte	0
+ 3041 000c 0000     		.2byte	0
+ 3042 000e 0000     		.2byte	0
+ 3043 0010 00000000 		.4byte	.LFB34
+ 3044 0014 0C030000 		.4byte	.LFE34-.LFB34
+ 3045 0018 00000000 		.4byte	.LFB35
+ 3046 001c 1C000000 		.4byte	.LFE35-.LFB35
+ 3047 0020 00000000 		.4byte	.LFB36
+ 3048 0024 28000000 		.4byte	.LFE36-.LFB36
+ 3049 0028 00000000 		.4byte	.LFB37
+ 3050 002c 70020000 		.4byte	.LFE37-.LFB37
+ 3051 0030 00000000 		.4byte	0
+ 3052 0034 00000000 		.4byte	0
+ 3053              		.section	.debug_ranges,"",%progbits
+ 3054              	.Ldebug_ranges0:
+ 3055 0000 00000000 		.4byte	.LFB34
+ 3056 0004 0C030000 		.4byte	.LFE34
+ 3057 0008 00000000 		.4byte	.LFB35
+ 3058 000c 1C000000 		.4byte	.LFE35
+ 3059 0010 00000000 		.4byte	.LFB36
+ 3060 0014 28000000 		.4byte	.LFE36
+ 3061 0018 00000000 		.4byte	.LFB37
+ 3062 001c 70020000 		.4byte	.LFE37
+ 3063 0020 00000000 		.4byte	0
+ 3064 0024 00000000 		.4byte	0
+ 3065              		.section	.debug_line,"",%progbits
+ 3066              	.Ldebug_line0:
+ 3067 0000 F2020000 		.section	.debug_str,"MS",%progbits,1
+ 3067      0200DF01 
+ 3067      00000201 
+ 3067      FB0E0D00 
+ 3067      01010101 
+ 3068              	.LASF26:
+ 3069 0000 73686966 		.ascii	"shift\000"
+ 3069      7400
+ 3070              	.LASF33:
+ 3071 0006 72656454 		.ascii	"redTime\000"
+ 3071      696D6500 
+ 3072              	.LASF34:
+ 3073 000e 79656C6C 		.ascii	"yellowTime\000"
+ 3073      6F775469 
+ 3073      6D6500
+ 3074              	.LASF9:
+ 3075 0019 5F5F7569 		.ascii	"__uint8_t\000"
+ 3075      6E74385F 
+ 3075      7400
+ 3076              	.LASF31:
+ 3077 0023 63757272 		.ascii	"currentPosition\000"
+ 3077      656E7450 
+ 3077      6F736974 
+ 3077      696F6E00 
+ 3078              	.LASF55:
+ 3079 0033 4C43445F 		.ascii	"LCD_Char_PutChar\000"
+ 3079      43686172 
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 65
+
+
+ 3079      5F507574 
+ 3079      43686172 
+ 3079      00
+ 3080              	.LASF60:
+ 3081 0044 44697370 		.ascii	"DisplayCounter\000"
+ 3081      6C617943 
+ 3081      6F756E74 
+ 3081      657200
+ 3082              	.LASF32:
+ 3083 0053 616C676F 		.ascii	"algorithm\000"
+ 3083      72697468 
+ 3083      6D00
+ 3084              	.LASF48:
+ 3085 005d 4C43445F 		.ascii	"LCD_Char_Start\000"
+ 3085      43686172 
+ 3085      5F537461 
+ 3085      727400
+ 3086              	.LASF50:
+ 3087 006c 4C43445F 		.ascii	"LCD_Char_Position\000"
+ 3087      43686172 
+ 3087      5F506F73 
+ 3087      6974696F 
+ 3087      6E00
+ 3088              	.LASF25:
+ 3089 007e 72756E41 		.ascii	"runAlgorithm1\000"
+ 3089      6C676F72 
+ 3089      6974686D 
+ 3089      3100
+ 3090              	.LASF24:
+ 3091 008c 72756E41 		.ascii	"runAlgorithm2\000"
+ 3091      6C676F72 
+ 3091      6974686D 
+ 3091      3200
+ 3092              	.LASF47:
+ 3093 009a 51756164 		.ascii	"QuadDec_Start\000"
+ 3093      4465635F 
+ 3093      53746172 
+ 3093      7400
+ 3094              	.LASF38:
+ 3095 00a8 64697370 		.ascii	"displayCounter\000"
+ 3095      6C617943 
+ 3095      6F756E74 
+ 3095      657200
+ 3096              	.LASF36:
+ 3097 00b7 64697370 		.ascii	"displayMode\000"
+ 3097      6C61794D 
+ 3097      6F646500 
+ 3098              	.LASF27:
+ 3099 00c3 74696D65 		.ascii	"timer_isr_interrupt\000"
+ 3099      725F6973 
+ 3099      725F696E 
+ 3099      74657272 
+ 3099      75707400 
+ 3100              	.LASF14:
+ 3101 00d7 666C6F61 		.ascii	"float\000"
+ 3101      7400
+ 3102              	.LASF20:
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 66
+
+
+ 3103 00dd 636F756E 		.ascii	"counter\000"
+ 3103      74657200 
+ 3104              	.LASF37:
+ 3105 00e5 6D6F6465 		.ascii	"modeHasChanged\000"
+ 3105      48617343 
+ 3105      68616E67 
+ 3105      656400
+ 3106              	.LASF35:
+ 3107 00f4 67726565 		.ascii	"greenTime\000"
+ 3107      6E54696D 
+ 3107      6500
+ 3108              	.LASF29:
+ 3109 00fe 62757474 		.ascii	"button_encoder_isr_interrupt\000"
+ 3109      6F6E5F65 
+ 3109      6E636F64 
+ 3109      65725F69 
+ 3109      73725F69 
+ 3110              	.LASF5:
+ 3111 011b 6C6F6E67 		.ascii	"long unsigned int\000"
+ 3111      20756E73 
+ 3111      69676E65 
+ 3111      6420696E 
+ 3111      7400
+ 3112              	.LASF3:
+ 3113 012d 73686F72 		.ascii	"short unsigned int\000"
+ 3113      7420756E 
+ 3113      7369676E 
+ 3113      65642069 
+ 3113      6E7400
+ 3114              	.LASF42:
+ 3115 0140 42757474 		.ascii	"Button_Encoder_ClearInterrupt\000"
+ 3115      6F6E5F45 
+ 3115      6E636F64 
+ 3115      65725F43 
+ 3115      6C656172 
+ 3116              	.LASF1:
+ 3117 015e 756E7369 		.ascii	"unsigned char\000"
+ 3117      676E6564 
+ 3117      20636861 
+ 3117      7200
+ 3118              	.LASF15:
+ 3119 016c 646F7562 		.ascii	"double\000"
+ 3119      6C6500
+ 3120              	.LASF12:
+ 3121 0173 75696E74 		.ascii	"uint16\000"
+ 3121      313600
+ 3122              	.LASF61:
+ 3123 017a 6D61696E 		.ascii	"main\000"
+ 3123      00
+ 3124              	.LASF53:
+ 3125 017f 51756164 		.ascii	"QuadDec_GetCounter\000"
+ 3125      4465635F 
+ 3125      47657443 
+ 3125      6F756E74 
+ 3125      657200
+ 3126              	.LASF46:
+ 3127 0192 62757474 		.ascii	"button_encoder_isr_StartEx\000"
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 67
+
+
+ 3127      6F6E5F65 
+ 3127      6E636F64 
+ 3127      65725F69 
+ 3127      73725F53 
+ 3128              	.LASF19:
+ 3129 01ad 706F7369 		.ascii	"position\000"
+ 3129      74696F6E 
+ 3129      00
+ 3130              	.LASF13:
+ 3131 01b6 75696E74 		.ascii	"uint32\000"
+ 3131      333200
+ 3132              	.LASF22:
+ 3133 01bd 72756E41 		.ascii	"runAlgorithmGreenPart\000"
+ 3133      6C676F72 
+ 3133      6974686D 
+ 3133      47726565 
+ 3133      6E506172 
+ 3134              	.LASF8:
+ 3135 01d3 756E7369 		.ascii	"unsigned int\000"
+ 3135      676E6564 
+ 3135      20696E74 
+ 3135      00
+ 3136              	.LASF7:
+ 3137 01e0 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 3137      206C6F6E 
+ 3137      6720756E 
+ 3137      7369676E 
+ 3137      65642069 
+ 3138              	.LASF10:
+ 3139 01f7 75696E74 		.ascii	"uint8_t\000"
+ 3139      385F7400 
+ 3140              	.LASF45:
+ 3141 01ff 62757474 		.ascii	"button_isr_StartEx\000"
+ 3141      6F6E5F69 
+ 3141      73725F53 
+ 3141      74617274 
+ 3141      457800
+ 3142              	.LASF41:
+ 3143 0212 42757474 		.ascii	"Button_ClearInterrupt\000"
+ 3143      6F6E5F43 
+ 3143      6C656172 
+ 3143      496E7465 
+ 3143      72727570 
+ 3144              	.LASF49:
+ 3145 0228 4C43445F 		.ascii	"LCD_Char_WriteControl\000"
+ 3145      43686172 
+ 3145      5F577269 
+ 3145      7465436F 
+ 3145      6E74726F 
+ 3146              	.LASF57:
+ 3147 023e 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 3147      43313120 
+ 3147      352E342E 
+ 3147      31203230 
+ 3147      31363036 
+ 3148 0271 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m0 -mthumb -g -O"
+ 3148      20726576 
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 68
+
+
+ 3148      6973696F 
+ 3148      6E203233 
+ 3148      37373135 
+ 3149 02a4 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 3149      66756E63 
+ 3149      74696F6E 
+ 3149      2D736563 
+ 3149      74696F6E 
+ 3150              	.LASF18:
+ 3151 02cc 73697A65 		.ascii	"sizetype\000"
+ 3151      74797065 
+ 3151      00
+ 3152              	.LASF6:
+ 3153 02d5 6C6F6E67 		.ascii	"long long int\000"
+ 3153      206C6F6E 
+ 3153      6720696E 
+ 3153      7400
+ 3154              	.LASF43:
+ 3155 02e3 54696D65 		.ascii	"Timer_Counter_Start\000"
+ 3155      725F436F 
+ 3155      756E7465 
+ 3155      725F5374 
+ 3155      61727400 
+ 3156              	.LASF58:
+ 3157 02f7 6D61696E 		.ascii	"main.c\000"
+ 3157      2E6300
+ 3158              	.LASF16:
+ 3159 02fe 63686172 		.ascii	"char\000"
+ 3159      00
+ 3160              	.LASF30:
+ 3161 0303 63757272 		.ascii	"currentCounter\000"
+ 3161      656E7443 
+ 3161      6F756E74 
+ 3161      657200
+ 3162              	.LASF21:
+ 3163 0312 72756E41 		.ascii	"runAlgorithmRedPart\000"
+ 3163      6C676F72 
+ 3163      6974686D 
+ 3163      52656450 
+ 3163      61727400 
+ 3164              	.LASF51:
+ 3165 0326 4C43445F 		.ascii	"LCD_Char_PrintString\000"
+ 3165      43686172 
+ 3165      5F507269 
+ 3165      6E745374 
+ 3165      72696E67 
+ 3166              	.LASF28:
+ 3167 033b 62757474 		.ascii	"button_isr_interrupt\000"
+ 3167      6F6E5F69 
+ 3167      73725F69 
+ 3167      6E746572 
+ 3167      72757074 
+ 3168              	.LASF2:
+ 3169 0350 73686F72 		.ascii	"short int\000"
+ 3169      7420696E 
+ 3169      7400
+ 3170              	.LASF59:
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 69
+
+
+ 3171 035a 433A5C55 		.ascii	"C:\\Users\\Admin\\Documents\\PSoC Creator\\Workspac"
+ 3171      73657273 
+ 3171      5C41646D 
+ 3171      696E5C44 
+ 3171      6F63756D 
+ 3172 0388 6530315C 		.ascii	"e01\\Lab3.cydsn\000"
+ 3172      4C616233 
+ 3172      2E637964 
+ 3172      736E00
+ 3173              	.LASF11:
+ 3174 0397 75696E74 		.ascii	"uint8\000"
+ 3174      3800
+ 3175              	.LASF23:
+ 3176 039d 70536869 		.ascii	"pShift\000"
+ 3176      667400
+ 3177              	.LASF54:
+ 3178 03a4 51756164 		.ascii	"QuadDec_SetCounter\000"
+ 3178      4465635F 
+ 3178      53657443 
+ 3178      6F756E74 
+ 3178      657200
+ 3179              	.LASF4:
+ 3180 03b7 6C6F6E67 		.ascii	"long int\000"
+ 3180      20696E74 
+ 3180      00
+ 3181              	.LASF44:
+ 3182 03c0 74696D65 		.ascii	"timer_isr_StartEx\000"
+ 3182      725F6973 
+ 3182      725F5374 
+ 3182      61727445 
+ 3182      7800
+ 3183              	.LASF17:
+ 3184 03d2 6C6F6E67 		.ascii	"long double\000"
+ 3184      20646F75 
+ 3184      626C6500 
+ 3185              	.LASF0:
+ 3186 03de 7369676E 		.ascii	"signed char\000"
+ 3186      65642063 
+ 3186      68617200 
+ 3187              	.LASF56:
+ 3188 03ea 4C43445F 		.ascii	"LCD_Char_PrintU32Number\000"
+ 3188      43686172 
+ 3188      5F507269 
+ 3188      6E745533 
+ 3188      324E756D 
+ 3189              	.LASF39:
+ 3190 0402 436F6E74 		.ascii	"Control_Reg_Write\000"
+ 3190      726F6C5F 
+ 3190      5265675F 
+ 3190      57726974 
+ 3190      6500
+ 3191              	.LASF52:
+ 3192 0414 43794465 		.ascii	"CyDelay\000"
+ 3192      6C617900 
+ 3193              	.LASF40:
+ 3194 041c 54696D65 		.ascii	"Timer_Counter_ClearInterrupt\000"
+ 3194      725F436F 
+ARM GAS  C:\Users\Admin\AppData\Local\Temp\cclWVjmg.s 			page 70
+
+
+ 3194      756E7465 
+ 3194      725F436C 
+ 3194      65617249 
+ 3195              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

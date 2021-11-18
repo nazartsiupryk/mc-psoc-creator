@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CyXmlSerializer>
+<!--This file is machine generated and read. It is not intended to be edited by hand.-->
+<!--Due to this, there is no schema for this file.-->
+<CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtWrkspcCustomData" version="4">
+<CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997 type_name="CyDesigner.Common.Base.CyCustomData" version="2">
+<userData>
+<dataGuid v="5f2be1a5-0687-4501-bb8c-cf21cb8211bf">
+<CyGuid_5f2be1a5-0687-4501-bb8c-cf21cb8211bf type_name="CyDesigner.Common.ProjMgmt.GUI.CyBookmarkData" version="1">
+<indicators />
+</CyGuid_5f2be1a5-0687-4501-bb8c-cf21cb8211bf>
+</dataGuid>
+<dataGuid v="1b906a0f-a7b6-4e4d-a428-82f98b53cb35">
+<CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35 type_name="CyDesigner.Common.ProjMgmt.GUI.CyExplorerWindow+CyExplorerWindowState" version="3" SelectedTab="Source">
+<TreeKeys>
+<v>Source</v>
+<v>Components</v>
+<v>Output</v>
+</TreeKeys>
+<TreeStates>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="Lab5-000\Lab5\Lab5.cydwr\Pins">
+<ExpandedNodeIds>
+<v>Lab5-000</v>
+<v>Lab5-000\Lab5</v>
+<v>Lab5-000\Lab5\TopDesign</v>
+<v>Lab5-000\Lab5\Lab5.cydwr</v>
+<v>Lab5-000\Lab5\Lab5.cydwr\Pins</v>
+<v>Lab5-000\Lab5\Lab5.cydwr\Analog</v>
+<v>Lab5-000\Lab5\Lab5.cydwr\DMA</v>
+<v>Lab5-000\Lab5\Lab5.cydwr\Clocks</v>
+<v>Lab5-000\Lab5\Lab5.cydwr\Interrupts</v>
+<v>Lab5-000\Lab5\Lab5.cydwr\System</v>
+<v>Lab5-000\Lab5\Lab5.cydwr\Directives</v>
+<v>Lab5-000\Lab5\Lab5.cydwr\Flash Security</v>
+<v>Lab5-000\Lab5\Header Files</v>
+<v>Lab5-000\Lab5\Header Files\cyapicallbacks.h</v>
+<v>Lab5-000\Lab5\Source Files</v>
+<v>Lab5-000\Lab5\Source Files\main.c</v>
+<v>Lab5-000\Lab5\Generated_Source</v>
+<v>Lab5-000\Lab5\Generated_Source\PSoC4</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>Lab5-000</v>
+<v>Lab5-000\Lab5</v>
+<v>Lab5-000\Lab5\TopDesign</v>
+<v>Lab5-000\Lab5\Lab5.cydwr</v>
+<v>Lab5-000\Lab5\Lab5.cydwr\Pins</v>
+<v>Lab5-000\Lab5\Lab5.cydwr\Analog</v>
+<v>Lab5-000\Lab5\Lab5.cydwr\DMA</v>
+<v>Lab5-000\Lab5\Lab5.cydwr\Clocks</v>
+<v>Lab5-000\Lab5\Lab5.cydwr\Interrupts</v>
+<v>Lab5-000\Lab5\Lab5.cydwr\System</v>
+<v>Lab5-000\Lab5\Lab5.cydwr\Directives</v>
+<v>Lab5-000\Lab5\Lab5.cydwr\Flash Security</v>
+<v>Lab5-000\Lab5\Header Files</v>
+<v>Lab5-000\Lab5\Header Files\cyapicallbacks.h</v>
+<v>Lab5-000\Lab5\Source Files</v>
+<v>Lab5-000\Lab5\Source Files\main.c</v>
+<v>Lab5-000\Lab5\Generated_Source</v>
+<v>Lab5-000\Lab5\Generated_Source\PSoC4</v>
+<v>Lab5-000\Lab5\Generated_Source\PSoC4\A</v>
+<v>Lab5-000\Lab5\Generated_Source\PSoC4\B</v>
+<v>Lab5-000\Lab5\Generated_Source\PSoC4\Button_dec</v>
+<v>Lab5-000\Lab5\Generated_Source\PSoC4\button_dec_isr</v>
+<v>Lab5-000\Lab5\Generated_Source\PSoC4\Button_direction</v>
+<v>Lab5-000\Lab5\Generated_Source\PSoC4\button_direction_isr</v>
+<v>Lab5-000\Lab5\Generated_Source\PSoC4\Button_inc</v>
+<v>Lab5-000\Lab5\Generated_Source\PSoC4\button_inc_isr</v>
+<v>Lab5-000\Lab5\Generated_Source\PSoC4\Clock</v>
+<v>Lab5-000\Lab5\Generated_Source\PSoC4\Clock_1</v>
+<v>Lab5-000\Lab5\Generated_Source\PSoC4\Clock_2</v>
+<v>Lab5-000\Lab5\Generated_Source\PSoC4\Control_Reg</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>Lab5-000</v>
+<v>Lab5-000\Lab5</v>
+<v>Lab5-000\Lab5\TopDesign</v>
+<v>Lab5-000\Lab5\TopDesign\TopDesign.cysch</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>Lab5-000</v>
+<v>Lab5-000\Lab5</v>
+<v>Lab5-000\Lab5\TopDesign</v>
+<v>Lab5-000\Lab5\TopDesign\TopDesign.cysch</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>Lab5-000</v>
+<v>Lab5-000\Lab5</v>
+<v>Lab5-000\Lab5\CortexM0</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\A.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\A_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\B.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\B_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Button_dec.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\button_dec_isr.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Button_dec_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Button_direction.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\button_direction_isr.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Button_direction_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Button_inc.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\button_inc_isr.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Button_inc_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Clock.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Clock_1.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Clock_2.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Cm0Start.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Control_Reg.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Control_Reg_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\cy_em_eeprom.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\CyBootAsmGnu.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\CyDMA.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\cyfitter_cfg.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\CyFlash.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\CyLFClk.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\CyLib.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\cymetadata.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\cyPm.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\cyutils.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\LCD_Char.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\LCD_Char_LCDPort.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\LCD_Char_LCDPort_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\LCD_Char_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\main.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\PWM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\PWM_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\QuadDec.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\QuadDec_Cnt8.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\QuadDec_Cnt8_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\QuadDec_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\SGN_1.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\SGN_1_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\SGN_2.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\SGN_2_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\SGN_3.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\SGN_3_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\SGN_4.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\SGN_4_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Timer_Counter.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Timer_Counter_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\timer_isr.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Lab5.elf</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Lab5.hex</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Lab5.map</v>
+<v>Lab5-000\Lab5\Lab5.gpdsc</v>
+<v>Lab5-000\Lab5\Lab5.rpt</v>
+<v>Lab5-000\Lab5\Lab5_timing.html</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>Lab5-000</v>
+<v>Lab5-000\Lab5</v>
+<v>Lab5-000\Lab5\CortexM0</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\A.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\A_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\B.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\B_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Button_dec.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\button_dec_isr.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Button_dec_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Button_direction.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\button_direction_isr.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Button_direction_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Button_inc.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\button_inc_isr.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Button_inc_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Clock.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Clock_1.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Clock_2.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Cm0Start.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Control_Reg.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\Control_Reg_PM.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\cy_em_eeprom.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\CyBootAsmGnu.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\CyDMA.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\cyfitter_cfg.lst</v>
+<v>Lab5-000\Lab5\CortexM0\ARM_GCC_541\Debug\Listing Files\CyFlash.lst</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+</TreeStates>
+<TreeKeysV2>
+<v>Datasheet</v>
+</TreeKeysV2>
+<TreeStatesV2>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>Lab5-000</v>
+<v>Lab5-000\Lab5</v>
+<v>Lab5-000\Lab5\PSoC 4 Architecture TRM</v>
+<v>Lab5-000\Lab5\PSoC 4200M Family Datasheet</v>
+<v>Lab5-000\Lab5\System Reference Guides</v>
+<v>Lab5-000\Lab5\System Reference Guides\cy_boot_v5_90</v>
+<v>Lab5-000\Lab5\System Reference Guides\cy_dmac_v1_10</v>
+<v>Lab5-000\Lab5\System Reference Guides\cy_lfclk_v1_20</v>
+<v>Lab5-000\Lab5\and_v1_0</v>
+<v>Lab5-000\Lab5\and_v1_0\and_v1_0.pdf</v>
+<v>Lab5-000\Lab5\CharLCD_v2_20.pdf</v>
+<v>Lab5-000\Lab5\cy_clock_v2_20</v>
+<v>Lab5-000\Lab5\cy_clock_v2_20\cy_clock_v2_20.pdf</v>
+<v>Lab5-000\Lab5\cy_isr_v1_70</v>
+<v>Lab5-000\Lab5\cy_isr_v1_70\cy_isr_v1_70.pdf</v>
+<v>Lab5-000\Lab5\cy_pins_v2_20</v>
+<v>Lab5-000\Lab5\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>Lab5-000\Lab5\CyControlReg_v1_80.pdf</v>
+<v>Lab5-000\Lab5\QuadDec_v3_0.pdf</v>
+<v>Lab5-000\Lab5\TCPWM_P4_v2_10</v>
+<v>Lab5-000\Lab5\TCPWM_P4_v2_10\TCPWM_P4_v2_10.pdf</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>Lab5-000</v>
+<v>Lab5-000\Lab5</v>
+<v>Lab5-000\Lab5\PSoC 4 Architecture TRM</v>
+<v>Lab5-000\Lab5\PSoC 4200M Family Datasheet</v>
+<v>Lab5-000\Lab5\System Reference Guides</v>
+<v>Lab5-000\Lab5\System Reference Guides\cy_boot_v5_90</v>
+<v>Lab5-000\Lab5\System Reference Guides\cy_dmac_v1_10</v>
+<v>Lab5-000\Lab5\System Reference Guides\cy_lfclk_v1_20</v>
+<v>Lab5-000\Lab5\and_v1_0</v>
+<v>Lab5-000\Lab5\and_v1_0\and_v1_0.pdf</v>
+<v>Lab5-000\Lab5\CharLCD_v2_20.pdf</v>
+<v>Lab5-000\Lab5\cy_clock_v2_20</v>
+<v>Lab5-000\Lab5\cy_clock_v2_20\cy_clock_v2_20.pdf</v>
+<v>Lab5-000\Lab5\cy_isr_v1_70</v>
+<v>Lab5-000\Lab5\cy_isr_v1_70\cy_isr_v1_70.pdf</v>
+<v>Lab5-000\Lab5\cy_pins_v2_20</v>
+<v>Lab5-000\Lab5\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>Lab5-000\Lab5\CyControlReg_v1_80.pdf</v>
+<v>Lab5-000\Lab5\QuadDec_v3_0.pdf</v>
+<v>Lab5-000\Lab5\TCPWM_P4_v2_10</v>
+<v>Lab5-000\Lab5\TCPWM_P4_v2_10\TCPWM_P4_v2_10.pdf</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+</TreeStatesV2>
+</CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35>
+</dataGuid>
+</userData>
+</CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997>
+<Unloaded />
+<OpenDocs>
+<name v=".\main.c" />
+<name v=".\TopDesign\TopDesign.cysch" />
+<name v=".\Lab5.cydwr" />
+</OpenDocs>
+<OpenDocsLayout><![CDATA[<?xml version="1.0"?><!--
+
+  Actipro Docking/MDI for WinForms
+  Copyright (c) 2001-2016 Actipro Software LLC.  All rights reserved.
+  http://www.actiprosoftware.com
+
+--><DocumentLayout Version="1.0"><LayoutData><TabbedMdiRootContainer Orientation="Horizontal"><TabbedMdiContainer Size="1041, 399" SelectedTabbedMdiWindow="5334b0ad-3b7c-408d-8d95-6e050ddaa5df"><ToolWindow Key="Start Page:bd4649ab-da6b-4d04-a663-c722b8bf99db:Start Page" Guid="618b6403-faff-4a3e-9064-e220296b8956" /><DocumentWindow Key="D:\projects\microcontrollers-part2\Workspace01\Lab5.cydsn\main.c" Guid="5334b0ad-3b7c-408d-8d95-6e050ddaa5df" /><DocumentWindow Key="D:\projects\microcontrollers-part2\Workspace01\Lab5.cydsn\TopDesign\TopDesign.cysch" Guid="67a32b61-c393-481b-90bd-e9da4c041ee8" /><DocumentWindow Key="D:\projects\microcontrollers-part2\Workspace01\Lab5.cydsn\Lab5.cydwr" Guid="ea61cb9d-386e-4cdb-8445-5d046183a1c7" /></TabbedMdiContainer></TabbedMdiRootContainer><FloatingContainers /></LayoutData></DocumentLayout>]]></OpenDocsLayout>
+<config v="" />
+<AutoUpdate v="true" />
+</CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21>
+</CyXmlSerializer>
