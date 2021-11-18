@@ -1,1 +1,1 @@
-# Cypres + Psoc Creator
+# Cypress + Psoc Creator
