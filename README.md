@@ -1,4 +1,4 @@
-# Cypress + Psoc Creator
+# Cypress + Psoc Creator + C programming language
 
 * **Laboratory**:
 
