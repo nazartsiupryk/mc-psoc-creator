@@ -118,7 +118,7 @@ int main(void)
     LCD_Char_Position(0, 5);
     LCD_Char_PrintString("Author");
     LCD_Char_Position(1, 2);
-    LCD_Char_PrintString("Denys Shutka");
+    LCD_Char_PrintString("Nazar Tsiupryk");
     CyDelay(INITIAL_DELAY);
     LCD_Char_ClearDisplay();
     
